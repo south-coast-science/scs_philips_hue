@@ -1,2 +1,2 @@
 # scs_philips_hue
-A lightbulb moment.
+A light bulb moment.

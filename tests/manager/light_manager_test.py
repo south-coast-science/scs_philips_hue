@@ -1,0 +1,87 @@
+#!/usr/bin/env python3
+
+"""
+Created on 30 Oct 2017
+
+@author: Bruno Beloff (bruno.beloff@southcoastscience.com)
+"""
+
+import time
+
+from scs_core.data.json import JSONify
+
+from scs_host.client.http_client import HTTPClient
+from scs_host.sys.host import Host
+
+from scs_philips_hue.config.credentials import Credentials
+
+from scs_philips_hue.data.light.light_state import LightState
+
+from scs_philips_hue.manager.upnp_discovery import UPnPDiscovery
+from scs_philips_hue.manager.light_manager import LightManager
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+credentials = Credentials.load(Host)
+print(credentials)
+
+print("-")
+
+upnp = UPnPDiscovery(HTTPClient())
+print(upnp)
+
+print("-")
+
+bridge = upnp.find(credentials.bridge_id)
+print(bridge)
+
+print("=")
+
+manager = LightManager(HTTPClient(), bridge.ip_address, credentials.username)
+print(manager)
+
+print("-")
+
+lights = manager.find_all()
+
+for index, light in lights.items():
+    print("%s: %s" % (index, light))
+
+print("-")
+
+index = manager.find_index("00:17:88:01:03:54:25:66-0b")
+print(index)
+
+print("-")
+
+light = manager.find(index)
+print(light)
+
+print("-")
+
+while True:
+    state = LightState(bri=5)
+    print(state)
+
+    response = manager.set_state(index, state)
+    print(response)
+
+    print(JSONify.dumps(response.as_json()))
+
+    print("-")
+
+    time.sleep(1)
+
+    state = LightState(bri=254)
+    print(state)
+
+    response = manager.set_state(index, state)
+    print(response)
+
+    print(JSONify.dumps(response.as_json()))
+
+    print("=")
+
+    time.sleep(2)
+
