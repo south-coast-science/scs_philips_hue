@@ -119,8 +119,10 @@ if __name__ == '__main__':
 
         # run...
         elif cmd.run:
+            # save initial...
             initial = manager.find(cmd.run).state
 
+            # read stdin...
             for line in sys.stdin:
                 datum = line.strip()
 

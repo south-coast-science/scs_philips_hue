@@ -9,8 +9,6 @@ import optparse
 from scs_philips_hue.data.light.chroma import ChromaPoint
 
 
-# TODO: replace z / u with gamut - two params
-
 # --------------------------------------------------------------------------------------------------------------------
 
 class CmdChroma(object):
@@ -30,19 +28,15 @@ class CmdChroma(object):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog -m MAX_VALUE -z { R | G | B | W } -u { R | G | B | W }"
-                                                    " [-t TIME] [-b BRIGHTNESS] [-v]", version="%prog 1.0")
+        self.__parser = optparse.OptionParser(usage="%prog -d MIN MAX -r { R | G | B | W } { R | G | B | W }"
+                                                    " [-t TRANSITION_TIME] [-b BRIGHTNESS] [-v]", version="%prog 1.0")
 
         # compulsory...
-        self.__parser.add_option("--max-value", "-m", type="float", nargs=1, action="store", dest="max_value",
-                                 help="maximum input value")
+        self.__parser.add_option("--domain", "-d", type="float", nargs=2, action="store", dest="domain",
+                                 help="domain minimum and maximum values (must be different values, min < max)")
 
-        self.__parser.add_option("--zero-point", "-z", type="string", nargs=1, action="store", dest="zero_point",
-                                 help="chromaticity for zero input value and below")
-
-        self.__parser.add_option("--upper-point", "-u", type="string", nargs=1, action="store", dest="upper_point",
-                                 help="chromaticity for maximum input value and above "
-                                      "(must be different from zero point)")
+        self.__parser.add_option("--range", "-r", type="string", nargs=2, action="store", dest="range",
+                                 help="chromaticity of start and end points (must be different values)")
 
         # optional...
         self.__parser.add_option("--transition", "-t", type="float", nargs=1, action="store", dest="transition_time",
@@ -60,16 +54,19 @@ class CmdChroma(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def is_valid(self):
-        if self.max_value is None or self.zero_point is None or self.upper_point is None:
+        if self.__opts.domain is None or self.__opts.range is None:
             return False
 
-        if self.zero_point not in self.__POINTS:
+        if self.domain_min >= self.domain_max:
             return False
 
-        if self.upper_point not in self.__POINTS:
+        if self.range_min == self.range_max:
             return False
 
-        if self.zero_point == self.upper_point:
+        if self.range_min not in self.__POINTS:
+            return False
+
+        if self.range_max not in self.__POINTS:
             return False
 
         if self.transition_time < 0.0:
@@ -83,29 +80,52 @@ class CmdChroma(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def zero_chroma(self):
-        return self.__POINTS[self.zero_point]
+    def range_min_chroma(self):
+        if self.range_min is None:
+            return None
+
+        return self.__POINTS[self.range_min]
 
 
-    def upper_chroma(self):
-        return self.__POINTS[self.upper_point]
+    def range_max_chroma(self):
+        if self.range_min is None:
+            return None
+
+        return self.__POINTS[self.range_max]
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
-    def max_value(self):
-        return self.__opts.max_value
+    def domain_min(self):
+        if self.__opts.domain is None:
+            return None
+
+        return self.__opts.domain[0]
 
 
     @property
-    def zero_point(self):
-        return self.__opts.zero_point
+    def domain_max(self):
+        if self.__opts.domain is None:
+            return None
+
+        return self.__opts.domain[1]
 
 
     @property
-    def upper_point(self):
-        return self.__opts.upper_point
+    def range_min(self):
+        if self.__opts.range is None:
+            return None
+
+        return self.__opts.range[0]
+
+
+    @property
+    def range_max(self):
+        if self.__opts.range is None:
+            return None
+
+        return self.__opts.range[1]
 
 
     @property
@@ -135,7 +155,5 @@ class CmdChroma(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdChroma:{max_value:%s, zero_point:%s, upper_point:%s, transition_time:%s, brightness:%s, " \
-               "verbose:%s, args:%s}" %  \
-               (self.max_value, self.zero_point, self.upper_point, self.transition_time, self.brightness,
-                self.verbose, self.args)
+        return "CmdChroma:{domain:%s, range:%s, transition_time:%s, brightness:%s, verbose:%s, args:%s}" %  \
+               (self.__opts.domain, self.__opts.range, self.transition_time, self.brightness, self.verbose, self.args)

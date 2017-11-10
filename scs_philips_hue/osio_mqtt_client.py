@@ -44,6 +44,8 @@ from scs_host.sys.host import Host
 from scs_philips_hue.cmd.cmd_mqtt_client import CmdMQTTClient
 
 
+# TODO: make this version receive-only
+
 # --------------------------------------------------------------------------------------------------------------------
 # subscription handler...
 

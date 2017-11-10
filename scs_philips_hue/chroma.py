@@ -8,7 +8,8 @@ Created on 4 Nov 2017
 command line example:
 ./osio_mqtt_client.py /orgs/south-coast-science-demo/brighton/loc/1/particulates | \
 ./node.py /orgs/south-coast-science-demo/brighton/loc/1/particulates.val.pm10 | \
-./chroma.py -m50.0 -zG -uR -t9.0 -v
+./chroma.py -d 0.0 50.0 -r G R -b 128 -t 9.0 -v | \
+./light.py -r 1
 """
 
 import sys
@@ -29,9 +30,6 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # cmd...
 
-    manager = None
-    initial = None
-
     cmd = CmdChroma()
 
     if not cmd.is_valid():
@@ -46,7 +44,7 @@ if __name__ == '__main__':
         # resources...
 
         # chromaticity segment...
-        segment = ChromaSegment(cmd.zero_chroma(), cmd.upper_chroma())
+        segment = ChromaSegment(cmd.range_min_chroma(), cmd.range_max_chroma())
 
         if cmd.verbose:
             print(segment, file=sys.stderr)
@@ -56,13 +54,7 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # run...
 
-        # dim the lights...
-        dark = LightState(on=True, bri=0, transition_time=cmd.transition_time / 2.0)
-
-        print(JSONify.dumps(dark))
-        sys.stdout.flush()
-
-        # samples...
+        # read stdin...
         for line in sys.stdin:
             datum = line.strip()
 
@@ -78,12 +70,13 @@ if __name__ == '__main__':
             except ValueError:
                 continue
 
-            proportion = value / cmd.max_value
-            intermediate = 0.0 if proportion < 0.0 else proportion
-            intermediate = 1.0 if proportion > 1.0 else proportion
+            value = cmd.domain_min if value < cmd.domain_min else value
+            value = cmd.domain_max if value > cmd.domain_max else value
 
-            point = segment.interpolate(intermediate)
-            state = LightState(bri=cmd.brightness, xy=point, transition_time=cmd.transition_time)
+            intermediate = (value - cmd.domain_min) / (cmd.domain_max - cmd.domain_min)
+
+            chroma = segment.interpolate(intermediate)
+            state = LightState(bri=cmd.brightness, xy=chroma, transition_time=cmd.transition_time)
 
             print(JSONify.dumps(state))
             sys.stdout.flush()
