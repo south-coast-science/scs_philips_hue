@@ -1,7 +1,7 @@
 # scs_philips_hue
 A light bulb moment.
 
-How to control Philips Hue light bulbs from South Coast Science data sources.
+How to connect Philips Hue light bulbs to South Coast Science environmental data sources.
 
 The name Philips Hue is the property of its owner:
 http://www2.meethue.com/en-gb
