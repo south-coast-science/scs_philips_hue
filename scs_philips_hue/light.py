@@ -47,8 +47,8 @@ if __name__ == '__main__':
     if cmd.verbose:
         print(cmd, file=sys.stderr)
 
+    initial_state = {}
     manager = None
-    initial = None
 
     try:
         # ------------------------------------------------------------------------------------------------------------
@@ -119,8 +119,9 @@ if __name__ == '__main__':
 
         # run...
         elif cmd.run:
-            # save initial...
-            initial = manager.find(cmd.run).state
+            # save initial states...
+            for index in cmd.run_indices:
+                initial_state[index] = manager.find(index).state
 
             # read stdin...
             for line in sys.stdin:
@@ -139,11 +140,13 @@ if __name__ == '__main__':
                     continue
 
                 state = LightState.construct_from_jdict(jdict)
-                response = manager.set_state(cmd.run, state)
 
-                if cmd.verbose:
-                    print(response, file=sys.stderr)
-                    sys.stderr.flush()
+                for index in cmd.run_indices:
+                    response = manager.set_state(index, state)
+
+                    if cmd.verbose:
+                        print(response, file=sys.stderr)
+                        sys.stderr.flush()
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -157,6 +160,7 @@ if __name__ == '__main__':
         print(JSONify.dumps(ExceptionReport.construct(ex)), file=sys.stderr)
 
     finally:
-        if cmd.run and manager and initial:
-            state = LightState(on=initial.on, bri=initial.bri, hue=initial.hue, sat=initial.sat, transition_time=1.0)
-            manager.set_state(cmd.run, state)
+        if cmd.run and manager:
+            for index, state in initial_state.items():
+                state = LightState(on=state.on, bri=state.bri, hue=state.hue, sat=state.sat, transition_time=1.0)
+                manager.set_state(index, state)

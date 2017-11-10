@@ -16,8 +16,8 @@ class CmdLight(object):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog { -s | -l | -n INDEX NAME | -d INDEX | -r INDEX } [-e] [-v]",
-                                              version="%prog 1.0")
+        self.__parser = optparse.OptionParser(usage="%prog { -s | -l | -n INDEX NAME | -d INDEX | -r INDEX_1..INDEX_N }"
+                                                    " [-e] [-v]", version="%prog 1.0")
 
         # optional...
         self.__parser.add_option("--search", "-s", action="store_true", dest="search",
@@ -32,8 +32,8 @@ class CmdLight(object):
         self.__parser.add_option("--delete", "-d", type="string", nargs=1, action="store", dest="delete",
                                  help="delete the light with INDEX")
 
-        self.__parser.add_option("--run", "-r", type="string", nargs=1, action="store", dest="run",
-                                 help="direct stdin to the light with INDEX")
+        self.__parser.add_option("--run", "-r", action="store_true", dest="run",
+                                 help="direct stdin to the light(s) with INDEX_1..INDEX_N")
 
         self.__parser.add_option("--echo", "-e", action="store_true", dest="echo", default=False,
                                  help="echo stdin to stdout")
@@ -67,6 +67,9 @@ class CmdLight(object):
         if count != 1:
             return False
 
+        if self.run and self.args is None:
+            return False
+
         return True
 
 
@@ -95,6 +98,14 @@ class CmdLight(object):
     @property
     def run(self):
         return self.__opts.run
+
+
+    @property
+    def run_indices(self):
+        if not self.run:
+            return None
+
+        return self.__args
 
 
     @property
