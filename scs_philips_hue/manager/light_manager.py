@@ -53,6 +53,7 @@ class LightManager(Manager):
         finally:
             self._rest_client.close()
 
+        # response...
         return Light.construct_from_jdict(jdict)
 
 
@@ -67,6 +68,7 @@ class LightManager(Manager):
         finally:
             self._rest_client.close()
 
+        # response...
         report = LightScan.construct_from_jdict(jdict)
 
         return report
@@ -83,8 +85,7 @@ class LightManager(Manager):
         finally:
             self._rest_client.close()
 
-        # print("jdict: %s" % jdict)        # TODO: handle the case of error responses
-
+        # response...
         lights = []
 
         for index, light_jdict in jdict.items():
@@ -106,6 +107,7 @@ class LightManager(Manager):
         finally:
             self._rest_client.close()
 
+        # response...
         response = Response.construct_from_jdict(jdict)
 
         return response
@@ -125,8 +127,7 @@ class LightManager(Manager):
         finally:
             self._rest_client.close()
 
-        # print("jdict: %s" % jdict)
-
+        # response...
         response = Response.construct_from_jdict(jdict)
 
         return response
@@ -143,6 +144,7 @@ class LightManager(Manager):
         finally:
             self._rest_client.close()
 
+        # response...
         response = Response.construct_from_jdict(jdict)
 
         return response
@@ -159,8 +161,7 @@ class LightManager(Manager):
         finally:
             self._rest_client.close()
 
-        # print("jdict: %s" % jdict)
-
+        # response...
         response = Response.construct_from_jdict(jdict)
 
         return response

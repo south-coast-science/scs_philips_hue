@@ -38,15 +38,17 @@ class UPnPDiscovery(object):
 
 
     def find_all(self):
+        # request...
         try:
             self.__upnp_client.connect()
             response_jdict = self.__upnp_client.get()
-            descriptions = [BridgeSummary.construct_from_jdict(jdict) for jdict in response_jdict]
-
-            return descriptions
-
         finally:
             self.__upnp_client.close()
+
+        # response...
+        descriptions = [BridgeSummary.construct_from_jdict(jdict) for jdict in response_jdict]
+
+        return descriptions
 
 
     # ----------------------------------------------------------------------------------------------------------------

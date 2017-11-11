@@ -48,6 +48,7 @@ class UserManager(Manager):
         finally:
             self._rest_client.close()
 
+        # response...
         config = BridgeConfig.construct_from_jdict(jdict)
         whitelist = config.whitelist
 
