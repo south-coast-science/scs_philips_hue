@@ -96,6 +96,7 @@ class Light(JSONable):
 
     def as_json(self):
         jdict = OrderedDict()
+
         jdict['state'] = self.state
         jdict['swupdate'] = self.swupdate
 
@@ -171,3 +172,60 @@ class Light(JSONable):
                "unique_id:%s, sw_version:%s, sw_config_id:%s, product_id:%s}" %  \
                (self.state, self.swupdate, self.light_type, self.name, self.model_id, self.manufacturer_name,
                 self.unique_id, self.sw_version, self.sw_config_id, self.product_id)
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+class LightListEntry(JSONable):
+    """
+    classdocs
+    """
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
+    def construct_from_jdict(cls, index, jdict):
+        if not jdict:
+            return None
+
+        light = Light.construct_from_jdict(jdict)
+
+        return LightListEntry(index, light)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __init__(self, index, light):
+        """
+        Constructor
+        """
+        self.__index = index                            # index
+        self.__light = light                            # Light
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def as_json(self):
+        jdict = OrderedDict()
+
+        jdict[self.index] = self.light
+
+        return jdict
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    def index(self):
+        return self.__index
+
+
+    @property
+    def light(self):
+        return self.__light
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __str__(self, *args, **kwargs):
+        return "LightListEntry:{index:%s, light:%s}" %  (self.index, self.light)

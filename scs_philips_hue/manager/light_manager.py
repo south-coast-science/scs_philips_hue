@@ -4,11 +4,10 @@ Created on 30 Oct 2017
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-from collections import OrderedDict
-
 from scs_philips_hue.data.bridge.response import Response
 
 from scs_philips_hue.data.light.light import Light
+from scs_philips_hue.data.light.light import LightListEntry
 from scs_philips_hue.data.light.light_name import LightName
 from scs_philips_hue.data.light.light_scan import LightScan
 
@@ -36,9 +35,9 @@ class LightManager(Manager):
     def find_index(self, unique_id):
         lights = self.find_all()
 
-        for index, light in lights.items():
-            if light.unique_id == unique_id:
-                return index
+        for entry in lights:
+            if entry.light.unique_id == unique_id:
+                return entry.index
 
         return None
 
@@ -89,7 +88,7 @@ class LightManager(Manager):
         lights = []
 
         for index, light_jdict in jdict.items():
-            lights.append({index: Light.construct_from_jdict(light_jdict)})
+            lights.append(LightListEntry.construct_from_jdict(index, light_jdict))
 
         return lights
 

@@ -9,7 +9,7 @@ example:
 
 from scs_core.data.json import JSONable
 
-from scs_philips_hue.data.light.light_name import LightName
+from scs_philips_hue.data.light.light_name import LightScanEntry
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -33,7 +33,7 @@ class LightScan(JSONable):
             if index == 'lastscan':
                 last_scan = value
             else:
-                lights.append({index: LightName.construct_from_jdict(value)})
+                lights.append(LightScanEntry.construct_from_jdict(index, value))
 
         return LightScan(last_scan, lights)
 

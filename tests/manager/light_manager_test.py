@@ -45,13 +45,13 @@ print("-")
 
 lights = manager.find_all()
 
-for index, light in lights.items():
-    print("%s: %s" % (index, light))
+for entry in lights:
+    print("entry: %s" % entry)
 
 print("-")
 
 index = manager.find_index("00:17:88:01:03:54:25:66-0b")
-print(index)
+print("index: %s" % index)
 
 print("-")
 
