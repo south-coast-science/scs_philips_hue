@@ -102,3 +102,9 @@ ENV/
 
 # PyCharm
 .idea/
+
+# South Coast Science
+**/*.csv
+**/*.log
+**/*.fifo
+**/*.uds
