@@ -7,9 +7,11 @@ example:
 {"lastscan": "2017-11-07T12:10:47", "1": {"name": "Hue color lamp 1"}}
 """
 
+from collections import OrderedDict
+
 from scs_core.data.json import JSONable
 
-from scs_philips_hue.data.light.light_name import LightScanEntry
+from scs_philips_hue.data.light.light_name import LightName
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -27,25 +29,25 @@ class LightScan(JSONable):
             return None
 
         last_scan = None
-        lights = []
+        entries = []
 
         for index, value in jdict.items():
             if index == 'lastscan':
                 last_scan = value
             else:
-                lights.append(LightScanEntry.construct_from_jdict(index, value))
+                entries.append(LightScanEntry.construct_from_jdict(index, value))
 
-        return LightScan(last_scan, lights)
+        return LightScan(last_scan, entries)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, last_scan, lights):
+    def __init__(self, last_scan, entries):
         """
         Constructor
         """
         self.__last_scan = last_scan                # string (may be date / time)
-        self.__lights = lights                      # array of LightAttribute
+        self.__entries = entries                    # array of LightScanEntry
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -61,7 +63,7 @@ class LightScan(JSONable):
 
         jdict['lastscan'] = self.last_scan
 
-        for index, light in self.lights.items():
+        for index, light in self.entries.items():
             jdict[index] = light
 
         return jdict
@@ -75,13 +77,70 @@ class LightScan(JSONable):
 
 
     @property
-    def lights(self):
-        return self.__lights
+    def entries(self):
+        return self.__entries
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        lights = '{' + ', '.join(str(index) + ': ' + str(light) for index, light in self.lights.items()) + '}'
+        entries = '{' + ', '.join(str(index) + ': ' + str(light) for index, light in self.entries.items()) + '}'
 
-        return "LightScan:{last_scan:%s, lights:%s}" %  (self.last_scan, lights)
+        return "LightScan:{last_scan:%s, entries:%s}" %  (self.last_scan, entries)
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+class LightScanEntry(JSONable):
+    """
+    classdocs
+    """
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
+    def construct_from_jdict(cls, index, jdict):
+        if not jdict:
+            return None
+
+        name = LightName.construct_from_jdict(jdict)
+
+        return LightScanEntry(index, name)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __init__(self, index, name):
+        """
+        Constructor
+        """
+        self.__index = index                            # index
+        self.__name = name                              # LightName
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def as_json(self):
+        jdict = OrderedDict()
+
+        jdict[self.index] = self.name
+
+        return jdict
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    def index(self):
+        return self.__index
+
+
+    @property
+    def name(self):
+        return self.__name
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __str__(self, *args, **kwargs):
+        return "LightScanEntry:{index:%s, name:%s}" %  (self.index, self.name)

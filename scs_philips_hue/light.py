@@ -98,8 +98,8 @@ if __name__ == '__main__':
                 if not scan.is_active():
                     break
 
-            for item in scan.lights:
-                print(JSONify.dumps(item))
+            for entry in scan.entries:
+                print(JSONify.dumps(entry))
 
         # list...
         elif cmd.list:
