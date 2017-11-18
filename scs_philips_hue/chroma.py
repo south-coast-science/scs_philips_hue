@@ -5,6 +5,9 @@ Created on 4 Nov 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
+https://en.wikipedia.org/wiki/Chromaticity
+https://developers.meethue.com/documentation/core-concepts
+
 command line example:
 ./osio_mqtt_client.py /orgs/south-coast-science-demo/brighton/loc/1/particulates | \
 ./node.py /orgs/south-coast-science-demo/brighton/loc/1/particulates.val.pm10 | \

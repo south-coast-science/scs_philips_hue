@@ -5,7 +5,7 @@ Created on 23 Mar 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-WARNING: only one MQTT client should run at any one time, per a TCP/IP host.
+WARNING: only one MQTT client should run at any one time, per TCP/IP host.
 
 Requires APIAuth and ClientAuth documents.
 
@@ -44,7 +44,7 @@ from scs_host.sys.host import Host
 from scs_philips_hue.cmd.cmd_mqtt_client import CmdMQTTClient
 
 
-# TODO: make this version receive-only
+# TODO: rename '_subscriber' and remove pub code
 
 # --------------------------------------------------------------------------------------------------------------------
 # subscription handler...
@@ -188,6 +188,8 @@ if __name__ == '__main__':
 
         # ------------------------------------------------------------------------------------------------------------
         # run...
+
+        # just join subscribers
 
         # publish...
         pub_comms.connect()

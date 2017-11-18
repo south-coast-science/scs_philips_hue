@@ -23,8 +23,8 @@ class ChromaSegment(object):
         """
         Constructor
         """
-        self.__start = start                # ChromaPoint
-        self.__end = end                    # ChromaPoint
+        self.__start = start                            # ChromaPoint
+        self.__end = end                                # ChromaPoint
 
         self.__delta_x = self.end.x - self.start.x
         self.__delta_y = self.end.y - self.start.y
