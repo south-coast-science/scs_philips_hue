@@ -16,6 +16,7 @@ example:
 
 from collections import OrderedDict
 
+from scs_core.data.datum import Datum
 from scs_core.data.json import JSONable
 
 
@@ -42,23 +43,25 @@ class SWUpdate(JSONable):
         notify = jdict.get('notify')
 
 
-        return SWUpdate(update_state, check_for_update, device_types, url, text, notify)
+        return SWUpdate(update_state=update_state, check_for_update=check_for_update, device_types=device_types,
+                        url=url, text=text, notify=notify)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, update_state, check_for_update, device_types, url, text, notify):
+    def __init__(self, update_state=None, check_for_update=None, device_types=None,
+                 url=None, text=None, notify=None):
         """
         Constructor
         """
-        self.__update_state = int(update_state)                     # int
-        self.__check_for_update = bool(check_for_update)            # bool
-        self.__device_types = device_types                          # DeviceTypes
+        self.__update_state = Datum.int(update_state)                   # int
+        self.__check_for_update = Datum.bool(check_for_update)          # bool
+        self.__device_types = device_types                              # DeviceTypes
 
-        self.__url = url                                            # string
+        self.__url = url                                                # string
 
-        self.__text = text                                          # string
-        self.__notify = bool(notify)                                # bool
+        self.__text = text                                              # string
+        self.__notify = Datum.bool(notify)                              # bool
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -66,14 +69,25 @@ class SWUpdate(JSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['updatestate'] = self.update_state
-        jdict['checkforupdate'] = self.check_for_update
-        jdict['devicetypes'] = self.device_types
+        if self.update_state is not None:
+            jdict['updatestate'] = self.update_state
 
-        jdict['url'] = self.url
+        if self.check_for_update is not None:
+            jdict['checkforupdate'] = self.check_for_update
 
-        jdict['text'] = self.text
-        jdict['notify'] = self.notify
+        if self.device_types is not None:
+            jdict['devicetypes'] = self.device_types
+
+
+        if self.url is not None:
+            jdict['url'] = self.url
+
+
+        if self.text is not None:
+            jdict['text'] = self.text
+
+        if self.notify is not None:
+            jdict['notify'] = self.notify
 
         return jdict
 

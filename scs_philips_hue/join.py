@@ -90,6 +90,6 @@ if __name__ == '__main__':
 
     # report...
     manager = BridgeManager(HTTPClient(), bridge.ip_address, credentials.username)
-    config = manager.find_config()
+    config = manager.find()
 
     print(JSONify.dumps(credentials))

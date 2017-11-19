@@ -86,6 +86,7 @@ example:
 
 from collections import OrderedDict
 
+from scs_core.data.datum import Datum
 from scs_core.data.json import JSONable
 
 from scs_philips_hue.data.bridge.backup import Backup
@@ -112,8 +113,7 @@ class BridgeConfig(JSONable):
 
         name = jdict.get('name')
         zigbee_channel = jdict.get('zigbeechannel')
-        bridge_id = jdict.get('bridgeid')
-        mac = jdict.get('mac')
+
         dhcp = jdict.get('dhcp')
         ip_address = jdict.get('ipaddress')
         netmask = jdict.get('netmask')
@@ -123,92 +123,47 @@ class BridgeConfig(JSONable):
         proxy_port = jdict.get('proxyport')
 
         utc = jdict.get('UTC')
-        localtime = jdict.get('localtime')
         timezone = jdict.get('timezone')
 
-        model_id = jdict.get('modelid')
-        datastore_version = jdict.get('datastoreversion')
-        sw_version = jdict.get('swversion')
-        api_version = jdict.get('apiversion')
-
         sw_update = SWUpdate.construct_from_jdict(jdict.get('swupdate'))
-        sw_update_2 = SWUpdate2.construct_from_jdict(jdict.get('swupdate2'))
 
         link_button = jdict.get('linkbutton')
 
-        portal_services = jdict.get('portalservices')
-        portal_connection = jdict.get('portalconnection')
-        portal_state = PortalState.construct_from_jdict(jdict.get('portalstate'))
-
-        internet_services = InternetServices.construct_from_jdict(jdict.get('internetservices'))
-        factory_new = jdict.get('factorynew')
-        replaces_bridge_id = jdict.get('replacesbridgeid')
-        backup = Backup.construct_from_jdict(jdict.get('backup'))
-        starterkit_id = jdict.get('starterkitid')
-
-        whitelist = WhitelistGroup.construct_from_jdict(jdict.get('whitelist'))
-
-        return BridgeConfig(name, zigbee_channel, bridge_id, mac, dhcp, ip_address, netmask, gateway,
-                            proxy_address, proxy_port,
-                            utc, localtime, timezone,
-                            model_id, datastore_version, sw_version, api_version, sw_update, sw_update_2,
-                            link_button,
-                            portal_services, portal_connection, portal_state,
-                            internet_services, factory_new, replaces_bridge_id, backup, starterkit_id,
-                            whitelist)
+        return BridgeConfig(name=name, zigbee_channel=zigbee_channel,
+                            dhcp=dhcp, ip_address=ip_address, netmask=netmask, gateway=gateway,
+                            proxy_address=proxy_address, proxy_port=proxy_port,
+                            utc=utc, timezone=timezone, sw_update=sw_update,
+                            link_button=link_button)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, name, zigbee_channel, bridge_id, mac, dhcp, ip_address, netmask, gateway,
-                 proxy_address, proxy_port,
-                 utc, localtime, timezone,
-                 model_id, datastore_version, sw_version, api_version, sw_update, sw_update_2,
-                 link_button,
-                 portal_services, portal_connection, portal_state,
-                 internet_services, factory_new, replaces_bridge_id, backup, starterkit_id,
-                 whitelist):
+    def __init__(self, name=None, zigbee_channel=None,
+                 dhcp=None, ip_address=None, netmask=None, gateway=None,
+                 proxy_address=None, proxy_port=None,
+                 utc=None, timezone=None, sw_update=None,
+                 link_button=None, touch_link=None):
         """
         Constructor
         """
         self.__name = name                                                  # string
-        self.__zigbee_channel = int(zigbee_channel)                         # int
-        self.__bridge_id = bridge_id                                        # string
-        self.__mac = mac                                                    # string
-        self.__dhcp = bool(dhcp)                                            # bool
+        self.__zigbee_channel = Datum.int(zigbee_channel)                   # int
+
+        self.__dhcp = Datum.bool(dhcp)                                      # bool
         self.__ip_address = ip_address                                      # string
         self.__netmask = netmask                                            # string
         self.__gateway = gateway                                            # string
 
         self.__proxy_address = proxy_address                                # string
-        self.__proxy_port = int(proxy_port)                                 # int
+        self.__proxy_port = Datum.int(proxy_port)                           # int
 
         self.__utc = utc                                                    # string (date / time)
-        self.__localtime = localtime                                        # string (date / time)
         self.__timezone = timezone                                          # string (timezone ID)
 
-        self.__model_id = model_id                                          # string
-        self.__datastore_version = datastore_version                        # string
-
-        self.__sw_version = sw_version                                      # string
-        self.__api_version = api_version                                    # string
-
         self.__sw_update = sw_update                                        # SWUpdate
-        self.__sw_update_2 = sw_update_2                                    # SWUpdate2
 
-        self.__link_button = bool(link_button)                              # bool
-
-        self.__portal_services = bool(portal_services)                      # bool
-        self.__portal_connection = portal_connection                        # string
-        self.__portal_state = portal_state                                  # PortalState
-
-        self.__internet_services = internet_services                        # InternetServices
-        self.__factory_new = bool(factory_new)                              # bool
-        self.__replaces_bridge_id = replaces_bridge_id                      # string
-        self.__backup = backup                                              # Backup
-        self.__starterkit_id = starterkit_id                                # string
-
-        self.__whitelist = whitelist                                        # WhitelistGroup
+        self.__link_button = Datum.bool(link_button)                        # bool
+        self.__touch_link = Datum.bool(touch_link)                          # bool
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -216,44 +171,49 @@ class BridgeConfig(JSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['name'] = self.name
-        jdict['zigbeechannel'] = self.zigbee_channel
-        jdict['bridgeid'] = self.bridge_id
-        jdict['mac'] = self.mac
-        jdict['dhcp'] = self.dhcp
-        jdict['ipaddress'] = self.ip_address
-        jdict['netmask'] = self.netmask
-        jdict['gateway'] = self.gateway
+        if self.name is not None:
+            jdict['name'] = self.name
 
-        jdict['proxyaddress'] = self.proxy_address
-        jdict['proxyport'] = self.proxy_port
+        if self.zigbee_channel is not None:
+            jdict['zigbeechannel'] = self.zigbee_channel
 
-        jdict['UTC'] = self.utc
-        jdict['localtime'] = self.localtime
-        jdict['timezone'] = self.timezone
 
-        jdict['modelid'] = self.model_id
-        jdict['datastoreversion'] = self.datastore_version
+        if self.dhcp is not None:
+            jdict['dhcp'] = self.dhcp
 
-        jdict['swversion'] = self.sw_version
-        jdict['apiversion'] = self.api_version
+        if self.ip_address is not None:
+            jdict['ipaddress'] = self.ip_address
 
-        jdict['swupdate'] = self.sw_update
-        jdict['swupdate2'] = self.sw_update_2
+        if self.netmask is not None:
+            jdict['netmask'] = self.netmask
 
-        jdict['linkbutton'] = self.link_button
+        if self.gateway is not None:
+            jdict['gateway'] = self.gateway
 
-        jdict['portalservices'] = self.portal_services
-        jdict['portalconnection'] = self.portal_connection
-        jdict['portalstate'] = self.portal_state
 
-        jdict['internetservices'] = self.internet_services
-        jdict['factorynew'] = self.factory_new
-        jdict['replacesbridgeid'] = self.replaces_bridge_id
-        jdict['backup'] = self.backup
-        jdict['starterkitid'] = self.starterkit_id
+        if self.proxy_address is not None:
+            jdict['proxyaddress'] = self.proxy_address
 
-        jdict['whitelist'] = self.whitelist
+        if self.proxy_port is not None:
+            jdict['proxyport'] = self.proxy_port
+
+
+        if self.utc is not None:
+            jdict['UTC'] = self.utc
+
+        if self.timezone is not None:
+            jdict['timezone'] = self.timezone
+
+
+        if self.sw_update is not None:
+            jdict['swupdate'] = self.sw_update
+
+
+        if self.link_button is not None:
+            jdict['linkbutton'] = self.link_button
+
+        if self.touch_link is not None:
+            jdict['touchlink'] = self.touch_link
 
         return jdict
 
@@ -268,16 +228,6 @@ class BridgeConfig(JSONable):
     @property
     def zigbee_channel(self):
         return self.__zigbee_channel
-
-
-    @property
-    def bridge_id(self):
-        return self.__bridge_id
-
-
-    @property
-    def mac(self):
-        return self.__mac
 
 
     @property
@@ -316,13 +266,218 @@ class BridgeConfig(JSONable):
 
 
     @property
-    def localtime(self):
-        return self.__localtime
+    def timezone(self):
+        return self.__timezone
 
 
     @property
-    def timezone(self):
-        return self.__timezone
+    def sw_update(self):
+        return self.__sw_update
+
+
+    @property
+    def link_button(self):
+        return self.__link_button
+
+
+    @property
+    def touch_link(self):
+        return self.__touch_link
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __str__(self, *args, **kwargs):
+        return "BridgeConfig:{name:%s, zigbee_channel:%s, " \
+               "dhcp:%s, ip_address:%s, netmask:%s, " \
+               "gateway:%s, proxy_address:%s, proxy_port:%s," \
+               "utc:%s, timezone:%s, sw_update:%s," \
+               "link_button:%s, touch_link:%s}" %  \
+               (self.name, self.zigbee_channel,
+                self.dhcp, self.ip_address, self.netmask,
+                self.gateway, self.proxy_address, self.proxy_port,
+                self.utc, self.timezone, self.sw_update,
+                self.link_button, self.touch_link)
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+class ReportedBridgeConfig(BridgeConfig):
+    """
+    classdocs
+    """
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
+    def construct_from_jdict(cls, jdict):
+        if not jdict:
+            return None
+
+        name = jdict.get('name')
+        zigbee_channel = jdict.get('zigbeechannel')
+        bridge_id = jdict.get('bridgeid')
+        mac = jdict.get('mac')
+
+        dhcp = jdict.get('dhcp')
+        ip_address = jdict.get('ipaddress')
+        netmask = jdict.get('netmask')
+        gateway = jdict.get('gateway')
+
+        proxy_address = jdict.get('proxyaddress')
+        proxy_port = jdict.get('proxyport')
+
+        utc = jdict.get('UTC')
+        localtime = jdict.get('localtime')
+        timezone = jdict.get('timezone')
+
+        model_id = jdict.get('modelid')
+        datastore_version = jdict.get('datastoreversion')
+        sw_version = jdict.get('swversion')
+        api_version = jdict.get('apiversion')
+
+        sw_update = SWUpdate.construct_from_jdict(jdict.get('swupdate'))
+        sw_update_2 = SWUpdate2.construct_from_jdict(jdict.get('swupdate2'))
+
+        link_button = jdict.get('linkbutton')
+
+        portal_services = jdict.get('portalservices')
+        portal_connection = jdict.get('portalconnection')
+        portal_state = PortalState.construct_from_jdict(jdict.get('portalstate'))
+
+        internet_services = InternetServices.construct_from_jdict(jdict.get('internetservices'))
+        factory_new = jdict.get('factorynew')
+        replaces_bridge_id = jdict.get('replacesbridgeid')
+        backup = Backup.construct_from_jdict(jdict.get('backup'))
+        starterkit_id = jdict.get('starterkitid')
+
+        whitelist = WhitelistGroup.construct_from_jdict(jdict.get('whitelist'))
+
+        return ReportedBridgeConfig(name=name, zigbee_channel=zigbee_channel, bridge_id=bridge_id,
+                                    mac=mac, dhcp=dhcp, ip_address=ip_address, netmask=netmask, gateway=gateway,
+                                    proxy_address=proxy_address, proxy_port=proxy_port,
+                                    utc=utc, localtime=localtime, timezone=timezone,
+                                    model_id=model_id, datastore_version=datastore_version, sw_version=sw_version,
+                                    api_version=api_version, sw_update=sw_update, sw_update_2=sw_update_2,
+                                    link_button=link_button,
+                                    portal_services=portal_services, portal_connection=portal_connection,
+                                    portal_state=portal_state,
+                                    internet_services=internet_services, factory_new=factory_new,
+                                    replaces_bridge_id=replaces_bridge_id, backup=backup, starterkit_id=starterkit_id,
+                                    whitelist=whitelist)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __init__(self, name=None, zigbee_channel=None, bridge_id=None,
+                 mac=None, dhcp=None, ip_address=None, netmask=None, gateway=None,
+                 proxy_address=None, proxy_port=None,
+                 utc=None, localtime=None, timezone=None,
+                 model_id=None, datastore_version=None, sw_version=None,
+                 api_version=None, sw_update=None, sw_update_2=None,
+                 link_button=None,
+                 portal_services=None, portal_connection=None,
+                 portal_state=None,
+                 internet_services=None, factory_new=None,
+                 replaces_bridge_id=None, backup=None, starterkit_id=None,
+                 whitelist=None):
+        """
+        Constructor
+        """
+        super().__init__(name=name, zigbee_channel=zigbee_channel,
+                         dhcp=dhcp, ip_address=ip_address, netmask=netmask, gateway=gateway,
+                         proxy_address=proxy_address, proxy_port=proxy_port,
+                         utc=utc, timezone=timezone, sw_update=sw_update,
+                         link_button=link_button)
+
+        self.__bridge_id = bridge_id                                        # string
+        self.__mac = mac                                                    # string
+
+        self.__localtime = localtime                                        # string (date / time)
+
+        self.__model_id = model_id                                          # string
+        self.__datastore_version = datastore_version                        # string
+
+        self.__sw_version = sw_version                                      # string
+        self.__api_version = api_version                                    # string
+
+        self.__sw_update_2 = sw_update_2                                    # SWUpdate2
+
+        self.__portal_services = bool(portal_services)                      # bool
+        self.__portal_connection = portal_connection                        # string
+        self.__portal_state = portal_state                                  # PortalState
+
+        self.__internet_services = internet_services                        # InternetServices
+        self.__factory_new = bool(factory_new)                              # bool
+        self.__replaces_bridge_id = replaces_bridge_id                      # string
+        self.__backup = backup                                              # Backup
+        self.__starterkit_id = starterkit_id                                # string
+
+        self.__whitelist = whitelist                                        # WhitelistGroup
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def as_json(self):
+        jdict = OrderedDict()
+
+        jdict['name'] = self.name
+        jdict['zigbeechannel'] = self.zigbee_channel
+        jdict['bridgeid'] = self.bridge_id
+        jdict['mac'] = self.mac
+
+        jdict['dhcp'] = self.dhcp
+        jdict['ipaddress'] = self.ip_address
+        jdict['netmask'] = self.netmask
+        jdict['gateway'] = self.gateway
+
+        jdict['proxyaddress'] = self.proxy_address
+        jdict['proxyport'] = self.proxy_port
+
+        jdict['UTC'] = self.utc
+        jdict['localtime'] = self.localtime
+        jdict['timezone'] = self.timezone
+
+        jdict['modelid'] = self.model_id
+        jdict['datastoreversion'] = self.datastore_version
+        jdict['swversion'] = self.sw_version
+        jdict['apiversion'] = self.api_version
+
+        jdict['swupdate'] = self.sw_update
+        jdict['swupdate2'] = self.sw_update_2
+
+        jdict['linkbutton'] = self.link_button
+
+        jdict['portalservices'] = self.portal_services
+        jdict['portalconnection'] = self.portal_connection
+        jdict['portalstate'] = self.portal_state
+
+        jdict['internetservices'] = self.internet_services
+        jdict['factorynew'] = self.factory_new
+        jdict['replacesbridgeid'] = self.replaces_bridge_id
+        jdict['backup'] = self.backup
+
+        jdict['starterkitid'] = self.starterkit_id
+        jdict['whitelist'] = self.whitelist
+
+        return jdict
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    def bridge_id(self):
+        return self.__bridge_id
+
+
+    @property
+    def mac(self):
+        return self.__mac
+
+
+    @property
+    def localtime(self):
+        return self.__localtime
 
 
     @property
@@ -346,18 +501,8 @@ class BridgeConfig(JSONable):
 
 
     @property
-    def sw_update(self):
-        return self.__sw_update
-
-
-    @property
     def sw_update_2(self):
         return self.__sw_update_2
-
-
-    @property
-    def link_button(self):
-        return self.__link_button
 
 
     @property
@@ -408,7 +553,8 @@ class BridgeConfig(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "BridgeConfig:{name:%s, zigbee_channel:%s, bridge_id:%s, mac:%s, dhcp:%s, ip_address:%s, netmask:%s, " \
+        return "ReportedBridgeConfig:{name:%s, zigbee_channel:%s, bridge_id:%s, mac:%s, " \
+               "dhcp:%s, ip_address:%s, netmask:%s, " \
                "gateway:%s, proxy_address:%s, proxy_port:%s," \
                "utc:%s, localtime:%s, timezone:%s, " \
                "model_id:%s, datastore_version:%s, sw_version:%s, api_version:%s, " \

@@ -6,7 +6,7 @@ Created on 11 Nov 2017
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 command line example:
-./bridge.py
+./bridge.py -n scs-phb-001 -v
 """
 
 import sys
@@ -17,9 +17,12 @@ from scs_core.sys.exception_report import ExceptionReport
 from scs_host.client.http_client import HTTPClient
 from scs_host.sys.host import Host
 
-from scs_philips_hue.cmd.cmd_simple import CmdSimple
+from scs_philips_hue.cmd.cmd_bridge import CmdBridge
 
 from scs_philips_hue.config.credentials import Credentials
+
+from scs_philips_hue.data.bridge.bridge_config import BridgeConfig
+from scs_philips_hue.data.bridge.sw_update import SWUpdate
 
 from scs_philips_hue.manager.bridge_manager import BridgeManager
 from scs_philips_hue.manager.upnp_discovery import UPnPDiscovery
@@ -32,7 +35,11 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # cmd...
 
-    cmd = CmdSimple()
+    cmd = CmdBridge()
+
+    if not cmd.is_valid():
+        cmd.print_help(sys.stderr)
+        exit(2)
 
     if cmd.verbose:
         print(cmd, file=sys.stderr)
@@ -73,8 +80,23 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # run...
 
-        config = manager.find_config()
-        print(JSONify.dumps(config))
+        # name...
+        if cmd.name:
+            config = BridgeConfig(name=cmd.name)
+
+            response = manager.set_config(config)
+            print(response)
+
+        # update...
+        if cmd.update:
+            config = BridgeConfig(sw_update=SWUpdate(check_for_update=True))
+
+            response = manager.set_config(config)
+            print(response)
+
+        if not cmd.set():
+            config = manager.find()
+            print(JSONify.dumps(config))
 
 
     # ----------------------------------------------------------------------------------------------------------------

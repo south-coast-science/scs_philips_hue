@@ -12,7 +12,7 @@ from collections import OrderedDict
 
 from scs_core.data.json import JSONify
 
-from scs_philips_hue.data.bridge.bridge_config import BridgeConfig
+from scs_philips_hue.data.bridge.bridge_config import ReportedBridgeConfig
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -71,7 +71,7 @@ jdict = json.loads(jstr, object_pairs_hook=OrderedDict)
 print(jdict)
 print("-")
 
-config = BridgeConfig.construct_from_jdict(jdict)
+config = ReportedBridgeConfig.construct_from_jdict(jdict)
 print(config)
 print("-")
 

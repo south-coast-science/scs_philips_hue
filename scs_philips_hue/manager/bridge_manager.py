@@ -4,7 +4,7 @@ Created on 29 Oct 2017
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-from scs_philips_hue.data.bridge.bridge_config import BridgeConfig
+from scs_philips_hue.data.bridge.bridge_config import ReportedBridgeConfig
 from scs_philips_hue.data.bridge.response import Response
 
 from scs_philips_hue.manager.manager import Manager
@@ -28,7 +28,7 @@ class BridgeManager(Manager):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def find_config(self):
+    def find(self):
         request_path = '/config'
 
         # request...
@@ -40,9 +40,26 @@ class BridgeManager(Manager):
             self._rest_client.close()
 
         # response...
-        config = BridgeConfig.construct_from_jdict(jdict)
+        config = ReportedBridgeConfig.construct_from_jdict(jdict)
 
         return config
+
+
+    def set_config(self, config):
+        request_path = '/config'
+
+        # request...
+        self._rest_client.connect(self._host, self._username)
+
+        try:
+            jdict = self._rest_client.put(request_path, config.as_json())
+        finally:
+            self._rest_client.close()
+
+        # response...
+        response = Response.construct_from_jdict(jdict)
+
+        return response
 
 
     # ----------------------------------------------------------------------------------------------------------------

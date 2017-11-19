@@ -32,11 +32,13 @@ example:
 }
 """
 
+# from scs_core.data.json import JSONify
+
 from collections import OrderedDict
 
 from scs_core.data.json import JSONable
 
-from scs_philips_hue.data.light.light_state import LightState
+from scs_philips_hue.data.light.light_state import ReportedLightState
 from scs_philips_hue.data.light.sw_update import SWUpdate
 
 
@@ -51,10 +53,12 @@ class Light(JSONable):
 
     @classmethod
     def construct_from_jdict(cls, jdict):
+        # print(JSONify.dumps(jdict))
+
         if not jdict:
             return None
 
-        state = LightState.construct_from_jdict(jdict.get('state'))
+        state = ReportedLightState.construct_from_jdict(jdict.get('state'))
         swupdate = SWUpdate.construct_from_jdict(jdict.get('swupdate'))
 
         light_type = jdict.get('type')
@@ -78,7 +82,7 @@ class Light(JSONable):
         """
         Constructor
         """
-        self.__state = state                                    # LightState
+        self.__state = state                                    # ReportedLightState
         self.__swupdate = swupdate                              # SWUpdate
 
         self.__light_type = light_type                          # string

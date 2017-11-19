@@ -190,6 +190,7 @@ class ReportedLightState(LightState):
         bri = jdict.get('bri')
         hue = jdict.get('hue')
         sat = jdict.get('sat')
+
         effect = jdict.get('effect')
         transition_time = jdict.get('transitiontime')
 
@@ -217,6 +218,30 @@ class ReportedLightState(LightState):
 
         self.__color_mode = color_mode              # string
         self.__reachable = reachable                # bool
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def as_json(self):
+        jdict = OrderedDict()
+
+        jdict['on'] = self.on
+        jdict['bri'] = self.bri
+        jdict['hue'] = self.hue
+        jdict['sat'] = self.sat
+
+        jdict['effect'] = self.effect
+        jdict['transitiontime'] = self.transition_time
+
+        jdict['xy'] = self.xy
+
+        jdict['ct'] = self.ct
+        jdict['alert'] = self.alert
+
+        jdict['colormode'] = self.color_mode
+        jdict['reachable'] = self.reachable
+
+        return jdict
 
 
     # ----------------------------------------------------------------------------------------------------------------
