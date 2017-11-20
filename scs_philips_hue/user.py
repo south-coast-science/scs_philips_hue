@@ -6,7 +6,7 @@ Created on 4 Nov 2017
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 command line example:
-./light.py
+./user.py -v
 """
 
 import sys

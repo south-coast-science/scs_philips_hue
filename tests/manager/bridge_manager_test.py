@@ -6,8 +6,6 @@ Created on 29 Oct 2017
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-from scs_core.data.json import JSONify
-
 from scs_host.client.http_client import HTTPClient
 from scs_host.sys.host import Host
 
@@ -43,7 +41,3 @@ config = bridge_manager.find()
 print(config)
 
 print("-")
-
-
-# state = bridge_manager.get_sate()
-# print(JSONify.dumps(state))

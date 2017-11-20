@@ -10,9 +10,8 @@ https://developers.meethue.com/documentation/core-concepts
 
 command line example:
 ./osio_mqtt_client.py /orgs/south-coast-science-demo/brighton/loc/1/particulates | \
-./node.py /orgs/south-coast-science-demo/brighton/loc/1/particulates.val.pm10 | \
-./chroma.py -d 0.0 50.0 -r G R -b 128 -t 9.0 -v | \
-./light.py -r 1
+    ./node.py /orgs/south-coast-science-demo/brighton/loc/1/particulates.val.pm2p5 | \
+    ./chroma.py -d 0 50 -r G R -t 9.0 -b 128 -v
 """
 
 import sys

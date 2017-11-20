@@ -10,10 +10,7 @@ WARNING: only one MQTT client should run at any one time, per TCP/IP host.
 Requires APIAuth and ClientAuth documents.
 
 command line example:
-./osio_mqtt_client.py \
-/orgs/south-coast-science-dev/unep/loc/1/gases gases.uds \
-/orgs/south-coast-science-dev/unep/loc/1/particulates particulates.uds \
--p osio_mqtt_pub.uds -s -e
+./osio_mqtt_client.py /orgs/south-coast-science-demo/brighton/loc/1/particulates
 """
 
 import json
