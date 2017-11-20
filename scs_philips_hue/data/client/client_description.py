@@ -17,7 +17,7 @@ class ClientDescription(JSONable):
     classdocs
     """
 
-    APP = 'SCS Hue Connector'
+    APP = 'scs-hue-connector'
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -26,7 +26,7 @@ class ClientDescription(JSONable):
         if not jstr:
             return None
 
-        pieces = jstr.split('#')
+        pieces = jstr.split('@')
 
         if len(pieces) != 2:
             raise ValueError(jstr)
@@ -50,7 +50,7 @@ class ClientDescription(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def as_json(self):
-        return self.app + '#' + self.user
+        return self.app + '@' + self.user
 
 
     # ----------------------------------------------------------------------------------------------------------------

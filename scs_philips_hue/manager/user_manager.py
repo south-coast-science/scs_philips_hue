@@ -4,7 +4,7 @@ Created on 29 Oct 2017
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-from scs_philips_hue.data.bridge.bridge_config import BridgeConfig
+from scs_philips_hue.data.bridge.bridge_config import ReportedBridgeConfig
 
 from scs_philips_hue.manager.manager import Manager
 
@@ -49,7 +49,7 @@ class UserManager(Manager):
             self._rest_client.close()
 
         # response...
-        config = BridgeConfig.construct_from_jdict(jdict)
+        config = ReportedBridgeConfig.construct_from_jdict(jdict)
         whitelist = config.whitelist
 
         return whitelist.entries

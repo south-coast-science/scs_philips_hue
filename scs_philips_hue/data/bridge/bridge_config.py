@@ -86,6 +86,8 @@ example:
 
 from collections import OrderedDict
 
+from scs_core.data.json import JSONify
+
 from scs_core.data.datum import Datum
 from scs_core.data.json import JSONable
 
@@ -311,6 +313,8 @@ class ReportedBridgeConfig(BridgeConfig):
 
     @classmethod
     def construct_from_jdict(cls, jdict):
+        print(JSONify.dumps(jdict))
+
         if not jdict:
             return None
 
