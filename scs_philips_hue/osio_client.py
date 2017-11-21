@@ -40,7 +40,7 @@ if __name__ == '__main__':
 
     system_id = SystemID('scs', 'phi', 'Hue Interface', 'RPi', Host.name())
 
-    description = 'South Coast Science <-> Philips Hue Bridge interface'
+    description = 'South Coast Science - Philips Hue Bridge'
     tags = ['scs', 'philips-hue']
 
 
