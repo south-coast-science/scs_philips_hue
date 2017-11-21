@@ -12,11 +12,12 @@ Requires Endpoint and ClientCredentials documents.
 command line example:
 ./gases_sampler.py -i2 | \
     ./aws_topic_publisher.py -t south-coast-science-dev/development/loc/3/gases | \
-    ./aws_mqtt_client.py -s -e
+    ./aws_mqtt_subscriber.py -s -e
 """
 
 import json
 import sys
+import time
 
 from collections import OrderedDict
 
@@ -25,7 +26,6 @@ from scs_core.aws.client.client_credentials import ClientCredentials
 from scs_core.aws.service.endpoint import Endpoint
 
 from scs_core.data.json import JSONify
-from scs_core.data.localized_datetime import LocalizedDatetime
 from scs_core.data.publication import Publication
 
 from scs_core.sys.exception_report import ExceptionReport
@@ -35,10 +35,8 @@ from scs_host.comms.stdio import StdIO
 
 from scs_host.sys.host import Host
 
-from scs_philips_hue.cmd.cmd_mqtt_client import CmdMQTTClient
+from scs_philips_hue.cmd.cmd_mqtt_subscriber import CmdMQTTSubscriber
 
-
-# TODO: rename '_subscriber' and remove pub code
 
 # --------------------------------------------------------------------------------------------------------------------
 # subscription handler...
@@ -107,7 +105,7 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # cmd...
 
-    cmd = CmdMQTTClient()
+    cmd = CmdMQTTSubscriber()
 
     if not cmd.is_valid():
         cmd.print_help(sys.stderr)
@@ -134,9 +132,6 @@ if __name__ == '__main__':
             print("ClientCredentials not available.", file=sys.stderr)
             exit(1)
 
-        # comms...
-        pub_comms = DomainSocket(cmd.uds_pub_addr) if cmd.uds_pub_addr else StdIO()
-
         # subscribers...
         subscribers = []
 
@@ -162,31 +157,11 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # run...
 
-        # just join subscribers
-
-        handler = AWSMQTTHandler()
-
         client.connect(endpoint, credentials)
 
-        pub_comms.connect()
-
-        for message in pub_comms.read():
-            try:
-                jdict = json.loads(message, object_pairs_hook=OrderedDict)
-            except ValueError:
-                continue
-
-            publication = Publication.construct_from_jdict(jdict)
-
-            client.publish(publication)
-
-            if cmd.verbose:
-                print("%s:         mqtt: done" % LocalizedDatetime.now().as_iso8601(), file=sys.stderr)
-                sys.stderr.flush()
-
-            if cmd.echo:
-                print(message)
-                sys.stdout.flush()
+        # just join subscribers
+        while True:
+            time.sleep(1)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -202,6 +177,3 @@ if __name__ == '__main__':
     finally:
         if client:
             client.disconnect()
-
-        if pub_comms:
-            pub_comms.close()

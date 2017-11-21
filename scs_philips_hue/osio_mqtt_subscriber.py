@@ -10,19 +10,14 @@ WARNING: only one MQTT client should run at any one time, per TCP/IP host.
 Requires APIAuth and ClientAuth documents.
 
 command line example:
-./osio_mqtt_client.py /orgs/south-coast-science-demo/brighton/loc/1/particulates
+./osio_mqtt_subscriber.py /orgs/south-coast-science-demo/brighton/loc/1/particulates
 """
 
-import json
-import random
 import sys
 import time
 
-from collections import OrderedDict
-
 from scs_core.data.json import JSONify
 from scs_core.data.localized_datetime import LocalizedDatetime
-from scs_core.data.publication import Publication
 
 from scs_core.osio.client.api_auth import APIAuth
 from scs_core.osio.client.client_auth import ClientAuth
@@ -38,10 +33,10 @@ from scs_host.comms.stdio import StdIO
 
 from scs_host.sys.host import Host
 
-from scs_philips_hue.cmd.cmd_mqtt_client import CmdMQTTClient
+from scs_philips_hue.cmd.cmd_mqtt_subscriber import CmdMQTTSubscriber
 
 
-# TODO: rename '_subscriber' and remove pub code
+# TODO: remove pub code
 
 # --------------------------------------------------------------------------------------------------------------------
 # subscription handler...
@@ -108,13 +103,12 @@ class OSIOMQTTHandler(object):
 if __name__ == '__main__':
 
     client = None
-    pub_comms = None
 
 
     # ----------------------------------------------------------------------------------------------------------------
     # cmd...
 
-    cmd = CmdMQTTClient()
+    cmd = CmdMQTTSubscriber()
 
     if not cmd.is_valid():
         cmd.print_help(sys.stderr)
@@ -146,9 +140,6 @@ if __name__ == '__main__':
 
         if cmd.verbose:
             print(client_auth, file=sys.stderr)
-
-        # comms...
-        pub_comms = DomainSocket(cmd.uds_pub_addr) if cmd.uds_pub_addr else StdIO()
 
         # manager...
         manager = TopicManager(HTTPClient(), api_auth.api_key)
@@ -187,43 +178,8 @@ if __name__ == '__main__':
         # run...
 
         # just join subscribers
-
-        # publish...
-        pub_comms.connect()
-
-        for message in pub_comms.read():
-            try:
-                datum = json.loads(message, object_pairs_hook=OrderedDict)
-            except ValueError:
-                handler.print_status("bad datum: %s" % message)
-                continue
-
-            success = False
-
-            while True:
-                publication = Publication.construct_from_jdict(datum)
-
-                try:
-                    success = client.publish(publication, ClientAuth.MQTT_TIMEOUT)
-
-                    if not success:
-                        handler.print_status("abandoned")
-
-                    break
-
-                except Exception as ex:
-                    if cmd.verbose:
-                        print(JSONify.dumps(ExceptionReport.construct(ex)))
-                        sys.stderr.flush()
-
-                time.sleep(random.uniform(1.0, 2.0))        # Don't hammer the client!
-
-            if success:
-                handler.print_status("done")
-
-            if cmd.echo:
-                print(message)
-                sys.stdout.flush()
+        while True:
+            time.sleep(1)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -239,6 +195,3 @@ if __name__ == '__main__':
     finally:
         if client:
             client.disconnect()
-
-        if pub_comms:
-            pub_comms.close()

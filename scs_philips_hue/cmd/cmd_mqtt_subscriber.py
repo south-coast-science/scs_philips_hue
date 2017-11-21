@@ -9,21 +9,18 @@ import optparse
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class CmdMQTTClient(object):
+class CmdMQTTSubscriber(object):
     """unix command line handler"""
 
     def __init__(self):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog [-p UDS_PUB] "
+        self.__parser = optparse.OptionParser(usage="%prog "
                                                     "[-s] [SUB_TOPIC_1 (UDS_SUB_1) .. SUB_TOPIC_N (UDS_SUB_N)] "
                                                     "[-e] [-v]", version="%prog 1.0")
 
         # optional...
-        self.__parser.add_option("--pub-addr", "-p", type="string", nargs=1, action="store", dest="uds_pub_addr",
-                                 help="read publications from UDS instead of stdin")
-
         self.__parser.add_option("--sub", "-s", action="store_true", dest="uds_sub",
                                  help="write subscriptions to UDS instead of stdout")
 
@@ -65,11 +62,6 @@ class CmdMQTTClient(object):
 
 
     @property
-    def uds_pub_addr(self):
-        return self.__opts.uds_pub_addr
-
-
-    @property
     def echo(self):
         return self.__opts.echo
 
@@ -93,8 +85,8 @@ class CmdMQTTClient(object):
     def __str__(self, *args, **kwargs):
         subscriptions = '[' + ', '.join(str(subscription) for subscription in self.subscriptions) + ']'
 
-        return "CmdMQTTClient:{subscriptions:%s, uds_pub_addr:%s, echo:%s, verbose:%s, args:%s}" % \
-               (subscriptions, self.uds_pub_addr, self.echo, self.verbose, self.args)
+        return "CmdMQTTSubscriber:{subscriptions:%s, echo:%s, verbose:%s, args:%s}" % \
+               (subscriptions, self.echo, self.verbose, self.args)
 
 
 # --------------------------------------------------------------------------------------------------------------------

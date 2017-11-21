@@ -6,7 +6,7 @@ Created on 11 Apr 2017
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 command line example:
-./osio_mqtt_client.py /orgs/south-coast-science-demo/brighton/loc/1/particulates | \
+./osio_mqtt_subscriber.py /orgs/south-coast-science-demo/brighton/loc/1/particulates | \
     ./node.py /orgs/south-coast-science-demo/brighton/loc/1/particulates.val.pm2p5
 """
 
