@@ -13,7 +13,7 @@ document example:
 {"user_id": "southcoastscience-dev", "client-id": "5403", "client-password": "rtxSrK2f"}
 
 command line examples:
-./osio_client.py -u south-coast-science-demo-user -l 50.823130 -0.122922 "BN2 0DF" -v
+./osio_client_auth.py -u south-coast-science-demo-user -l 50.823130 -0.122922 "BN2 0DF" -v
 """
 
 import sys
@@ -31,7 +31,7 @@ from scs_core.sys.system_id import SystemID
 from scs_host.client.http_client import HTTPClient
 from scs_host.sys.host import Host
 
-from scs_philips_hue.cmd.cmd_osio_client import CmdOSIOClient
+from scs_philips_hue.cmd.cmd_osio_client_auth import CmdOSIOClientAuth
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -47,7 +47,7 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # cmd...
 
-    cmd = CmdOSIOClient()
+    cmd = CmdOSIOClientAuth()
 
     if cmd.verbose:
         print(cmd, file=sys.stderr)
@@ -83,7 +83,7 @@ if __name__ == '__main__':
 
     if device is None:
         if cmd.set() and not cmd.is_complete():
-            print("No device is registered. osio_client must therefore set a user and location:", file=sys.stderr)
+            print("No device is registered. osio_client_auth must therefore set a user and location:", file=sys.stderr)
             cmd.print_help(sys.stderr)
             exit(1)
 

@@ -9,7 +9,7 @@ import optparse
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class CmdOSIOClient(object):
+class CmdOSIOClientAuth(object):
     """
     unix command line handler
     """
@@ -92,5 +92,5 @@ class CmdOSIOClient(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdOSIOClient:{user_id:%s, lat:%s, lng:%s, postcode:%s, verbose:%s, args:%s}" % \
+        return "CmdOSIOClientAuth:{user_id:%s, lat:%s, lng:%s, postcode:%s, verbose:%s, args:%s}" % \
                (self.user_id, self.lat, self.lng, self.postcode, self.verbose, self.args)
