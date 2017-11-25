@@ -32,7 +32,7 @@ class LightManager(Manager):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def find_index(self, unique_id):
+    def find_index_for_uid(self, unique_id):
         lights = self.find_all()
 
         for entry in lights:
@@ -96,14 +96,14 @@ class LightManager(Manager):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def search(self):
+    def search(self, device):
         request_path = '/lights'
 
         # request...
         self._rest_client.connect(self._host, self._username)
 
         try:
-            jdict = self._rest_client.post(request_path, {})
+            jdict = self._rest_client.post(request_path, device.as_json())
         finally:
             self._rest_client.close()
 

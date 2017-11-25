@@ -50,7 +50,7 @@ for entry in lights:
 
 print("-")
 
-index = manager.find_index("00:17:88:01:03:54:25:66-0b")
+index = manager.find_index_for_uid("00:17:88:01:03:54:25:66-0b")
 print("index: %s" % index)
 
 print("-")
