@@ -42,6 +42,18 @@ class LightManager(Manager):
         return None
 
 
+    def find_indices_for_name(self, name):
+        lights = self.find_all()
+
+        indices = []
+
+        for entry in lights:
+            if entry.light.name == name:
+                indices.append(entry.index)
+
+        return indices
+
+
     def find(self, index):
         request_path = '/lights/' + str(index)
 

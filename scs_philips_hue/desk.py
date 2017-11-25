@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 """
-Created on 4 Nov 2017
+Created on 25 Nov 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
@@ -9,8 +9,7 @@ command line example:
 ./osio_mqtt_subscriber.py /orgs/south-coast-science-demo/brighton/loc/1/particulates | \
     ./node.py /orgs/south-coast-science-demo/brighton/loc/1/particulates.val.pm2p5 | \
     ./chroma.py -d 0 50 -r G R -t 9.0 -b 128 -v | \
-    ./light.py -v -e -r 1
-
+    ./desk.py -v -e -r scs-hcl-001
 """
 
 import json
@@ -50,8 +49,10 @@ if __name__ == '__main__':
     if cmd.verbose:
         print(cmd, file=sys.stderr)
 
-    initial_state = {}
     manager = None
+
+    indices = {}
+    initial_state = {}
 
     try:
         # ------------------------------------------------------------------------------------------------------------
@@ -87,9 +88,16 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # run...
 
-        # save initial states...
-        for index in cmd.run_indices:
-            initial_state[index] = manager.find(index).state
+        # indices...
+        for name in cmd.args:
+            indices[name] = manager.find_indices_for_name(name)
+
+            if len(indices[name]) == 0:
+                print("warning: no light found for name: %s" % name, file=sys.stderr)
+
+            # save initial states...
+            for index in indices[name]:
+                initial_state[index] = manager.find(index).state
 
         # read stdin...
         for line in sys.stdin:
@@ -109,12 +117,13 @@ if __name__ == '__main__':
 
             state = LightState.construct_from_jdict(jdict)
 
-            for index in cmd.run_indices:
-                response = manager.set_state(index, state)
+            for name in cmd.args:
+                for index in indices[name]:
+                    response = manager.set_state(index, state)
 
-                if cmd.verbose:
-                    print(response, file=sys.stderr)
-                    sys.stderr.flush()
+                    if cmd.verbose:
+                        print(response, file=sys.stderr)
+                        sys.stderr.flush()
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -122,7 +131,7 @@ if __name__ == '__main__':
 
     except KeyboardInterrupt:
         if cmd.verbose:
-            print("light: KeyboardInterrupt", file=sys.stderr)
+            print("desk: KeyboardInterrupt", file=sys.stderr)
 
     except Exception as ex:
         print(JSONify.dumps(ExceptionReport.construct(ex)), file=sys.stderr)
