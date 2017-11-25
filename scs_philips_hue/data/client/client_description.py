@@ -19,6 +19,9 @@ class ClientDescription(JSONable):
 
     APP = 'scs-hue-connector'
 
+    __SEPARATOR = '#'                         # as used by Philips apps
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
@@ -26,7 +29,7 @@ class ClientDescription(JSONable):
         if not jstr:
             return None
 
-        pieces = jstr.split('@')
+        pieces = jstr.split(cls.__SEPARATOR)
 
         if len(pieces) != 2:
             raise ValueError(jstr)
@@ -50,7 +53,7 @@ class ClientDescription(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def as_json(self):
-        return self.app + '@' + self.user
+        return self.app + self.__SEPARATOR + self.user
 
 
     # ----------------------------------------------------------------------------------------------------------------

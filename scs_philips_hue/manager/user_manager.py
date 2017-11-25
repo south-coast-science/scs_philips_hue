@@ -5,6 +5,7 @@ Created on 29 Oct 2017
 """
 
 from scs_philips_hue.data.bridge.bridge_config import ReportedBridgeConfig
+from scs_philips_hue.data.bridge.response import Response
 
 from scs_philips_hue.manager.manager import Manager
 
@@ -57,13 +58,18 @@ class UserManager(Manager):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    # def update(self, user_id, user):
-    #     request_path = '/v1/users/' + user_id
-    #
+    def delete(self, username):
+        request_path = '/config/whitelist/' + username
+
         # request...
-        # self.__rest_client.connect()
-        #
-        # try:
-        #     self.__rest_client.put(request_path, user.as_json())
-        # finally:
-        #     self.__rest_client.close()
+        self._rest_client.connect(self._host, self._username)
+
+        try:
+            jdict = self._rest_client.delete(request_path)
+        finally:
+            self._rest_client.close()
+
+        # response...
+        response = Response.construct_from_jdict(jdict)
+
+        return response

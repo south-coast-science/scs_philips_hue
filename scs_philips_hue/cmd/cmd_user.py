@@ -9,18 +9,21 @@ import optparse
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class CmdNode(object):
+class CmdUser(object):
     """unix command line handler"""
 
     def __init__(self):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog PATH [-i] [-v]", version="%prog 1.0")
+        self.__parser = optparse.OptionParser(usage="%prog {-d USER | -l }  [-v]", version="%prog 1.0")
 
         # optional...
-        self.__parser.add_option("--ignore", "-i", action="store_true", dest="ignore", default=False,
-                                 help="ignore data where node is missing")
+        self.__parser.add_option("--delete", "-d", type="string", nargs=1, action="store", dest="delete",
+                                 help="delete user")
+
+        self.__parser.add_option("--list", "-l", action="store_true", dest="list",
+                                 help="list all users")
 
         self.__parser.add_option("--verbose", "-v", action="store_true", dest="verbose", default=False,
                                  help="report narrative to stderr")
@@ -31,7 +34,10 @@ class CmdNode(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def is_valid(self):
-        if self.path is None:
+        if self.delete is None and not self.list:
+            return False
+
+        if self.delete is not None and self.list:
             return False
 
         return True
@@ -40,13 +46,13 @@ class CmdNode(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
-    def path(self):
-        return self.__args[0] if len(self.__args) > 0 else None
+    def delete(self):
+        return self.__opts.delete
 
 
     @property
-    def ignore(self):
-        return self.__opts.ignore
+    def list(self):
+        return self.__opts.list
 
 
     @property
@@ -66,4 +72,5 @@ class CmdNode(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdNode:{ignore:%s, verbose:%s, args:%s}" %  (self.ignore, self.verbose, self.args)
+        return "CmdUser:{delete:%s, list:%s, verbose:%s, args:%s}" %  \
+               (self.delete, self.list, self.verbose, self.args)

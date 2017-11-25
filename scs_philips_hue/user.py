@@ -6,23 +6,23 @@ Created on 4 Nov 2017
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 command line example:
-./user.py -v
+./user.py -d bruno.local
 """
 
 import sys
 
+from scs_core.data.json import JSONify
+
 from scs_host.client.http_client import HTTPClient
 from scs_host.sys.host import Host
 
-from scs_philips_hue.cmd.cmd_simple import CmdSimple
+from scs_philips_hue.cmd.cmd_user import CmdUser
 
 from scs_philips_hue.config.credentials import Credentials
 
 from scs_philips_hue.manager.upnp_discovery import UPnPDiscovery
 from scs_philips_hue.manager.user_manager import UserManager
 
-
-# TODO: required functions: list, remove user
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -31,7 +31,11 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # cmd...
 
-    cmd = CmdSimple()
+    cmd = CmdUser()
+
+    if not cmd.is_valid():
+        cmd.print_help(sys.stderr)
+        exit(2)
 
     if cmd.verbose:
         print(cmd, file=sys.stderr)
@@ -72,5 +76,15 @@ if __name__ == '__main__':
 
     users = manager.find_all()
 
-    for user in users:
-        print(user)
+    if cmd.delete:
+        for user in users:
+            if user.description.user == cmd.delete:
+                response = manager.delete(user.username)
+
+                if cmd.verbose:
+                    print(response, file=sys.stderr)
+                    sys.stderr.flush()
+
+    else:
+        for user in users:
+            print(JSONify.dumps(user))

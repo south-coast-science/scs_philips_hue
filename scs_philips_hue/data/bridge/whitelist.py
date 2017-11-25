@@ -11,6 +11,7 @@ example:
 from collections import OrderedDict
 
 from scs_core.data.json import JSONable
+# from scs_core.data.json import JSONify
 
 from scs_philips_hue.data.client.client_description import ClientDescription
 
@@ -26,6 +27,8 @@ class WhitelistGroup(JSONable):
 
     @classmethod
     def construct_from_jdict(cls, jdict):
+        # print(JSONify.dumps(jdict))
+
         if not jdict:
             return None
 
