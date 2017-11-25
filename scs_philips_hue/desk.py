@@ -47,9 +47,11 @@ if __name__ == '__main__':
         print(cmd, file=sys.stderr)
 
     manager = None
+    timeout = False
 
     indices = {}
     initial_state = {}
+
 
     try:
         # ------------------------------------------------------------------------------------------------------------
@@ -134,7 +136,7 @@ if __name__ == '__main__':
         print("desk: Timeout", file=sys.stderr)
 
     finally:
-        if manager:
+        if manager and not timeout:
             for index, state in initial_state.items():
                 state = LightState(on=state.on, bri=state.bri, hue=state.hue, sat=state.sat, transition_time=1.0)
                 manager.set_state(index, state)
