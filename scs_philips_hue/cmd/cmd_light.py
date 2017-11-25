@@ -7,6 +7,8 @@ Created on 4 Nov 2017
 import optparse
 
 
+# TODO: migrate from run by index to run by name
+
 # --------------------------------------------------------------------------------------------------------------------
 
 class CmdLight(object):
@@ -16,8 +18,9 @@ class CmdLight(object):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog { -s | -l | -n INDEX NAME | -d INDEX | -r INDEX_1..INDEX_N }"
-                                                    " [-e] [-v]", version="%prog 1.0")
+        self.__parser = optparse.OptionParser(usage="%prog [-e] [-v] "
+                                                    "{ -s | -l | -n INDEX NAME | -d INDEX | -r NAME_1..NAME_N }",
+                                              version="%prog 1.0")
 
         # optional...
         self.__parser.add_option("--search", "-s", action="store_true", dest="search",

@@ -16,7 +16,8 @@ class CmdBridge(object):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog [-n NAME] [-u UPDATE] [-v]", version="%prog 1.0")
+        self.__parser = optparse.OptionParser(usage="%prog [-n NAME] [-u UPDATE] [-z CHANNEL] [-v]",
+                                              version="%prog 1.0")
 
         # optional...
         self.__parser.add_option("--name", "-n", type="string", nargs=1, action="store", dest="name",
@@ -24,6 +25,9 @@ class CmdBridge(object):
 
         self.__parser.add_option("--update", "-u", type="int", nargs=1, action="store", dest="update",
                                  help="check for software update (1 or 0)")
+
+        self.__parser.add_option("--zigbee", "-z", type="string", nargs=1, action="store", dest="zigbee",
+                                 help="set zigbee channel (11, 15, 20 or 25)")
 
         self.__parser.add_option("--verbose", "-v", action="store_true", dest="verbose", default=False,
                                  help="report narrative to stderr")
@@ -40,6 +44,10 @@ class CmdBridge(object):
 
         if self.__opts.update is not None:
             if self.__opts.update != 0 and self.__opts.update != 1:
+                return False
+
+        if self.zigbee is not None:
+            if self.__opts.zigbee not in ["11", "15", "20" or "25"]:
                 return False
 
         return True
@@ -65,6 +73,11 @@ class CmdBridge(object):
 
 
     @property
+    def zigbee(self):
+        return self.__opts.zigbee
+
+
+    @property
     def verbose(self):
         return self.__opts.verbose
 
@@ -81,5 +94,5 @@ class CmdBridge(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdBridge:{name:%s, update:%s, verbose:%s, args:%s}" %  \
-               (self.name, self.update, self.verbose, self.args)
+        return "CmdBridge:{name:%s, update:%s, zigbee:%s, verbose:%s, args:%s}" %  \
+               (self.name, self.update, self.zigbee, self.verbose, self.args)

@@ -83,20 +83,29 @@ if __name__ == '__main__':
         # name...
         if cmd.name:
             config = BridgeConfig(name=cmd.name)
-
             response = manager.set_config(config)
-            print(response)
+
+            if cmd.verbose:
+                print(response, file=sys.stderr)
 
         # update...
         if cmd.update:
             config = BridgeConfig(sw_update=SWUpdate(check_for_update=True))
-
             response = manager.set_config(config)
-            print(response)
 
-        if not cmd.set():
-            config = manager.find()
-            print(JSONify.dumps(config))
+            if cmd.verbose:
+                print(response, file=sys.stderr)
+
+        # zigbee...
+        if cmd.zigbee:
+            config = BridgeConfig(zigbee_channel=cmd.zigbee)
+            response = manager.set_config(config)
+
+            if cmd.verbose:
+                print(response, file=sys.stderr)
+
+        config = manager.find()
+        print(JSONify.dumps(config))
 
 
     # ----------------------------------------------------------------------------------------------------------------
