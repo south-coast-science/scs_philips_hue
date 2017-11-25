@@ -87,7 +87,7 @@ if __name__ == '__main__':
             response = manager.search(device)
 
             if cmd.verbose:
-                print("adding...", file=sys.stderr)
+                print(response, file=sys.stderr)
 
             while True:
                 time.sleep(2.0)
@@ -101,10 +101,10 @@ if __name__ == '__main__':
 
         # search...
         if cmd.search:
-            response = manager.search({})
+            response = manager.search()
 
             if cmd.verbose:
-                print("scanning...", file=sys.stderr)
+                print(response, file=sys.stderr)
 
             while True:
                 time.sleep(2.0)
@@ -116,21 +116,26 @@ if __name__ == '__main__':
             for entry in scan.entries:
                 print(JSONify.dumps(entry))
 
-        # list...
-        elif cmd.list:
-            response = manager.find_all()
-            for item in response:
-                print(JSONify.dumps(item))
-
         # delete...
-        elif cmd.delete:
+        if cmd.delete:
             response = manager.delete(cmd.delete)
-            print(JSONify.dumps(response))
+
+            if cmd.verbose:
+                print(response, file=sys.stderr)
 
         # name...
-        elif cmd.name:
+        if cmd.name:
             response = manager.rename(cmd.name[0], cmd.name[1])
-            print(JSONify.dumps(response))
+
+            if cmd.verbose:
+                print(response, file=sys.stderr)
+
+        # result...
+        if cmd.name or cmd.delete or cmd.list:
+            lights = manager.find_all()
+
+            for light in lights:
+                print(JSONify.dumps(light))
 
 
     # ----------------------------------------------------------------------------------------------------------------

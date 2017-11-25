@@ -108,14 +108,15 @@ class LightManager(Manager):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def search(self, device):
+    def search(self, device=None):
         request_path = '/lights'
+        payload = device.as_json() if device else {}
 
         # request...
         self._rest_client.connect(self._host, self._username)
 
         try:
-            jdict = self._rest_client.post(request_path, device.as_json())
+            jdict = self._rest_client.post(request_path, payload)
         finally:
             self._rest_client.close()
 
