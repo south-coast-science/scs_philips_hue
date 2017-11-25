@@ -122,14 +122,14 @@ if __name__ == '__main__':
             for item in response:
                 print(JSONify.dumps(item))
 
-        # name...
-        elif cmd.name:
-            response = manager.rename(cmd.name[0], cmd.name[1])
-            print(JSONify.dumps(response))
-
         # delete...
         elif cmd.delete:
             response = manager.delete(cmd.delete)
+            print(JSONify.dumps(response))
+
+        # name...
+        elif cmd.name:
+            response = manager.rename(cmd.name[0], cmd.name[1])
             print(JSONify.dumps(response))
 
 
