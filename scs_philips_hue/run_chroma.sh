@@ -9,4 +9,4 @@
 
 # example: ./run_chroma.sh /orgs/south-coast-science-demo/brighton/loc/1/particulates val.pm2p5 50 128 scs-hcl-001 &
 
-./osio_mqtt_subscriber.py $6 $1 | ./node.py $5 $1.$2 | ./chroma.py $6 -d 0 $3 -r G R -t 9.0 -b $4 | ./desk.py $6 $5
+./osio_mqtt_subscriber.py $6 $1 | ./node.py $6 $1.$2 | ./chroma.py $6 -d 0 $3 -r G R -t 9.0 -b $4 | ./desk.py $6 $5
