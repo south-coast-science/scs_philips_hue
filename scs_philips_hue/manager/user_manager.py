@@ -53,7 +53,7 @@ class UserManager(Manager):
         config = ReportedBridgeConfig.construct_from_jdict(jdict)
         whitelist = config.whitelist
 
-        return whitelist.entries
+        return whitelist.entries if whitelist else []
 
 
     # ----------------------------------------------------------------------------------------------------------------

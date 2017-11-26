@@ -100,6 +100,8 @@ class LightManager(Manager):
         # response...
         lights = []
 
+        # TODO: handle error case
+
         for index, light_jdict in jdict.items():
             lights.append(LightListEntry.construct_from_jdict(index, light_jdict))
 
