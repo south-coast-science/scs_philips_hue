@@ -14,6 +14,7 @@ command line example:
 
 import json
 import sys
+import time
 
 from collections import OrderedDict
 
@@ -85,6 +86,22 @@ if __name__ == '__main__':
 
         # ------------------------------------------------------------------------------------------------------------
         # run...
+
+        # check for bridge availability...
+        timeout = time.time() + 10
+
+        while True:
+            try:
+                manager.find_all()
+                break
+
+            except OSError:
+                if time.time() > timeout:
+                    print("bridge could not be found", file=sys.stderr)
+                    exit(1)
+
+                time.sleep(1)
+                continue
 
         # indices...
         for name in cmd.args:
