@@ -41,7 +41,7 @@ class RESTClient(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def connect(self, host, username):
-        self.__http_client.connect(host, False)
+        self.__http_client.connect(host, secure=False)
         self.__username = username
 
 
