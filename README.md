@@ -16,19 +16,17 @@ http://www2.meethue.com/en-gb
 
 **Example PYTHONPATH:**
 
-**Raspberry Pi, in /home/pi/.bashrc:**
+Raspberry Pi, in /home/pi/.bashrc:
 
-export \\
-PYTHONPATH=\~/SCS/scs_philips_hue:\~/SCS/scs_host_rpi:\~/SCS/scs_core:$PYTHONPATH
-
-
-**MacOS, in ~/.bash_profile:**
-
-PYTHONPATH="\{$HOME}/SCS/scs_philips_hue:\{$HOME}/SCS/scs_host_posix:\{$HOME}/SCS/scs_core:${PYTHONPATH}" \
-export PYTHONPATH
+    export PYTHONPATH=~/SCS/scs_philips_hue/src:~/SCS/scs_host_rpi/src:~/SCS/scs_core/src:$PYTHONPATH
 
 
-**Ubuntu, in ~/.bashrc:**
+macOS, in ~/.bash_profile:
 
-export \\
-PYTHONPATH="\~/SCS/scs_philips_hue:\~/SCS/scs_host_posix:\~/SCS/scs_core:$PYTHONPATH"
+    PYTHONPATH="{$HOME}/SCS/scs_philips_hue/src:{$HOME}/SCS/scs_host_posix/src:{$HOME}/SCS/scs_core/src:${PYTHONPATH}"
+    export PYTHONPATH
+
+
+Ubuntu, in ~/.bashrc:
+
+    export PYTHONPATH="~/SCS/scs_philips_hue/src:~/SCS/scs_host_posix/src:~/SCS/scs_core/src:$PYTHONPATH"
