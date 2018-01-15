@@ -6,6 +6,8 @@ How to connect Philips Hue light bulbs to South Coast Science environmental data
 The name Philips Hue is the property of its owner:
 http://www2.meethue.com/en-gb
 
+_command line utilities and library classes_
+
 
 **Required libraries:** 
 
