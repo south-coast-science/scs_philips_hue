@@ -16,6 +16,13 @@ _Contains command line utilities and library classes_
 * SCS host: scs_host_posix or scs_host_rpi
 
 
+**Branches:**
+
+The stable branch of this repository is master. For deployment purposes, use:
+
+    git clone --branch=master https://github.com/south-coast-science/scs_philips_hue.git
+
+
 **Example PYTHONPATH:**
 
 Raspberry Pi, in /home/pi/.bashrc:
