@@ -24,7 +24,7 @@ class Credentials(PersistentJSONable):
 
     @classmethod
     def filename(cls, host):
-        return host.home_dir() + cls.__DIR + cls.__FILENAME
+        return host.scs_dir() + cls.__DIR + cls.__FILENAME
 
 
     # ----------------------------------------------------------------------------------------------------------------
