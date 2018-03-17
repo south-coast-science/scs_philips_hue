@@ -1,10 +1,10 @@
 """
-Created on 29 Oct 2017
+Created on 16 Mar 2018
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-example document:
-{"bridge_id": "001788fffe795620", "username": "b8bvymOH-ceugK8gBOpjeNeL0OMhXOEBQZosfsTx"}
+document example:
+{"topic-path": "/orgs/south-coast-science-demo/brighton/loc/1/particulates", "document-node": "val.pm10"}
 """
 
 import os
@@ -16,13 +16,13 @@ from scs_core.data.json import PersistentJSONable
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class Credentials(PersistentJSONable):
+class DomainConf(PersistentJSONable):
     """
     classdocs
     """
 
     __DIR =             "hue"
-    __FILENAME =        "credentials.json"
+    __FILENAME =        "domain_conf.json"
 
     @classmethod
     def filename(cls, host):
@@ -34,24 +34,24 @@ class Credentials(PersistentJSONable):
     @classmethod
     def construct_from_jdict(cls, jdict):
         if not jdict:
-            return Credentials(None, None)
+            return None
 
-        bridge_id = jdict.get('bridge-id')
-        username = jdict.get('username')
+        topic_path = jdict.get('topic-path')
+        document_node = jdict.get('document-node')
 
-        return Credentials(bridge_id, username)
+        return DomainConf(topic_path, document_node)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, bridge_id, username):
+    def __init__(self, topic_path, document_node):
         """
         Constructor
         """
         super().__init__()
 
-        self.__bridge_id = bridge_id                    # string
-        self.__username = username                      # string
+        self.__topic_path = topic_path                          # string
+        self.__document_node = document_node                    # string
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -59,8 +59,8 @@ class Credentials(PersistentJSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['bridge-id'] = self.bridge_id
-        jdict['username'] = self.username
+        jdict['topic-path'] = self.topic_path
+        jdict['document-node'] = self.document_node
 
         return jdict
 
@@ -68,16 +68,16 @@ class Credentials(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
-    def bridge_id(self):
-        return self.__bridge_id
+    def topic_path(self):
+        return self.__topic_path
 
 
     @property
-    def username(self):
-        return self.__username
+    def document_node(self):
+        return self.__document_node
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "Credentials:{bridge_id:%s, username:%s}" % (self.bridge_id, self.username)
+        return "DomainConf:{topic_path:%s, document_node:%s}" % (self.topic_path, self.document_node)

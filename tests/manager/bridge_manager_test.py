@@ -9,7 +9,7 @@ Created on 29 Oct 2017
 from scs_host.client.http_client import HTTPClient
 from scs_host.sys.host import Host
 
-from scs_philips_hue.config.credentials import Credentials
+from scs_philips_hue.config.bridge_credentials import BridgeCredentials
 
 from scs_philips_hue.manager.bridge_manager import BridgeManager
 from scs_philips_hue.manager.upnp_discovery import UPnPDiscovery
@@ -17,7 +17,7 @@ from scs_philips_hue.manager.upnp_discovery import UPnPDiscovery
 
 # --------------------------------------------------------------------------------------------------------------------
 
-credentials = Credentials.load(Host)
+credentials = BridgeCredentials.load(Host)
 print(credentials)
 
 print("-")

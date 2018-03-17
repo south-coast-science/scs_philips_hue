@@ -19,7 +19,7 @@ from scs_host.sys.host import Host
 
 from scs_philips_hue.cmd.cmd_light import CmdLight
 
-from scs_philips_hue.config.credentials import Credentials
+from scs_philips_hue.config.bridge_credentials import BridgeCredentials
 
 from scs_philips_hue.data.light.light_device import LightDevice
 
@@ -51,7 +51,7 @@ if __name__ == '__main__':
         # resources...
 
         # credentials...
-        credentials = Credentials.load(Host)
+        credentials = BridgeCredentials.load(Host)
 
         if credentials.bridge_id is None:
             print("no stored credentials")

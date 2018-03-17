@@ -16,7 +16,14 @@ class CmdNode(object):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog PATH [-i] [-v]", version="%prog 1.0")
+        self.__parser = optparse.OptionParser(usage="%prog {-c | -t TOPIC_PATH } [-i] [-v]", version="%prog 1.0")
+
+        # compulsory...
+        self.__parser.add_option("--conf", "-c", action="store_true", dest="use_domain_conf", default=False,
+                                 help="get topic.node from the domain conf")
+
+        self.__parser.add_option("--topic", "-t", type="string", nargs=1, action="store", dest="topic_path",
+                                 help="use the given topic.node")
 
         # optional...
         self.__parser.add_option("--ignore", "-i", action="store_true", dest="ignore", default=False,
@@ -31,7 +38,10 @@ class CmdNode(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def is_valid(self):
-        if self.path is None:
+        if self.use_domain_conf and self.topic_path is not None:
+            return False
+
+        if not self.use_domain_conf and self.topic_path is None:
             return False
 
         return True
@@ -40,8 +50,13 @@ class CmdNode(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
-    def path(self):
-        return self.__args[0] if len(self.__args) > 0 else None
+    def use_domain_conf(self):
+        return self.__opts.use_domain_conf
+
+
+    @property
+    def topic_path(self):
+        return self.__opts.topic_path
 
 
     @property
@@ -66,4 +81,5 @@ class CmdNode(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdNode:{ignore:%s, verbose:%s, args:%s}" %  (self.ignore, self.verbose, self.args)
+        return "CmdNode:{use_domain_conf:%s, topic_path:%s, ignore:%s, verbose:%s, args:%s}" %  \
+               (self.use_domain_conf, self.topic_path, self.ignore, self.verbose, self.args)

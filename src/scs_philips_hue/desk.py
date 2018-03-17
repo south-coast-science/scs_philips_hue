@@ -8,7 +8,7 @@ Created on 25 Nov 2017
 command line example:
 ./osio_mqtt_subscriber.py /orgs/south-coast-science-demo/brighton/loc/1/particulates | \
     ./node.py /orgs/south-coast-science-demo/brighton/loc/1/particulates.val.pm2p5 | \
-    ./chroma.py -d 0 50 -r G R -t 9.0 -b 128 -v | \
+    ./chroma_conf.py -d 0 50 -r G R -t 9.0 -b 128 -v | \
     ./desk.py -v -e -r scs-hcl-001
 """
 
@@ -23,7 +23,8 @@ from scs_host.sys.host import Host
 
 from scs_philips_hue.cmd.cmd_desk import CmdDesk
 
-from scs_philips_hue.config.credentials import Credentials
+from scs_philips_hue.config.bridge_credentials import BridgeCredentials
+from scs_philips_hue.config.desk_conf import DeskConf
 
 from scs_philips_hue.data.light.light_state import LightState
 
@@ -40,10 +41,6 @@ if __name__ == '__main__':
 
     cmd = CmdDesk()
 
-    if not cmd.is_valid():
-        cmd.print_help(sys.stderr)
-        exit(2)
-
     if cmd.verbose:
         print(cmd, file=sys.stderr)
 
@@ -57,8 +54,18 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # resources...
 
+        # DeskConf...
+        conf = DeskConf.load(Host)
+
+        if conf is None:
+            print("DeskConf not available.", file=sys.stderr)
+            exit(1)
+
+        if cmd.verbose:
+            print(conf, file=sys.stderr)
+
         # credentials...
-        credentials = Credentials.load(Host)
+        credentials = BridgeCredentials.load(Host)
 
         if credentials.bridge_id is None:
             print("no stored credentials")
@@ -104,7 +111,7 @@ if __name__ == '__main__':
                 continue
 
         # indices...
-        for name in cmd.args:
+        for name in conf.lamp_names:
             indices[name] = manager.find_indices_for_name(name)
 
             if len(indices[name]) == 0:
@@ -132,7 +139,7 @@ if __name__ == '__main__':
 
             state = LightState.construct_from_jdict(jdict)
 
-            for name in cmd.args:
+            for name in conf.lamp_names:
                 for index in indices[name]:
                     response = manager.set_state(index, state)
 

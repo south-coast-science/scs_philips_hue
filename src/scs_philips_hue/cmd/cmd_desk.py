@@ -16,7 +16,7 @@ class CmdDesk(object):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog [-e] [-v] NAME_1..NAME_N }", version="%prog 1.0")
+        self.__parser = optparse.OptionParser(usage="%prog [-e] [-v]", version="%prog 1.0")
 
         # optional...
         self.__parser.add_option("--echo", "-e", action="store_true", dest="echo", default=False,
@@ -26,15 +26,6 @@ class CmdDesk(object):
                                  help="report narrative to stderr")
 
         self.__opts, self.__args = self.__parser.parse_args()
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def is_valid(self):
-        if self.args is None:
-            return False
-
-        return True
 
 
     # ----------------------------------------------------------------------------------------------------------------

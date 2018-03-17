@@ -5,6 +5,11 @@ Created on 3 Nov 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
+Creates or updates BridgeCredentials document.
+
+example document:
+{"bridge-id": "001788fffe795620", "username": "b8bvymOH-ceugK8gBOpjeNeL0OMhXOEBQZosfsTx"}
+
 command line example:
 ./join.py -v
 """
@@ -19,7 +24,7 @@ from scs_host.sys.host import Host
 
 from scs_philips_hue.cmd.cmd_simple import CmdSimple
 
-from scs_philips_hue.config.credentials import Credentials
+from scs_philips_hue.config.bridge_credentials import BridgeCredentials
 
 from scs_philips_hue.manager.bridge_manager import BridgeManager
 from scs_philips_hue.manager.upnp_discovery import UPnPDiscovery
@@ -101,7 +106,7 @@ if __name__ == '__main__':
     # save credentials...
     success = response.successes.pop()
 
-    credentials = Credentials(bridge.id, success.value)
+    credentials = BridgeCredentials(bridge.id, success.value)
     credentials.save(Host)
 
     # delete old whitelist entries for this user...
