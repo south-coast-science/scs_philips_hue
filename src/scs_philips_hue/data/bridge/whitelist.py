@@ -119,7 +119,7 @@ class WhitelistEntry(JSONable):
         jdict['last use date'] = self.last_use_datetime
         jdict['create date'] = self.create_datetime
 
-        jdict['name'] = self.description
+        jdict['description'] = self.description
 
         return jdict
 

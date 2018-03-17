@@ -5,13 +5,28 @@ Created on 4 Nov 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
+DESCRIPTION
+The chroma utility is used to map environmental data domain values to chromaticity locations. Input data is received
+from stdin, and is interpreted as a float value. The mapped value is written to stdout in the form of a JSON
+scs_philips_hue.data.light.LightState document.
+
+The chroma utility requires the chroma_conf.json document, specifying the parameters of the mapping.
+
 https://en.wikipedia.org/wiki/Chromaticity
 https://developers.meethue.com/documentation/core-concepts
 
-command line example:
-./osio_mqtt_subscriber.py /orgs/south-coast-science-demo/brighton/loc/1/particulates | \
-    ./node.py /orgs/south-coast-science-demo/brighton/loc/1/particulates.val.pm2p5 | \
-    ./chroma_conf.py -d 0 50 -r G R -t 9.0 -b 128 -v
+EXAMPLES
+./osio_mqtt_subscriber.py -c | ./node.py -c | ./chroma.py | ./desk.py -v -e
+
+FILES
+~/SCS/hue/chroma_conf.json
+
+DOCUMENT EXAMPLE
+{"bri": 254, "transitiontime": 90, "xy": [0.3704, 0.5848]}
+
+SEE ALSO
+scs_philips_hue/chroma_conf.py
+scs_philips_hue/desk.py
 """
 
 import sys
@@ -85,10 +100,12 @@ if __name__ == '__main__':
             except ValueError:
                 continue
 
-            value = domain_min if value < domain_min else value
-            value = domain_max if value > domain_max else value
+            # clip...
+            domain_value = domain_min if value < domain_min else value
+            domain_value = domain_max if value > domain_max else value
 
-            intermediate = (value - domain_min) / (domain_max - domain_min)
+            # interpolate...
+            intermediate = (domain_value - domain_min) / (domain_max - domain_min)
 
             chroma = segment.interpolate(intermediate)
             state = LightState(bri=conf.brightness, xy=chroma, transition_time=conf.transition_time)

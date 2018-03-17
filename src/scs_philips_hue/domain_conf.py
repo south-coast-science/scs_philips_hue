@@ -5,13 +5,27 @@ Created on 16 Mar 2018
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-Creates or deletes ChromaConf document.
+DESCRIPTION
+The domain_conf utility is used to specify an environmental data messaging topic path, plus a leaf node within
+documents delivered on that messaging topic. Together, these two parameters yield a scalar value that can be
+accepted by a mapping utility such as chroma.
 
-document example:
+The domain_conf.json document managed by the domain_conf utility is used by the aws_mqtt_subscriber,
+osio_mqtt_subscriber, and node utilities.
+
+EXAMPLES
+./domain_conf.py -t /orgs/south-coast-science-demo/brighton/loc/1/particulates -n val.pm10
+
+FILES
+~/SCS/hue/domain_conf.json
+
+DOCUMENT EXAMPLE
 {"topic-path": "/orgs/south-coast-science-demo/brighton/loc/1/particulates", "document-node": "val.pm10"}
 
-command line example:
-./domain_conf.py -t /orgs/south-coast-science-demo/brighton/loc/1/particulates -n val.pm10
+SEE ALSO
+scs_philips_hue/aws_mqtt_subscriber.py
+scs_philips_hue/osio_mqtt_subscriber.py
+scs_philips_hue/node.py
 """
 
 import sys

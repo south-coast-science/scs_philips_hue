@@ -5,15 +5,33 @@ Created on 4 Oct 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
+DESCRIPTION
+The aws_mqtt_subscriber utility is used to obtain live data from an Amazon Web Services (AWS) messaging topic. The topic
+path can be specified either on the command line, or by referencing the domain_conf.json document.
+
+The aws_mqtt_subscriber passes subscribed data to stdout. Data is wrapped in a JSON document that uses the topic
+path as a field name, thus identifying which topic the data was gained from.
+
+In order to operate, the appropriate AWS certificates must be installed in a ~/SCS/aws/certs directory, and the
+certificate and API auth specified in the aws_api_auth.json and client_credentials.json documents.
+
 WARNING: only one MQTT client should run at any one time, per TCP/IP host.
 
-Requires Endpoint and ClientCredentials documents.
-May require DomainConf document.
+EXAMPLES
+./aws_mqtt_subscriber.py -c | ./node.py -c | ./chroma.py | ./desk.py -v -e
 
-command line example:
-./gases_sampler.py -i2 | \
-    ./aws_topic_publisher.py -t south-coast-science-dev/development/loc/3/gases | \
-    ./aws_mqtt_subscriber.py -s -e
+FILES
+~/SCS/aws/aws_api_auth.json
+~/SCS/aws/client_credentials.json
+~/SCS/aws/endpoint.json
+~/SCS/hue/domain_conf.json
+
+DOCUMENT EXAMPLE
+{"south-coast-science-dev/production-test/loc/1/climate":
+{"tag": "scs-be2-2", "rec": "2018-03-17T09:18:07.681+00:00", "val": {"hmd": 46.7, "tmp": 23.9}}}
+
+SEE ALSO
+scs_philips_hue/osio_mqtt_subscriber.py
 """
 
 import json

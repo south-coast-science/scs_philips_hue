@@ -5,8 +5,18 @@ Created on 11 Nov 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-command line example:
+DESCRIPTION
+The bridge utility is used to interrogate and update the Philips Hue Bridge device.
+
+EXAMPLES
 ./bridge.py -n scs-phb-001 -v
+
+FILES
+~/SCS/hue/bridge_credentials.json
+
+SEE ALSO
+scs_philips_hue/join.py
+scs_philips_hue/user.py
 """
 
 import sys
@@ -26,6 +36,8 @@ from scs_philips_hue.data.bridge.sw_update import SWUpdate
 from scs_philips_hue.manager.bridge_manager import BridgeManager
 from scs_philips_hue.manager.upnp_discovery import UPnPDiscovery
 
+
+# TODO: fix update functionality
 
 # --------------------------------------------------------------------------------------------------------------------
 

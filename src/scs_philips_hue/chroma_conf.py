@@ -5,14 +5,24 @@ Created on 16 Mar 2018
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-Creates or deletes ChromaConf document.
+DESCRIPTION
+The chroma_conf utility is used to specify the parameters of a mapping from environmental data domain values to
+chromaticity locations. In addition to mapping, the configuration includes lamp brightness and transition time.
 
-document example:
+The chroma_conf.json document managed by the chroma_conf utility is used by chroma.py
+
+EXAMPLES
+./chroma_conf.py -v -p /orgs/south-coast-science-demo/brighton/loc/1/particulates
+
+FILES
+~/SCS/hue/chroma_conf.json
+
+DOCUMENT EXAMPLE
 {"domain-min": 0.0, "domain-max": 50.0, "range-min": [0.08, 0.84], "range-max": [0.74, 0.26],
 "brightness": 128, "transition-time": 9}
 
-command line example:
-./chroma_conf.py -v -p /orgs/south-coast-science-demo/brighton/loc/1/particulates
+SEE ALSO
+scs_philips_hue/chroma.py
 """
 
 import sys

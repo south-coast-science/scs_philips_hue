@@ -5,13 +5,20 @@ Created on 16 Mar 2018
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-Creates or deletes ChromaConf document.
+DESCRIPTION
+The desk_conf utility is used to specify which lamps should be driven by the desk utility.
 
-document example:
+EXAMPLES
+./desk_conf.py -a scs-hcl-001
+
+FILES
+~/SCS/hue/desk_conf.json
+
+DOCUMENT EXAMPLE
 {"lamp-names": ["scs-hcl-001", "scs-hcl-002"]}
 
-command line example:
-./desk_conf.py -a scs-hcl-001
+SEE ALSO
+scs_philips_hue/desk.py
 """
 
 import sys

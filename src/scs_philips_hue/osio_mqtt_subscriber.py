@@ -5,13 +5,33 @@ Created on 23 Mar 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
+DESCRIPTION
+The osio_mqtt_subscriber utility is used to obtain live data from an OpenSensors messaging topic. The topic
+path can be specified either on the command line, or by referencing the domain_conf.json document.
+
+The osio_mqtt_subscriber passes subscribed data to stdout. Data is wrapped in a JSON document that uses the topic
+path as a field name, thus identifying which topic the data was gained from.
+
+In order to operate, the API auth and client auth must be specified in the aws_api_auth.json and
+client_credentials.json documents.
+
 WARNING: only one MQTT client should run at any one time, per TCP/IP host.
 
-Requires APIAuth and ClientAuth documents.
-May require DomainConf document.
+EXAMPLES
+./osio_mqtt_subscriber.py -c | ./node.py -c | ./chroma.py | ./desk.py -v -e
 
-command line example:
-./osio_mqtt_subscriber.py -v
+FILES
+~/SCS/hue/domain_conf.json
+~/SCS/osio/
+
+DOCUMENT EXAMPLE
+{"/south-coast-science-dev/production-test/loc/1/climate":
+{"tag": "scs-be2-2", "rec": "2018-03-17T09:18:07.681+00:00", "val": {"hmd": 46.7, "tmp": 23.9}}}
+
+SEE ALSO
+scs_philips_hue/osio_api_auth.py
+scs_philips_hue/osio_client_auth.py
+scs_philips_hue/aws_mqtt_subscriber.py
 """
 
 import sys

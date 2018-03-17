@@ -5,11 +5,24 @@ Created on 25 Nov 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-command line example:
-./osio_mqtt_subscriber.py /orgs/south-coast-science-demo/brighton/loc/1/particulates | \
-    ./node.py /orgs/south-coast-science-demo/brighton/loc/1/particulates.val.pm2p5 | \
-    ./chroma_conf.py -d 0 50 -r G R -t 9.0 -b 128 -v | \
-    ./desk.py -v -e -r scs-hcl-001
+DESCRIPTION
+The desk utility (a lighting control desk) is used to drive the Philips Hue Bridge device. Input data is received
+from stdin, and is interpreted as a scs_philips_hue.data.light.LightState document.
+
+In verbose mode, the desk utility provides a detailed report on the command outcome to stderr.
+
+The desk utility requires the desk_conf.json document, specifying which light(s) should receive the LightState
+command.
+
+EXAMPLES
+./osio_mqtt_subscriber.py -c | ./node.py -c | ./chroma.py | ./desk.py -v -e
+
+FILES
+~/SCS/hue/desk_conf.json
+
+SEE ALSO
+scs_philips_hue/chroma.py
+scs_philips_hue/desk_conf.py
 """
 
 import json

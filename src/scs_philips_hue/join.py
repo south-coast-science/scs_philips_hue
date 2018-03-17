@@ -5,13 +5,26 @@ Created on 3 Nov 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-Creates or updates BridgeCredentials document.
+DESCRIPTION
+The join utility is used to register a controller device - the device hosting this software - with a Philips Hue Bridge.
+Before running join, the big button on the top of the Philips Hue Bridge must be pressed!
 
-example document:
+The bridge_credentials.json document created by the join utility is used by the bridge, desk, light, and user utilities.
+
+EXAMPLES
+./join.py -v
+
+FILES
+~/SCS/hue/bridge_credentials.json
+
+DOCUMENT EXAMPLE
 {"bridge-id": "001788fffe795620", "username": "b8bvymOH-ceugK8gBOpjeNeL0OMhXOEBQZosfsTx"}
 
-command line example:
-./join.py -v
+SEE ALSO
+scs_philips_hue/bridge.py
+scs_philips_hue/desk.py
+scs_philips_hue/light.py
+scs_philips_hue/user.py
 """
 
 import sys

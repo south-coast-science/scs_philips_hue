@@ -5,10 +5,24 @@ Created on 11 Apr 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-May require DomainConf document.
+DESCRIPTION
+The node utility is used to extract a node within a JSON document. Data is presented as a sequence of documents on
+stdin, the node is passed to stdout. The extracted node may be a leaf node or an internal node.
 
-command line example:
-./osio_mqtt_subscriber.py -c | ./node.py -c
+The node path can be specified either on the command line, or by referencing the domain_conf.json document.
+
+The node utility may be set to either ignore documents that do not contain the specified node, or to terminate if the
+node is not present.
+
+EXAMPLES
+./osio_mqtt_subscriber.py -c | ./node.py -c | ./chroma.py | ./desk.py -v -e
+
+FILES
+~/SCS/hue/domain_conf.json
+
+SEE ALSO
+scs_philips_hue/aws_mqtt_subscriber.py
+scs_philips_hue/osio_mqtt_subscriber.py
 """
 
 import sys
