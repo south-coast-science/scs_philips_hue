@@ -27,6 +27,10 @@ class SWUpdate(JSONable):
     classdocs
     """
 
+    UPDATE_UNAVAILABLE =        1
+    UPDATE_AVAILABLE =          2
+    UPDATE_PERFORM =            3
+
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
@@ -41,7 +45,6 @@ class SWUpdate(JSONable):
         url = jdict.get('url')
         text = jdict.get('text')
         notify = jdict.get('notify')
-
 
         return SWUpdate(update_state=update_state, check_for_update=check_for_update, device_types=device_types,
                         url=url, text=text, notify=notify)
@@ -78,10 +81,8 @@ class SWUpdate(JSONable):
         if self.device_types is not None:
             jdict['devicetypes'] = self.device_types
 
-
         if self.url is not None:
             jdict['url'] = self.url
-
 
         if self.text is not None:
             jdict['text'] = self.text

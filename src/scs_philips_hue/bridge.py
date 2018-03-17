@@ -37,8 +37,6 @@ from scs_philips_hue.manager.bridge_manager import BridgeManager
 from scs_philips_hue.manager.upnp_discovery import UPnPDiscovery
 
 
-# TODO: fix update functionality
-
 # --------------------------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
@@ -90,6 +88,9 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # run...
 
+        # initial state...
+        config = manager.find()
+
         # name...
         if cmd.name:
             config = BridgeConfig(name=cmd.name)
@@ -98,17 +99,36 @@ if __name__ == '__main__':
             if cmd.verbose:
                 print(response, file=sys.stderr)
 
+        # portal services...
+        if cmd.portal_services:
+            config = BridgeConfig(portal_services=cmd.portal_services)
+            response = manager.set_config(config)
+
+            if cmd.verbose:
+                print(response, file=sys.stderr)
+
         # update...
-        if cmd.update:
-            config = BridgeConfig(sw_update=SWUpdate(check_for_update=True))
+        if cmd.check_update:
+            config = BridgeConfig(sw_update=SWUpdate(check_for_update=cmd.check_update))
+            response = manager.set_config(config)
+
+            if cmd.verbose:
+                print(response, file=sys.stderr)
+
+        if cmd.do_update:
+            if config.sw_update.update_state != SWUpdate.UPDATE_AVAILABLE:
+                print("no update available")
+                exit(1)
+
+            config = BridgeConfig(sw_update=SWUpdate(update_state=SWUpdate.UPDATE_PERFORM))
             response = manager.set_config(config)
 
             if cmd.verbose:
                 print(response, file=sys.stderr)
 
         # zigbee...
-        if cmd.zigbee:
-            config = BridgeConfig(zigbee_channel=cmd.zigbee)
+        if cmd.zigbee_channel:
+            config = BridgeConfig(zigbee_channel=cmd.zigbee_channel)
             response = manager.set_config(config)
 
             if cmd.verbose:
