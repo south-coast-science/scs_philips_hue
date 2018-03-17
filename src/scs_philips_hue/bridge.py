@@ -5,8 +5,18 @@ Created on 11 Nov 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-command line example:
+DESCRIPTION
+The bridge utility is used to interrogate and update the Philips Hue Bridge device.
+
+EXAMPLES
 ./bridge.py -n scs-phb-001 -v
+
+FILES
+~/SCS/hue/bridge_credentials.json
+
+SEE ALSO
+scs_philips_hue/join.py
+scs_philips_hue/user.py
 """
 
 import sys
@@ -18,7 +28,7 @@ from scs_host.sys.host import Host
 
 from scs_philips_hue.cmd.cmd_bridge import CmdBridge
 
-from scs_philips_hue.config.credentials import Credentials
+from scs_philips_hue.config.bridge_credentials import BridgeCredentials
 
 from scs_philips_hue.data.bridge.bridge_config import BridgeConfig
 from scs_philips_hue.data.bridge.sw_update import SWUpdate
@@ -26,6 +36,8 @@ from scs_philips_hue.data.bridge.sw_update import SWUpdate
 from scs_philips_hue.manager.bridge_manager import BridgeManager
 from scs_philips_hue.manager.upnp_discovery import UPnPDiscovery
 
+
+# TODO: fix update functionality
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -50,7 +62,7 @@ if __name__ == '__main__':
         # resources...
 
         # credentials...
-        credentials = Credentials.load(Host)
+        credentials = BridgeCredentials.load(Host)
 
         if credentials.bridge_id is None:
             print("no stored credentials")

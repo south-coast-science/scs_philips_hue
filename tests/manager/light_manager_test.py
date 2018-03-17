@@ -13,7 +13,7 @@ from scs_core.data.json import JSONify
 from scs_host.client.http_client import HTTPClient
 from scs_host.sys.host import Host
 
-from scs_philips_hue.config.credentials import Credentials
+from scs_philips_hue.config.bridge_credentials import BridgeCredentials
 
 from scs_philips_hue.data.light.light_state import LightState
 
@@ -23,7 +23,7 @@ from scs_philips_hue.manager.light_manager import LightManager
 
 # --------------------------------------------------------------------------------------------------------------------
 
-credentials = Credentials.load(Host)
+credentials = BridgeCredentials.load(Host)
 print(credentials)
 
 print("-")

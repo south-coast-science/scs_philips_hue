@@ -1,7 +1,10 @@
 """
-Created on 25 Nov 2017
+Created on 18 Feb 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
+
+example document:
+{"org-id": "south-coast-science-test-user", "api-key": "9fdfb841-3433-45b8-b223-3f5a283ceb8e"}
 """
 
 import optparse
@@ -9,18 +12,18 @@ import optparse
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class CmdDesk(object):
+class CmdOSIOAPIAuth(object):
     """unix command line handler"""
 
     def __init__(self):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog [-e] [-v]", version="%prog 1.0")
+        self.__parser = optparse.OptionParser(usage="%prog [-s ORG_ID API_KEY] [-v]", version="%prog 1.0")
 
         # optional...
-        self.__parser.add_option("--echo", "-e", action="store_true", dest="echo", default=False,
-                                 help="echo stdin to stdout")
+        self.__parser.add_option("--set", "-s", type="string", nargs=2, action="store", dest="org_key",
+                                 help="set org ID and API key")
 
         self.__parser.add_option("--verbose", "-v", action="store_true", dest="verbose", default=False,
                                  help="report narrative to stderr")
@@ -30,9 +33,20 @@ class CmdDesk(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    def set(self):
+        return self.__opts.org_key is not None
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     @property
-    def echo(self):
-        return self.__opts.echo
+    def org_id(self):
+        return None if self.__opts.org_key is None else self.__opts.org_key[0]
+
+
+    @property
+    def api_key(self):
+        return None if self.__opts.org_key is None else self.__opts.org_key[1]
 
 
     @property
@@ -47,9 +61,6 @@ class CmdDesk(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def print_help(self, file):
-        self.__parser.print_help(file)
-
-
     def __str__(self, *args, **kwargs):
-        return "CmdDesk:{echo:%s, verbose:%s, args:%s}" %   (self.echo, self.verbose, self.args)
+        return "CmdOSIOAPIAuth:{org_id:%s, api_key:%s, verbose:%s, args:%s}" % \
+               (self.org_id, self.api_key, self.verbose, self.args)

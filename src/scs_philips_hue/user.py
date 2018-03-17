@@ -5,8 +5,27 @@ Created on 4 Nov 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-command line example:
+DESCRIPTION
+The user utility is used to manage user accounts or "whitelist entries" on a Philips Hue Bridge device.
+
+Note that the user JSON document presented by the user utility has a description field of the form
+app#user-name. When a delete command is performed, only the user-name component is required to identify
+the user.
+
+EXAMPLES
 ./user.py -d bruno.local
+
+FILES
+~/SCS/hue/bridge_credentials.json
+
+DOCUMENT EXAMPLE
+{"last use date": "2017-11-26T10:29:17", "create date": "2017-11-26T10:08:13",
+"description": "scs-hue-connector#scs-rpi-013"}
+
+SEE ALSO
+scs_philips_hue/join.py
+scs_philips_hue/bridge.py
+scs_philips_hue/desk.py
 """
 
 import sys
@@ -18,7 +37,7 @@ from scs_host.sys.host import Host
 
 from scs_philips_hue.cmd.cmd_user import CmdUser
 
-from scs_philips_hue.config.credentials import Credentials
+from scs_philips_hue.config.bridge_credentials import BridgeCredentials
 
 from scs_philips_hue.manager.upnp_discovery import UPnPDiscovery
 from scs_philips_hue.manager.user_manager import UserManager
@@ -45,7 +64,7 @@ if __name__ == '__main__':
     # resource...
 
     # credentials...
-    credentials = Credentials.load(Host)
+    credentials = BridgeCredentials.load(Host)
 
     if credentials.bridge_id is None:
         print("no stored credentials")
@@ -78,6 +97,7 @@ if __name__ == '__main__':
 
     if cmd.delete:
         for user in users:
+            print("user: %s" % user)
             if user.description.user == cmd.delete:
                 response = manager.delete(user.username)
 

@@ -5,8 +5,26 @@ Created on 3 Nov 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-command line example:
+DESCRIPTION
+The join utility is used to register a controller device - the device hosting this software - with a Philips Hue Bridge.
+Before running join, the big button on the top of the Philips Hue Bridge must be pressed!
+
+The bridge_credentials.json document created by the join utility is used by the bridge, desk, light, and user utilities.
+
+EXAMPLES
 ./join.py -v
+
+FILES
+~/SCS/hue/bridge_credentials.json
+
+DOCUMENT EXAMPLE
+{"bridge-id": "001788fffe795620", "username": "b8bvymOH-ceugK8gBOpjeNeL0OMhXOEBQZosfsTx"}
+
+SEE ALSO
+scs_philips_hue/bridge.py
+scs_philips_hue/desk.py
+scs_philips_hue/light.py
+scs_philips_hue/user.py
 """
 
 import sys
@@ -19,7 +37,7 @@ from scs_host.sys.host import Host
 
 from scs_philips_hue.cmd.cmd_simple import CmdSimple
 
-from scs_philips_hue.config.credentials import Credentials
+from scs_philips_hue.config.bridge_credentials import BridgeCredentials
 
 from scs_philips_hue.manager.bridge_manager import BridgeManager
 from scs_philips_hue.manager.upnp_discovery import UPnPDiscovery
@@ -101,7 +119,7 @@ if __name__ == '__main__':
     # save credentials...
     success = response.successes.pop()
 
-    credentials = Credentials(bridge.id, success.value)
+    credentials = BridgeCredentials(bridge.id, success.value)
     credentials.save(Host)
 
     # delete old whitelist entries for this user...

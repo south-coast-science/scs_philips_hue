@@ -5,14 +5,33 @@ Created on 4 Oct 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
+DESCRIPTION
+The aws_mqtt_subscriber utility is used to obtain live data from an Amazon Web Services (AWS) messaging topic. The topic
+path can be specified either on the command line, or by referencing the domain_conf.json document.
+
+The aws_mqtt_subscriber passes subscribed data to stdout. Data is wrapped in a JSON document that uses the topic
+path as a field name, thus identifying which topic the data was gained from.
+
+In order to operate, the appropriate AWS certificates must be installed in a ~/SCS/aws/certs directory, and the
+certificate and API auth specified in the aws_api_auth.json and client_credentials.json documents.
+
 WARNING: only one MQTT client should run at any one time, per TCP/IP host.
 
-Requires Endpoint and ClientCredentials documents.
+EXAMPLES
+./aws_mqtt_subscriber.py -c | ./node.py -c | ./chroma.py | ./desk.py -v -e
 
-command line example:
-./gases_sampler.py -i2 | \
-    ./aws_topic_publisher.py -t south-coast-science-dev/development/loc/3/gases | \
-    ./aws_mqtt_subscriber.py -s -e
+FILES
+~/SCS/aws/aws_api_auth.json
+~/SCS/aws/client_credentials.json
+~/SCS/aws/endpoint.json
+~/SCS/hue/domain_conf.json
+
+DOCUMENT EXAMPLE
+{"south-coast-science-dev/production-test/loc/1/climate":
+{"tag": "scs-be2-2", "rec": "2018-03-17T09:18:07.681+00:00", "val": {"hmd": 46.7, "tmp": 23.9}}}
+
+SEE ALSO
+scs_philips_hue/osio_mqtt_subscriber.py
 """
 
 import json
@@ -30,12 +49,12 @@ from scs_core.data.publication import Publication
 
 from scs_core.sys.exception_report import ExceptionReport
 
-from scs_host.comms.domain_socket import DomainSocket
 from scs_host.comms.stdio import StdIO
 
 from scs_host.sys.host import Host
 
 from scs_philips_hue.cmd.cmd_mqtt_subscriber import CmdMQTTSubscriber
+from scs_philips_hue.config.domain_conf import DomainConf
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -48,13 +67,11 @@ class AWSMQTTHandler(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, comms=None, echo=False, verbose=False):
+    def __init__(self, comms=None, verbose=False):
         """
         Constructor
         """
         self.__comms = comms
-
-        self.__echo = echo
         self.__verbose = verbose
 
 
@@ -78,10 +95,6 @@ class AWSMQTTHandler(object):
         finally:
             self.__comms.close()
 
-        if self.__echo:
-            print(JSONify.dumps(pub))
-            sys.stdout.flush()
-
         if self.__verbose:
             print("received: %s" % JSONify.dumps(pub), file=sys.stderr)
             sys.stderr.flush()
@@ -90,8 +103,7 @@ class AWSMQTTHandler(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "AWSMQTTHandler:{comms:%s, echo:%s, verbose:%s}" % \
-               (self.__comms, self.__echo, self.__verbose)
+        return "AWSMQTTHandler:{comms:%s, verbose:%s}" % (self.__comms, self.__verbose)
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -125,6 +137,9 @@ if __name__ == '__main__':
             print("Endpoint config not available.", file=sys.stderr)
             exit(1)
 
+        if cmd.verbose:
+            print(endpoint, file=sys.stderr)
+
         # endpoint...
         credentials = ClientCredentials.load(Host)
 
@@ -132,22 +147,29 @@ if __name__ == '__main__':
             print("ClientCredentials not available.", file=sys.stderr)
             exit(1)
 
-        # subscribers...
-        subscribers = []
+        if cmd.verbose:
+            print(credentials, file=sys.stderr)
 
-        for subscription in cmd.subscriptions:
-            sub_comms = DomainSocket(subscription.address) if subscription.address else StdIO()
+        # DomainConf...
+        if cmd.use_domain_conf:
+            domain = DomainConf.load(Host)
+            topic_path = domain.topic_path
 
-            # handler...
-            handler = AWSMQTTHandler(sub_comms, cmd.echo, cmd.verbose)
+            if domain is None:
+                print("Domain not available.", file=sys.stderr)
+                exit(1)
 
             if cmd.verbose:
-                print(handler, file=sys.stderr)
+                print(domain, file=sys.stderr)
+        else:
+            topic_path = cmd.topic_path
 
-            subscribers.append(MQTTSubscriber(subscription.topic, handler.handle))
+        # subscriber...
+        handler = AWSMQTTHandler(StdIO(), cmd.verbose)
+        subscriber = MQTTSubscriber(topic_path, handler.handle)
 
         # client...
-        client = MQTTClient(*subscribers)
+        client = MQTTClient(subscriber)
 
         if cmd.verbose:
             print(client, file=sys.stderr)

@@ -5,8 +5,19 @@ Created on 4 Nov 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-command line example:
+DESCRIPTION
+The light utility is used to register a Philips Hue light bulb with a Philips Hue Bridge device, to update bulb
+settings, or de-register the bulb.
+
+EXAMPLES
 ./light.py -v -a AA8A5F
+
+FILES
+~/SCS/hue/bridge_credentials.json
+
+SEE ALSO
+scs_philips_hue/bridge.py
+scs_philips_hue/join.py
 """
 
 import sys
@@ -19,7 +30,7 @@ from scs_host.sys.host import Host
 
 from scs_philips_hue.cmd.cmd_light import CmdLight
 
-from scs_philips_hue.config.credentials import Credentials
+from scs_philips_hue.config.bridge_credentials import BridgeCredentials
 
 from scs_philips_hue.data.light.light_device import LightDevice
 
@@ -51,7 +62,7 @@ if __name__ == '__main__':
         # resources...
 
         # credentials...
-        credentials = Credentials.load(Host)
+        credentials = BridgeCredentials.load(Host)
 
         if credentials.bridge_id is None:
             print("no stored credentials")
