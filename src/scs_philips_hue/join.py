@@ -69,7 +69,7 @@ if __name__ == '__main__':
     bridges = upnp.find_all()
 
     if len(bridges) == 0:
-        print("bridge not found", file=sys.stderr)
+        print("join: no bridge found", file=sys.stderr)
         bridge = None
         exit(0)
 
@@ -108,12 +108,12 @@ if __name__ == '__main__':
     try:
         response = bridge_manager.register(device)
     except TimeoutError:
-        print("bridge not found", file=sys.stderr)
+        print("join: bridge not found", file=sys.stderr)
         exit(1)
 
     if response.has_errors():
         for error in response.errors:
-            print("error: %s" % error.description, file=sys.stderr)
+            print("join: error: %s" % error.description, file=sys.stderr)
         exit(1)
 
     # save credentials...

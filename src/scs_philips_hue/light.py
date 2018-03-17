@@ -65,7 +65,7 @@ if __name__ == '__main__':
         credentials = BridgeCredentials.load(Host)
 
         if credentials.bridge_id is None:
-            print("no stored credentials")
+            print("light: BridgeCredentials not available")
             exit(1)
 
         if cmd.verbose:
@@ -76,7 +76,7 @@ if __name__ == '__main__':
         bridge = upnp.find(credentials.bridge_id)
 
         if bridge is None:
-            print("no bridge matching the stored credentials")
+            print("light: no bridge matching the stored credentials")
             exit(1)
 
         if cmd.verbose:

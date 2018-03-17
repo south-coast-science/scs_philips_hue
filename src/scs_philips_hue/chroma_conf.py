@@ -65,7 +65,7 @@ if __name__ == '__main__':
 
     if cmd.set():
         if conf is None and not cmd.is_complete():
-            print("No configuration is stored. chroma_conf must therefore set all fields:", file=sys.stderr)
+            print("chroma_conf: no configuration is stored. you must therefore set all fields:", file=sys.stderr)
             cmd.print_help(sys.stderr)
             exit(1)
 

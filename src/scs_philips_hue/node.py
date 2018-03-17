@@ -66,7 +66,7 @@ if __name__ == '__main__':
             topic_path = domain.topic_path + '.' + domain.document_node
 
             if domain is None:
-                print("Domain not available.", file=sys.stderr)
+                print("node: Domain not available.", file=sys.stderr)
                 exit(1)
 
             if cmd.verbose:

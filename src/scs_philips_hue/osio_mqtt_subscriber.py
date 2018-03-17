@@ -137,7 +137,7 @@ if __name__ == '__main__':
         api_auth = APIAuth.load(Host)
 
         if api_auth is None:
-            print("APIAuth not available.", file=sys.stderr)
+            print("osio_mqtt_subscriber: APIAuth not available.", file=sys.stderr)
             exit(1)
 
         if cmd.verbose:
@@ -147,7 +147,7 @@ if __name__ == '__main__':
         client_auth = ClientAuth.load(Host)
 
         if client_auth is None:
-            print("ClientAuth not available.", file=sys.stderr)
+            print("osio_mqtt_subscriber: ClientAuth not available.", file=sys.stderr)
             exit(1)
 
         if cmd.verbose:
@@ -159,7 +159,7 @@ if __name__ == '__main__':
             topic_path = domain.topic_path
 
             if domain is None:
-                print("Domain not available.", file=sys.stderr)
+                print("osio_mqtt_subscriber: Domain not available.", file=sys.stderr)
                 exit(1)
 
             if cmd.verbose:
@@ -172,7 +172,7 @@ if __name__ == '__main__':
 
         # check topics...
         if not manager.find(topic_path):
-            print("Topic not available: %s" % topic_path, file=sys.stderr)
+            print("osio_mqtt_subscriber: Topic not available: %s" % topic_path, file=sys.stderr)
             exit(1)
 
         # subscribers...

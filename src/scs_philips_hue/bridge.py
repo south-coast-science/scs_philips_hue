@@ -8,6 +8,8 @@ Created on 11 Nov 2017
 DESCRIPTION
 The bridge utility is used to interrogate and update the Philips Hue Bridge device.
 
+https://developers.meethue.com/content/configuring-hue-without-phone-app-unable-update-software
+
 EXAMPLES
 ./bridge.py -n scs-phb-001 -v
 
@@ -62,7 +64,7 @@ if __name__ == '__main__':
         credentials = BridgeCredentials.load(Host)
 
         if credentials.bridge_id is None:
-            print("no stored credentials")
+            print("bridge: no stored credentials")
             exit(1)
 
         if cmd.verbose:
@@ -73,7 +75,7 @@ if __name__ == '__main__':
         bridge = upnp.find(credentials.bridge_id)
 
         if bridge is None:
-            print("no bridge matching the stored credentials")
+            print("bridge: no bridge matching the stored credentials")
             exit(1)
 
         if cmd.verbose:
@@ -107,7 +109,7 @@ if __name__ == '__main__':
             if cmd.verbose:
                 print(response, file=sys.stderr)
 
-        # update...
+        # check for update...
         if cmd.check_update:
             config = BridgeConfig(sw_update=SWUpdate(check_for_update=cmd.check_update))
             response = manager.set_config(config)
@@ -115,9 +117,10 @@ if __name__ == '__main__':
             if cmd.verbose:
                 print(response, file=sys.stderr)
 
+        # do update...
         if cmd.do_update:
             if config.sw_update.update_state != SWUpdate.UPDATE_AVAILABLE:
-                print("no update available")
+                print("bridge: no software update available")
                 exit(1)
 
             config = BridgeConfig(sw_update=SWUpdate(update_state=SWUpdate.UPDATE_PERFORM))
