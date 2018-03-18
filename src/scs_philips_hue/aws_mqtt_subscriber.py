@@ -28,9 +28,10 @@ FILES
 
 DOCUMENT EXAMPLE
 {"south-coast-science-dev/production-test/loc/1/climate":
-{"tag": "scs-be2-2", "rec": "2018-03-17T09:18:07.681+00:00", "val": {"hmd": 46.7, "tmp": 23.9}}}
+    {"tag": "scs-be2-2", "rec": "2018-03-17T09:18:07.681+00:00", "val": {"hmd": 46.7, "tmp": 23.9}}}
 
 SEE ALSO
+scs_philips_hue/aws_api_auth.py
 scs_philips_hue/osio_mqtt_subscriber.py
 """
 
@@ -134,7 +135,7 @@ if __name__ == '__main__':
         endpoint = Endpoint.load(Host)
 
         if endpoint is None:
-            print("Endpoint config not available.", file=sys.stderr)
+            print("aws_mqtt_subscriber: Endpoint config not available.", file=sys.stderr)
             exit(1)
 
         if cmd.verbose:
@@ -144,7 +145,7 @@ if __name__ == '__main__':
         credentials = ClientCredentials.load(Host)
 
         if credentials is None:
-            print("ClientCredentials not available.", file=sys.stderr)
+            print("aws_mqtt_subscriber: ClientCredentials not available.", file=sys.stderr)
             exit(1)
 
         if cmd.verbose:
@@ -156,7 +157,7 @@ if __name__ == '__main__':
             topic_path = domain.topic_path
 
             if domain is None:
-                print("Domain not available.", file=sys.stderr)
+                print("aws_mqtt_subscriber: Domain not available.", file=sys.stderr)
                 exit(1)
 
             if cmd.verbose:
@@ -191,7 +192,7 @@ if __name__ == '__main__':
 
     except KeyboardInterrupt:
         if cmd.verbose:
-            print("aws_mqtt_client: KeyboardInterrupt", file=sys.stderr)
+            print("aws_mqtt_subscriber: KeyboardInterrupt", file=sys.stderr)
 
     except Exception as ex:
         print(JSONify.dumps(ExceptionReport.construct(ex)), file=sys.stderr)
