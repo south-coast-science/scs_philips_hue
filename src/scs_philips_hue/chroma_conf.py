@@ -7,7 +7,8 @@ Created on 16 Mar 2018
 
 DESCRIPTION
 The chroma_conf utility is used to specify the parameters of a mapping from environmental data domain values to
-chromaticity locations. In addition to mapping, the configuration includes lamp brightness and transition time.
+chromaticity locations. In addition to chromaticity mapping, the configuration includes lamp brightness and
+transition time.
 
 The chroma_conf.json document managed by the chroma_conf utility is used by chroma.py
 
@@ -65,7 +66,7 @@ if __name__ == '__main__':
 
     if cmd.set():
         if conf is None and not cmd.is_complete():
-            print("chroma_conf: no configuration is stored. you must therefore set all fields:", file=sys.stderr)
+            print("chroma_conf: no configuration is stored. You must therefore set all fields:", file=sys.stderr)
             cmd.print_help(sys.stderr)
             exit(1)
 
