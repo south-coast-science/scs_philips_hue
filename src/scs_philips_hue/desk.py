@@ -71,7 +71,7 @@ if __name__ == '__main__':
         conf = DeskConf.load(Host)
 
         if conf is None:
-            print("DeskConf not available.", file=sys.stderr)
+            print("desk: DeskConf not available.", file=sys.stderr)
             exit(1)
 
         if cmd.verbose:
@@ -81,7 +81,7 @@ if __name__ == '__main__':
         credentials = BridgeCredentials.load(Host)
 
         if credentials.bridge_id is None:
-            print("no stored credentials")
+            print("desk: BridgeCredentials not available")
             exit(1)
 
         if cmd.verbose:
@@ -92,7 +92,7 @@ if __name__ == '__main__':
         bridge = upnp.find(credentials.bridge_id)
 
         if bridge is None:
-            print("no bridge matching the stored credentials")
+            print("desk: no bridge matching the stored credentials")
             exit(1)
 
         if cmd.verbose:
@@ -117,7 +117,7 @@ if __name__ == '__main__':
 
             except OSError:
                 if time.time() > timeout:
-                    print("bridge could not be found", file=sys.stderr)
+                    print("desk: bridge could not be found", file=sys.stderr)
                     exit(1)
 
                 time.sleep(1)
@@ -128,7 +128,7 @@ if __name__ == '__main__':
             indices[name] = manager.find_indices_for_name(name)
 
             if len(indices[name]) == 0:
-                print("warning: no light found for name: %s" % name, file=sys.stderr)
+                print("desk: warning: no light found for name: %s" % name, file=sys.stderr)
 
             # save initial states...
             for index in indices[name]:

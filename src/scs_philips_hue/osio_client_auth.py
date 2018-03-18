@@ -112,13 +112,13 @@ if __name__ == '__main__':
             user = user_manager.find_public(cmd.user_id)
 
             if user is None:
-                print("User not available.", file=sys.stderr)
+                print("osio_client_auth: User not available.", file=sys.stderr)
                 exit(1)
 
         # device...
         if device:
             if cmd.user_id:
-                print("Device owner-id cannot be updated.", file=sys.stderr)
+                print("osio_client_auth: device owner-id cannot be updated.", file=sys.stderr)
                 exit(1)
 
             # find ClientAuth...

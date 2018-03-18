@@ -68,7 +68,7 @@ if __name__ == '__main__':
 
     if cmd.set():
         if conf is None and not cmd.is_complete():
-            print("No configuration is stored. domain_conf must therefore set all fields:", file=sys.stderr)
+            print("domain_conf: no configuration is stored. You must therefore set all fields:", file=sys.stderr)
             cmd.print_help(sys.stderr)
             exit(1)
 

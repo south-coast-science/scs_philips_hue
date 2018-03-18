@@ -8,6 +8,8 @@ Created on 11 Nov 2017
 DESCRIPTION
 The bridge utility is used to interrogate and update the Philips Hue Bridge device.
 
+https://developers.meethue.com/content/configuring-hue-without-phone-app-unable-update-software
+
 EXAMPLES
 ./bridge.py -n scs-phb-001 -v
 
@@ -37,8 +39,6 @@ from scs_philips_hue.manager.bridge_manager import BridgeManager
 from scs_philips_hue.manager.upnp_discovery import UPnPDiscovery
 
 
-# TODO: fix update functionality
-
 # --------------------------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
@@ -56,7 +56,6 @@ if __name__ == '__main__':
         print(cmd, file=sys.stderr)
         sys.stderr.flush()
 
-
     try:
         # ------------------------------------------------------------------------------------------------------------
         # resources...
@@ -65,7 +64,7 @@ if __name__ == '__main__':
         credentials = BridgeCredentials.load(Host)
 
         if credentials.bridge_id is None:
-            print("no stored credentials")
+            print("bridge: no stored credentials")
             exit(1)
 
         if cmd.verbose:
@@ -76,7 +75,7 @@ if __name__ == '__main__':
         bridge = upnp.find(credentials.bridge_id)
 
         if bridge is None:
-            print("no bridge matching the stored credentials")
+            print("bridge: no bridge matching the stored credentials")
             exit(1)
 
         if cmd.verbose:
@@ -91,6 +90,9 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # run...
 
+        # initial state...
+        config = manager.find()
+
         # name...
         if cmd.name:
             config = BridgeConfig(name=cmd.name)
@@ -99,17 +101,37 @@ if __name__ == '__main__':
             if cmd.verbose:
                 print(response, file=sys.stderr)
 
-        # update...
-        if cmd.update:
-            config = BridgeConfig(sw_update=SWUpdate(check_for_update=True))
+        # portal services...
+        if cmd.portal_services:
+            config = BridgeConfig(portal_services=cmd.portal_services)
+            response = manager.set_config(config)
+
+            if cmd.verbose:
+                print(response, file=sys.stderr)
+
+        # check for update...
+        if cmd.check_update:
+            config = BridgeConfig(sw_update=SWUpdate(check_for_update=cmd.check_update))
+            response = manager.set_config(config)
+
+            if cmd.verbose:
+                print(response, file=sys.stderr)
+
+        # do update...
+        if cmd.do_update:
+            if config.sw_update.update_state != SWUpdate.UPDATE_AVAILABLE:
+                print("bridge: no software update available")
+                exit(1)
+
+            config = BridgeConfig(sw_update=SWUpdate(update_state=SWUpdate.UPDATE_PERFORM))
             response = manager.set_config(config)
 
             if cmd.verbose:
                 print(response, file=sys.stderr)
 
         # zigbee...
-        if cmd.zigbee:
-            config = BridgeConfig(zigbee_channel=cmd.zigbee)
+        if cmd.zigbee_channel:
+            config = BridgeConfig(zigbee_channel=cmd.zigbee_channel)
             response = manager.set_config(config)
 
             if cmd.verbose:

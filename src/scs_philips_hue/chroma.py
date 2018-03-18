@@ -64,7 +64,7 @@ if __name__ == '__main__':
         conf = ChromaConf.load(Host)
 
         if conf is None:
-            print("ChromaConf not available.", file=sys.stderr)
+            print("chroma: ChromaConf not available.", file=sys.stderr)
             exit(1)
 
         if cmd.verbose:

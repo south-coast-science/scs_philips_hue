@@ -67,7 +67,7 @@ if __name__ == '__main__':
     credentials = BridgeCredentials.load(Host)
 
     if credentials.bridge_id is None:
-        print("no stored credentials")
+        print("user: no stored credentials")
         exit(1)
 
     if cmd.verbose:
@@ -78,7 +78,7 @@ if __name__ == '__main__':
     bridge = upnp.find(credentials.bridge_id)
 
     if bridge is None:
-        print("no bridge matching the stored credentials")
+        print("user: no bridge matching the stored credentials")
         exit(1)
 
     if cmd.verbose:
@@ -97,7 +97,6 @@ if __name__ == '__main__':
 
     if cmd.delete:
         for user in users:
-            print("user: %s" % user)
             if user.description.user == cmd.delete:
                 response = manager.delete(user.username)
 

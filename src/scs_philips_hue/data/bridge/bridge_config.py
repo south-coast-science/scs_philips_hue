@@ -106,6 +106,12 @@ class BridgeConfig(JSONable):
     classdocs
     """
 
+    NAME_MIN_LENGTH =        4
+    NAME_MAX_LENGTH =       16
+
+    ZIGBEE_CHANNELS =       ("11", "15", "20", "25")
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
@@ -130,12 +136,13 @@ class BridgeConfig(JSONable):
         sw_update = SWUpdate.construct_from_jdict(jdict.get('swupdate'))
 
         link_button = jdict.get('linkbutton')
+        portal_services = jdict.get('portalservices')
 
         return BridgeConfig(name=name, zigbee_channel=zigbee_channel,
                             dhcp=dhcp, ip_address=ip_address, netmask=netmask, gateway=gateway,
                             proxy_address=proxy_address, proxy_port=proxy_port,
                             utc=utc, timezone=timezone, sw_update=sw_update,
-                            link_button=link_button)
+                            link_button=link_button, portal_services=portal_services)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -144,7 +151,7 @@ class BridgeConfig(JSONable):
                  dhcp=None, ip_address=None, netmask=None, gateway=None,
                  proxy_address=None, proxy_port=None,
                  utc=None, timezone=None, sw_update=None,
-                 link_button=None, touch_link=None):
+                 link_button=None, portal_services=None):
         """
         Constructor
         """
@@ -165,7 +172,7 @@ class BridgeConfig(JSONable):
         self.__sw_update = sw_update                                        # SWUpdate
 
         self.__link_button = Datum.bool(link_button)                        # bool
-        self.__touch_link = Datum.bool(touch_link)                          # bool
+        self.__portal_services = Datum.bool(portal_services)                # bool
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -214,8 +221,8 @@ class BridgeConfig(JSONable):
         if self.link_button is not None:
             jdict['linkbutton'] = self.link_button
 
-        if self.touch_link is not None:
-            jdict['touchlink'] = self.touch_link
+        if self.portal_services is not None:
+            jdict['portalservices'] = self.portal_services
 
         return jdict
 
@@ -283,8 +290,8 @@ class BridgeConfig(JSONable):
 
 
     @property
-    def touch_link(self):
-        return self.__touch_link
+    def portal_services(self):
+        return self.__portal_services
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -294,12 +301,12 @@ class BridgeConfig(JSONable):
                "dhcp:%s, ip_address:%s, netmask:%s, " \
                "gateway:%s, proxy_address:%s, proxy_port:%s," \
                "utc:%s, timezone:%s, sw_update:%s," \
-               "link_button:%s, touch_link:%s}" %  \
+               "link_button:%s, portal_services:%s}" %  \
                (self.name, self.zigbee_channel,
                 self.dhcp, self.ip_address, self.netmask,
                 self.gateway, self.proxy_address, self.proxy_port,
                 self.utc, self.timezone, self.sw_update,
-                self.link_button, self.touch_link)
+                self.link_button, self.portal_services)
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -407,12 +414,12 @@ class ReportedBridgeConfig(BridgeConfig):
 
         self.__sw_update_2 = sw_update_2                                    # SWUpdate2
 
-        self.__portal_services = bool(portal_services)                      # bool
+        self.__portal_services = Datum.bool(portal_services)                # bool
         self.__portal_connection = portal_connection                        # string
         self.__portal_state = portal_state                                  # PortalState
 
         self.__internet_services = internet_services                        # InternetServices
-        self.__factory_new = bool(factory_new)                              # bool
+        self.__factory_new = Datum.bool(factory_new)                        # bool
         self.__replaces_bridge_id = replaces_bridge_id                      # string
         self.__backup = backup                                              # Backup
         self.__starterkit_id = starterkit_id                                # string
