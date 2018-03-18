@@ -172,7 +172,11 @@ if __name__ == '__main__':
         print("desk: Timeout", file=sys.stderr)
 
     finally:
-        if manager and not timeout:
+        if manager is not None:
             for index, state in initial_state.items():
                 state = LightState(on=state.on, bri=state.bri, hue=state.hue, sat=state.sat, transition_time=1.0)
-                manager.set_state(index, state)
+                response = manager.set_state(index, state)
+
+                if cmd.verbose:
+                    print(response, file=sys.stderr)
+                    sys.stderr.flush()
