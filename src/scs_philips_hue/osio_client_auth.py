@@ -72,7 +72,7 @@ if __name__ == '__main__':
     api_auth = APIAuth.load(Host)
 
     if api_auth is None:
-        print("APIAuth not available.", file=sys.stderr)
+        print("osio_client_auth: APIAuth not available.", file=sys.stderr)
         exit(1)
 
     if cmd.verbose:
@@ -95,7 +95,8 @@ if __name__ == '__main__':
 
     if device is None:
         if cmd.set() and not cmd.is_complete():
-            print("No device is registered. osio_client_auth must therefore set a user and location:", file=sys.stderr)
+            print("osio_client_auth: No device is registered. You must therefore set a user and location:",
+                  file=sys.stderr)
             cmd.print_help(sys.stderr)
             exit(1)
 
