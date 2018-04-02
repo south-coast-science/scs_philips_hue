@@ -59,7 +59,7 @@ class LightScan(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def as_json(self):
-        jdict = []
+        jdict = OrderedDict()
 
         jdict['lastscan'] = self.last_scan
 

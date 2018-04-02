@@ -21,9 +21,7 @@ EXAMPLES
 ./aws_mqtt_subscriber.py -c | ./node.py -c | ./chroma.py | ./desk.py -v -e
 
 FILES
-~/SCS/aws/aws_api_auth.json
-~/SCS/aws/client_credentials.json
-~/SCS/aws/endpoint.json
+~/SCS/aws/aws_client_auth.json
 ~/SCS/hue/domain_conf.json
 
 DOCUMENT EXAMPLE
@@ -41,9 +39,8 @@ import time
 
 from collections import OrderedDict
 
+from scs_core.aws.client.client_auth import ClientAuth
 from scs_core.aws.client.mqtt_client import MQTTClient, MQTTSubscriber
-from scs_core.aws.client.client_credentials import ClientCredentials
-from scs_core.aws.service.endpoint import Endpoint
 
 from scs_core.data.json import JSONify
 from scs_core.data.publication import Publication
@@ -131,25 +128,15 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # resources...
 
-        # endpoint...
-        endpoint = Endpoint.load(Host)
+        # ClientAuth...
+        auth = ClientAuth.load(Host)
 
-        if endpoint is None:
-            print("aws_mqtt_subscriber: Endpoint config not available.", file=sys.stderr)
+        if auth is None:
+            print("aws_mqtt_subscriber: ClientAuth not available.", file=sys.stderr)
             exit(1)
 
         if cmd.verbose:
-            print(endpoint, file=sys.stderr)
-
-        # endpoint...
-        credentials = ClientCredentials.load(Host)
-
-        if credentials is None:
-            print("aws_mqtt_subscriber: ClientCredentials not available.", file=sys.stderr)
-            exit(1)
-
-        if cmd.verbose:
-            print(credentials, file=sys.stderr)
+            print(auth, file=sys.stderr)
 
         # DomainConf...
         if cmd.use_domain_conf:
@@ -180,9 +167,9 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # run...
 
-        client.connect(endpoint, credentials)
+        client.connect(auth)
 
-        # just join subscribers
+        # TODO: just join subscribers
         while True:
             time.sleep(1)
 
