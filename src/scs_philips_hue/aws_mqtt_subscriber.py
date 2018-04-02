@@ -132,7 +132,7 @@ if __name__ == '__main__':
         auth = ClientAuth.load(Host)
 
         if auth is None:
-            print("aws_mqtt_client: ClientAuth not available.", file=sys.stderr)
+            print("aws_mqtt_subscriber: ClientAuth not available.", file=sys.stderr)
             exit(1)
 
         if cmd.verbose:
