@@ -30,8 +30,6 @@ import sys
 from scs_core.data.json import JSONify
 from scs_core.data.path_dict import PathDict
 
-from scs_core.sys.exception_report import ExceptionReport
-
 from scs_host.sys.host import Host
 
 from scs_philips_hue.cmd.cmd_node import CmdNode
@@ -52,7 +50,7 @@ if __name__ == '__main__':
         exit(2)
 
     if cmd.verbose:
-        print(cmd, file=sys.stderr)
+        print("node: %s" % cmd, file=sys.stderr)
         sys.stderr.flush()
 
 
@@ -70,7 +68,7 @@ if __name__ == '__main__':
                 exit(1)
 
             if cmd.verbose:
-                print(domain, file=sys.stderr)
+                print("node: %s" % domain, file=sys.stderr)
         else:
             topic_path = cmd.topic_path
 
@@ -99,6 +97,3 @@ if __name__ == '__main__':
     except KeyboardInterrupt:
         if cmd.verbose:
             print("node: KeyboardInterrupt", file=sys.stderr)
-
-    except Exception as ex:
-        print(JSONify.dumps(ExceptionReport.construct(ex)), file=sys.stderr)

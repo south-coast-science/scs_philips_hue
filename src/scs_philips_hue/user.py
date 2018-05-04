@@ -57,7 +57,7 @@ if __name__ == '__main__':
         exit(2)
 
     if cmd.verbose:
-        print(cmd, file=sys.stderr)
+        print("user: %s" % cmd, file=sys.stderr)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -67,22 +67,22 @@ if __name__ == '__main__':
     credentials = BridgeCredentials.load(Host)
 
     if credentials.bridge_id is None:
-        print("user: no stored credentials")
+        print("user: no stored credentials", file=sys.stderr)
         exit(1)
 
     if cmd.verbose:
-        print(credentials, file=sys.stderr)
+        print("user: %s" % credentials, file=sys.stderr)
 
     # bridge...
     upnp = UPnPDiscovery(HTTPClient())
     bridge = upnp.find(credentials.bridge_id)
 
     if bridge is None:
-        print("user: no bridge matching the stored credentials")
+        print("user: no bridge matching the stored credentials", file=sys.stderr)
         exit(1)
 
     if cmd.verbose:
-        print(bridge, file=sys.stderr)
+        print("user: %s" % bridge, file=sys.stderr)
 
     sys.stderr.flush()
 
@@ -101,7 +101,7 @@ if __name__ == '__main__':
                 response = manager.delete(user.username)
 
                 if cmd.verbose:
-                    print(response, file=sys.stderr)
+                    print("user: %s" % response, file=sys.stderr)
                     sys.stderr.flush()
 
     else:

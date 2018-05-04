@@ -52,7 +52,7 @@ if __name__ == '__main__':
         exit(2)
 
     if cmd.verbose:
-        print(cmd, file=sys.stderr)
+        print("light: %s" % cmd, file=sys.stderr)
 
     initial_state = {}
     manager = None
@@ -65,22 +65,22 @@ if __name__ == '__main__':
         credentials = BridgeCredentials.load(Host)
 
         if credentials.bridge_id is None:
-            print("light: BridgeCredentials not available")
+            print("light: BridgeCredentials not available", file=sys.stderr)
             exit(1)
 
         if cmd.verbose:
-            print(credentials, file=sys.stderr)
+            print("light: %s" % credentials, file=sys.stderr)
 
         # bridge...
         upnp = UPnPDiscovery(HTTPClient())
         bridge = upnp.find(credentials.bridge_id)
 
         if bridge is None:
-            print("light: no bridge matching the stored credentials")
+            print("light: no bridge matching the stored credentials", file=sys.stderr)
             exit(1)
 
         if cmd.verbose:
-            print(bridge, file=sys.stderr)
+            print("light: %s" % bridge, file=sys.stderr)
 
         sys.stderr.flush()
 
@@ -97,7 +97,7 @@ if __name__ == '__main__':
             response = manager.search(device)
 
             if cmd.verbose:
-                print(response, file=sys.stderr)
+                print("light: %s" % response, file=sys.stderr)
 
             while True:
                 time.sleep(2.0)
@@ -114,7 +114,7 @@ if __name__ == '__main__':
             response = manager.search()
 
             if cmd.verbose:
-                print(response, file=sys.stderr)
+                print("light: %s" % response, file=sys.stderr)
 
             while True:
                 time.sleep(2.0)
@@ -131,14 +131,14 @@ if __name__ == '__main__':
             response = manager.delete(cmd.delete)
 
             if cmd.verbose:
-                print(response, file=sys.stderr)
+                print("light: %s" % response, file=sys.stderr)
 
         # name...
         if cmd.name:
             response = manager.rename(cmd.name[0], cmd.name[1])
 
             if cmd.verbose:
-                print(response, file=sys.stderr)
+                print("light: %s" % response, file=sys.stderr)
 
         # result...
         if cmd.name or cmd.delete or cmd.list:

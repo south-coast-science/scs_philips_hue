@@ -57,7 +57,7 @@ if __name__ == '__main__':
     cmd = CmdSimple()
 
     if cmd.verbose:
-        print(cmd, file=sys.stderr)
+        print("join: %s" % cmd, file=sys.stderr)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -84,7 +84,7 @@ if __name__ == '__main__':
         bridge = bridges[int(index) - 1]
 
     if cmd.verbose:
-        print(bridge, file=sys.stderr)
+        print("join: %s" % bridge, file=sys.stderr)
 
     # manager...
     bridge_manager = BridgeManager(HTTPClient(), bridge.ip_address, None)
@@ -94,7 +94,7 @@ if __name__ == '__main__':
     device = DeviceDescription(client)
 
     if cmd.verbose:
-        print(device, file=sys.stderr)
+        print("join: %s" % device, file=sys.stderr)
 
     sys.stderr.flush()
 

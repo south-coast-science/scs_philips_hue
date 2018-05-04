@@ -55,7 +55,7 @@ if __name__ == '__main__':
     cmd = CmdDesk()
 
     if cmd.verbose:
-        print(cmd, file=sys.stderr)
+        print("desk: %s" % cmd, file=sys.stderr)
 
     manager = None
     timeout = False
@@ -75,7 +75,7 @@ if __name__ == '__main__':
             exit(1)
 
         if cmd.verbose:
-            print(conf, file=sys.stderr)
+            print("desk: %s" % conf, file=sys.stderr)
 
         # credentials...
         credentials = BridgeCredentials.load(Host)
@@ -85,7 +85,7 @@ if __name__ == '__main__':
             exit(1)
 
         if cmd.verbose:
-            print(credentials, file=sys.stderr)
+            print("desk: %s" % credentials, file=sys.stderr)
 
         # bridge...
         upnp = UPnPDiscovery(HTTPClient())
@@ -96,7 +96,7 @@ if __name__ == '__main__':
             exit(1)
 
         if cmd.verbose:
-            print(bridge, file=sys.stderr)
+            print("desk: %s" % bridge, file=sys.stderr)
 
         sys.stderr.flush()
 
@@ -157,7 +157,7 @@ if __name__ == '__main__':
                     response = manager.set_state(index, state)
 
                     if cmd.verbose:
-                        print(response, file=sys.stderr)
+                        print("desk: %s" % response, file=sys.stderr)
                         sys.stderr.flush()
 
 
@@ -178,5 +178,5 @@ if __name__ == '__main__':
                 response = manager.set_state(index, state)
 
                 if cmd.verbose:
-                    print(response, file=sys.stderr)
+                    print("desk: %s" % response, file=sys.stderr)
                     sys.stderr.flush()

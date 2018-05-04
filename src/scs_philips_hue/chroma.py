@@ -54,7 +54,7 @@ if __name__ == '__main__':
     cmd = CmdSimple()
 
     if cmd.verbose:
-        print(cmd, file=sys.stderr)
+        print("chroma: %s" % cmd, file=sys.stderr)
 
     try:
         # ------------------------------------------------------------------------------------------------------------
@@ -68,7 +68,7 @@ if __name__ == '__main__':
             exit(1)
 
         if cmd.verbose:
-            print(conf, file=sys.stderr)
+            print("chroma: %s" % conf, file=sys.stderr)
 
         domain_min = conf.domain_min
         domain_max = conf.domain_max
@@ -77,7 +77,7 @@ if __name__ == '__main__':
         segment = ChromaSegment(conf.range_min, conf.range_max)
 
         if cmd.verbose:
-            print(segment, file=sys.stderr)
+            print("chroma: %s" % segment, file=sys.stderr)
             sys.stderr.flush()
 
 
@@ -92,7 +92,7 @@ if __name__ == '__main__':
                 break
 
             if cmd.verbose:
-                print(datum, file=sys.stderr)
+                print("chroma: %s" % datum, file=sys.stderr)
                 sys.stderr.flush()
 
             try:
