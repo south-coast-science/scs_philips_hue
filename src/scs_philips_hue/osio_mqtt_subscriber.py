@@ -91,7 +91,7 @@ class OSIOMQTTHandler(object):
             self.__comms.close()
 
         if self.__verbose:
-            print("received: %s" % JSONify.dumps(pub), file=sys.stderr)
+            print("osio_mqtt_subscriber: received: %s" % JSONify.dumps(pub), file=sys.stderr)
             sys.stderr.flush()
 
 

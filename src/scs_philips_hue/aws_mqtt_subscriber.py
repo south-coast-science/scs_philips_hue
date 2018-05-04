@@ -122,7 +122,7 @@ if __name__ == '__main__':
         exit(2)
 
     if cmd.verbose:
-        print(cmd, file=sys.stderr)
+        print("aws_mqtt_subscriber: %s" % cmd, file=sys.stderr)
 
     try:
         # ------------------------------------------------------------------------------------------------------------
@@ -136,7 +136,7 @@ if __name__ == '__main__':
             exit(1)
 
         if cmd.verbose:
-            print(auth, file=sys.stderr)
+            print("aws_mqtt_subscriber: %s" % auth, file=sys.stderr)
 
         # DomainConf...
         if cmd.use_domain_conf:
@@ -148,7 +148,7 @@ if __name__ == '__main__':
                 exit(1)
 
             if cmd.verbose:
-                print(domain, file=sys.stderr)
+                print("aws_mqtt_subscriber: %s" % domain, file=sys.stderr)
         else:
             topic_path = cmd.topic_path
 
@@ -160,7 +160,7 @@ if __name__ == '__main__':
         client = MQTTClient(subscriber)
 
         if cmd.verbose:
-            print(client, file=sys.stderr)
+            print("aws_mqtt_subscriber: %s" % client, file=sys.stderr)
             sys.stderr.flush()
 
 

@@ -53,7 +53,7 @@ if __name__ == '__main__':
         exit(2)
 
     if cmd.verbose:
-        print(cmd, file=sys.stderr)
+        print("bridge: %s" % cmd, file=sys.stderr)
         sys.stderr.flush()
 
     try:
@@ -68,7 +68,7 @@ if __name__ == '__main__':
             exit(1)
 
         if cmd.verbose:
-            print(credentials, file=sys.stderr)
+            print("bridge: %s" % credentials, file=sys.stderr)
 
         # bridge...
         upnp = UPnPDiscovery(HTTPClient())
@@ -79,7 +79,7 @@ if __name__ == '__main__':
             exit(1)
 
         if cmd.verbose:
-            print(bridge, file=sys.stderr)
+            print("bridge: %s" % bridge, file=sys.stderr)
 
         sys.stderr.flush()
 
@@ -99,7 +99,7 @@ if __name__ == '__main__':
             response = manager.set_config(config)
 
             if cmd.verbose:
-                print(response, file=sys.stderr)
+                print("bridge: %s" % response, file=sys.stderr)
 
         # portal services...
         if cmd.portal_services:
@@ -107,7 +107,7 @@ if __name__ == '__main__':
             response = manager.set_config(config)
 
             if cmd.verbose:
-                print(response, file=sys.stderr)
+                print("bridge: %s" % response, file=sys.stderr)
 
         # check for update...
         if cmd.check_update:
@@ -115,7 +115,7 @@ if __name__ == '__main__':
             response = manager.set_config(config)
 
             if cmd.verbose:
-                print(response, file=sys.stderr)
+                print("bridge: %s" % response, file=sys.stderr)
 
         # do update...
         if cmd.do_update:
@@ -127,7 +127,7 @@ if __name__ == '__main__':
             response = manager.set_config(config)
 
             if cmd.verbose:
-                print(response, file=sys.stderr)
+                print("bridge: %s" % response, file=sys.stderr)
 
         # zigbee...
         if cmd.zigbee_channel:
@@ -135,7 +135,7 @@ if __name__ == '__main__':
             response = manager.set_config(config)
 
             if cmd.verbose:
-                print(response, file=sys.stderr)
+                print("bridge: %s" % response, file=sys.stderr)
 
         config = manager.find()
         print(JSONify.dumps(config))
