@@ -30,8 +30,6 @@ import sys
 from scs_core.data.json import JSONify
 from scs_core.data.path_dict import PathDict
 
-from scs_core.sys.exception_report import ExceptionReport
-
 from scs_host.sys.host import Host
 
 from scs_philips_hue.cmd.cmd_node import CmdNode
