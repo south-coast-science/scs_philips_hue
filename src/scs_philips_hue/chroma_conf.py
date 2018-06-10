@@ -12,6 +12,10 @@ transition time.
 
 The chroma_conf.json document managed by the chroma_conf utility is used by chroma.py
 
+SYNOPSIS
+chroma_conf.py [{ [-d DOMAIN_MIN DOMAIN_MAX] [-r { R | G | B | W } { R | G | B | W }] [-b BRIGHTNESS] [-t TRANSITION] |
+-x }] [-v]
+
 EXAMPLES
 ./chroma_conf.py -v -p /orgs/south-coast-science-demo/brighton/loc/1/particulates
 

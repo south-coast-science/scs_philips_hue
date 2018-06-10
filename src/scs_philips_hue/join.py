@@ -11,6 +11,9 @@ Before running join, the big button on the top of the Philips Hue Bridge must be
 
 The bridge_credentials.json document created by the join utility is used by the bridge, desk, light, and user utilities.
 
+SYNOPSIS
+join.py [-v]
+
 EXAMPLES
 ./join.py -v
 

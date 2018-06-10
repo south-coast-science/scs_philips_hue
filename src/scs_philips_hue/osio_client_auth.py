@@ -14,6 +14,9 @@ OpenSensors system, then stores the generated tokens on the client. The name of 
 name of the host on which the script is executed. Names (unlike client IDs) are not required to be unique on the
 OpenSensors system.
 
+SYNOPSIS
+osio_client_auth.py [-u USER_ID] [-l LAT LNG POSTCODE] [-v]
+
 EXAMPLES
 ./osio_client_auth.py -u south-coast-science-demo-user -l 50.823130 -0.122922 "BN2 0DF" -v
 

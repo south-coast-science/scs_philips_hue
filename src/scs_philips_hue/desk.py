@@ -14,6 +14,9 @@ In verbose mode, the desk utility provides a detailed report on the command outc
 The desk utility requires the desk_conf.json document, specifying which light(s) should receive the LightState
 command.
 
+SYNOPSIS
+desk.py [-e] [-v]
+
 EXAMPLES
 ./osio_mqtt_subscriber.py -c | ./node.py -c | ./chroma.py | ./desk.py -v -e
 

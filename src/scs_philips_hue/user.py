@@ -12,6 +12,9 @@ Note that the user JSON document presented by the user utility has a description
 app#user-name. When a delete command is performed, only the user-name component is required to identify
 the user.
 
+SYNOPSIS
+user.py {-d USER | -l }  [-v]
+
 EXAMPLES
 ./user.py -d bruno.local
 

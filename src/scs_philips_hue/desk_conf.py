@@ -8,6 +8,9 @@ Created on 16 Mar 2018
 DESCRIPTION
 The desk_conf utility is used to specify which lamps should be driven by the desk utility.
 
+SYNOPSIS
+desk_conf.py [{ -a LAMP_NAME | -r LAMP_NAME | -x }] [-v]
+
 EXAMPLES
 ./desk_conf.py -a scs-hcl-001
 

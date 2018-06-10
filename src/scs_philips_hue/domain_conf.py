@@ -13,6 +13,9 @@ accepted by a mapping utility such as chroma.
 The domain_conf.json document managed by the domain_conf utility is used by the aws_mqtt_subscriber,
 osio_mqtt_subscriber, and node utilities.
 
+SYNOPSIS
+domain_conf.py [{ [-t TOPIC_PATH] [-n DOCUMENT_NODE] | -x }] [-v]
+
 EXAMPLES
 ./domain_conf.py -t /orgs/south-coast-science-demo/brighton/loc/1/particulates -n val.pm10
 

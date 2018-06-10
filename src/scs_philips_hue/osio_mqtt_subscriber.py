@@ -17,6 +17,9 @@ client_credentials.json documents.
 
 WARNING: only one MQTT client should run at any one time, per TCP/IP host.
 
+SYNOPSIS
+osio_mqtt_subscriber.py {-c | -t TOPIC_PATH } [-v]
+
 EXAMPLES
 ./osio_mqtt_subscriber.py -c | ./node.py -c | ./chroma.py | ./desk.py -v -e
 

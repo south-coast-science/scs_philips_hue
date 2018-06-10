@@ -9,6 +9,9 @@ DESCRIPTION
 The light utility is used to register a Philips Hue light bulb with a Philips Hue Bridge device, to update bulb
 settings, or de-register the bulb.
 
+SYNOPSIS
+light.py { -a SERIAL_NUMBER | -s | -l | -d INDEX | -n INDEX NAME } [-v]
+
 EXAMPLES
 ./light.py -v -a AA8A5F
 
@@ -18,6 +21,9 @@ FILES
 SEE ALSO
 scs_philips_hue/bridge.py
 scs_philips_hue/join.py
+
+BUGS
+search does not always work...
 """
 
 import sys
