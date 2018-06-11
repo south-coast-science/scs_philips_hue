@@ -1,5 +1,5 @@
 # scs_philips_hue
-A light bulb moment... how to connect Philips Hue light bulbs to South Coast Science environmental data sources
+_A light bulb moment... how to connect Philips Hue light bulbs to South Coast Science environmental data sources_
 
 Detailed information at the [scs_philips_hue wiki](https://github.com/south-coast-science/scs_philips_hue/wiki).
 
