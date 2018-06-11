@@ -30,7 +30,7 @@ class CmdDeskConf(object):
                                  help="remove the given lamp")
 
         self.__parser.add_option("--delete", "-x", action="store_true", dest="delete",
-                                 help="delete the Desk configuration")
+                                 help="delete the desk configuration")
 
         self.__parser.add_option("--verbose", "-v", action="store_true", dest="verbose", default=False,
                                  help="report narrative to stderr")

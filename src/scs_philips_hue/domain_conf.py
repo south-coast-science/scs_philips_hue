@@ -26,9 +26,9 @@ DOCUMENT EXAMPLE
 {"topic-path": "/orgs/south-coast-science-demo/brighton/loc/1/particulates", "document-node": "val.pm10"}
 
 SEE ALSO
-scs_philips_hue/aws_mqtt_subscriber.py
-scs_philips_hue/osio_mqtt_subscriber.py
-scs_philips_hue/node.py
+scs_philips_hue/aws_mqtt_subscriber
+scs_philips_hue/osio_mqtt_subscriber
+scs_philips_hue/node
 """
 
 import sys

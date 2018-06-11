@@ -25,16 +25,18 @@ EXAMPLES
 
 FILES
 ~/SCS/hue/domain_conf.json
-~/SCS/osio/
+~/SCS/osio/osio_api_auth.json
+~/SCS/osio/osio_client_auth.json
 
 DOCUMENT EXAMPLE
 {"/south-coast-science-dev/production-test/loc/1/climate":
 {"tag": "scs-be2-2", "rec": "2018-03-17T09:18:07.681+00:00", "val": {"hmd": 46.7, "tmp": 23.9}}}
 
 SEE ALSO
-scs_philips_hue/osio_api_auth.py
-scs_philips_hue/osio_client_auth.py
-scs_philips_hue/aws_mqtt_subscriber.py
+scs_philips_hue/domain_conf
+scs_philips_hue/osio_api_auth
+scs_philips_hue/osio_client_auth
+scs_philips_hue/aws_mqtt_subscriber
 """
 
 import sys

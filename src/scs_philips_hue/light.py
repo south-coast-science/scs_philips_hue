@@ -18,12 +18,21 @@ EXAMPLES
 FILES
 ~/SCS/hue/bridge_credentials.json
 
+DOCUMENT EXAMPLE - OUTPUT
+{"5": {"state": {"on": false, "bri": 0, "hue": 0, "sat": 0, "effect": "none", "transitiontime": null, "xy": [0.0, 0.0],
+"ct": 0, "alert": "none", "colormode": "hs", "reachable": false}, "swupdate": {"state": "transferring",
+"lastinstall": null}, "type": "Extended color light", "name": "scs-hcl-001", "modelid": "LCT015",
+"manufacturername": "Philips", "uniqueid": "00:17:88:01:03:54:25:66-0b", "swversion": "1.19.0_r19755",
+"swconfigid": "A724919D", "productid": "Philips-LCT015-1-A19ECLv5"}}
+
+
 SEE ALSO
-scs_philips_hue/bridge.py
-scs_philips_hue/join.py
+scs_philips_hue/bridge
+scs_philips_hue/join
 
 BUGS
-search does not always work...
+The light search function is not always successful if lights have been previously registered on the bridge. If a search
+does not find the light, then the light should be acquired with -a SERIAL_NUMBER.
 """
 
 import sys

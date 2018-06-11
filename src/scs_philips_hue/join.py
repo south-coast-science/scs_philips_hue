@@ -24,10 +24,10 @@ DOCUMENT EXAMPLE
 {"bridge-id": "001788fffe795620", "username": "b8bvymOH-ceugK8gBOpjeNeL0OMhXOEBQZosfsTx"}
 
 SEE ALSO
-scs_philips_hue/bridge.py
-scs_philips_hue/desk.py
-scs_philips_hue/light.py
-scs_philips_hue/user.py
+scs_philips_hue/bridge
+scs_philips_hue/desk
+scs_philips_hue/light
+scs_philips_hue/user
 """
 
 import sys

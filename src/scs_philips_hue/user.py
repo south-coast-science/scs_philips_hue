@@ -9,7 +9,7 @@ DESCRIPTION
 The user utility is used to manage user accounts or "whitelist entries" on a Philips Hue Bridge device.
 
 Note that the user JSON document presented by the user utility has a description field of the form
-app#user-name. When a delete command is performed, only the user-name component is required to identify
+app#user-name. When a delete command is performed, only the user-name component should be used to identify
 the user.
 
 SYNOPSIS
@@ -21,14 +21,14 @@ EXAMPLES
 FILES
 ~/SCS/hue/bridge_credentials.json
 
-DOCUMENT EXAMPLE
+DOCUMENT EXAMPLE - OUTPUT
 {"last use date": "2017-11-26T10:29:17", "create date": "2017-11-26T10:08:13",
 "description": "scs-hue-connector#scs-rpi-013"}
 
 SEE ALSO
-scs_philips_hue/join.py
-scs_philips_hue/bridge.py
-scs_philips_hue/desk.py
+scs_philips_hue/join
+scs_philips_hue/bridge
+scs_philips_hue/desk
 """
 
 import sys

@@ -27,7 +27,7 @@ DOCUMENT EXAMPLE
 "brightness": 128, "transition-time": 9}
 
 SEE ALSO
-scs_philips_hue/chroma.py
+scs_philips_hue/chroma
 """
 
 import sys

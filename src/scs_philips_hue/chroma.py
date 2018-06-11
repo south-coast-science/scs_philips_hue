@@ -21,12 +21,12 @@ EXAMPLES
 FILES
 ~/SCS/hue/chroma_conf.json
 
-DOCUMENT EXAMPLE
+DOCUMENT EXAMPLE - OUTPUT
 {"bri": 254, "transitiontime": 90, "xy": [0.3704, 0.5848]}
 
 SEE ALSO
-scs_philips_hue/chroma_conf.py
-scs_philips_hue/desk.py
+scs_philips_hue/chroma_conf
+scs_philips_hue/desk
 
 RESOURCES
 https://en.wikipedia.org/wiki/Chromaticity

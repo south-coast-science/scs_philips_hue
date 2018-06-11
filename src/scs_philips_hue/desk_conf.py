@@ -21,7 +21,7 @@ DOCUMENT EXAMPLE
 {"lamp-names": ["scs-hcl-001", "scs-hcl-002"]}
 
 SEE ALSO
-scs_philips_hue/desk.py
+scs_philips_hue/desk
 """
 
 import sys

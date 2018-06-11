@@ -6,8 +6,8 @@ Created on 21 Nov 2017
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 DESCRIPTION
-The osio_client_auth utility is used to store or read the client ID and client password required by the OpenSensors
-messaging system. This client authentication is required to subscribe to any messaging topic.
+The osio_client_auth utility is used to store or read the client ID and client password required by the OpenSensors.io
+Community Edition messaging system. This client authentication is required to subscribe to any messaging topic.
 
 When setting the client authentication, the osio_client_auth utility requests a new device identity from the
 OpenSensors system, then stores the generated tokens on the client. The name of the device is taken to be the
@@ -27,8 +27,8 @@ DOCUMENT EXAMPLE
 {"user_id": "southcoastscience-dev", "client-id": "5403", "client-password": "rtxTrK2f"}
 
 SEE ALSO
-scs_philips_hue/osio_api_auth.py
-scs_philips_hue/osio_mqtt_subscriber.py
+scs_philips_hue/osio_api_auth
+scs_philips_hue/osio_mqtt_subscriber
 """
 
 import sys

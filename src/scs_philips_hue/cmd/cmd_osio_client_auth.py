@@ -22,9 +22,6 @@ class CmdOSIOClientAuth(object):
                                               version="%prog 1.0")
 
         # optional...
-        self.__parser.add_option("--set", "-s", action="store_true", dest="set", default=False,
-                                 help="create or update device")
-
         self.__parser.add_option("--user", "-u", type="string", nargs=1, action="store", dest="user_id",
                                  help="set user-id (only if device has not yet been registered)")
 

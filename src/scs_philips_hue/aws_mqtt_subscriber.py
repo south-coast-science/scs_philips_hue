@@ -34,6 +34,7 @@ DOCUMENT EXAMPLE
 SEE ALSO
 scs_philips_hue/aws_client_auth
 scs_philips_hue/osio_mqtt_subscriber
+scs_philips_hue/domain_conf
 """
 
 import json
