@@ -17,6 +17,9 @@ certificate and API auth specified in the aws_api_auth.json and client_credentia
 
 WARNING: only one MQTT client should run at any one time, per TCP/IP host.
 
+SYNOPSIS
+aws_mqtt_subscriber.py {-c | -t TOPIC_PATH } [-v]
+
 EXAMPLES
 ./aws_mqtt_subscriber.py -c | ./node.py -c | ./chroma.py | ./desk.py -v -e
 
@@ -31,6 +34,7 @@ DOCUMENT EXAMPLE
 SEE ALSO
 scs_philips_hue/aws_client_auth
 scs_philips_hue/osio_mqtt_subscriber
+scs_philips_hue/domain_conf
 """
 
 import json

@@ -14,15 +14,21 @@ In verbose mode, the desk utility provides a detailed report on the command outc
 The desk utility requires the desk_conf.json document, specifying which light(s) should receive the LightState
 command.
 
+SYNOPSIS
+desk.py [-e] [-v]
+
 EXAMPLES
 ./osio_mqtt_subscriber.py -c | ./node.py -c | ./chroma.py | ./desk.py -v -e
 
 FILES
 ~/SCS/hue/desk_conf.json
 
+DOCUMENT EXAMPLE - INPUT
+{"bri": 254, "transitiontime": 90, "xy": [0.3704, 0.5848]}
+
 SEE ALSO
-scs_philips_hue/chroma.py
-scs_philips_hue/desk_conf.py
+scs_philips_hue/chroma
+scs_philips_hue/desk_conf
 """
 
 import json

@@ -14,6 +14,9 @@ The node path can be specified either on the command line, or by referencing the
 The node utility may be set to either ignore documents that do not contain the specified node, or to terminate if the
 node is not present.
 
+SYNOPSIS
+node.py {-c | -t TOPIC_PATH } [-i] [-v]
+
 EXAMPLES
 ./osio_mqtt_subscriber.py -c | ./node.py -c | ./chroma.py | ./desk.py -v -e
 
@@ -21,8 +24,9 @@ FILES
 ~/SCS/hue/domain_conf.json
 
 SEE ALSO
-scs_philips_hue/aws_mqtt_subscriber.py
-scs_philips_hue/osio_mqtt_subscriber.py
+scs_philips_hue/aws_mqtt_subscriber
+scs_philips_hue/osio_mqtt_subscriber
+scs_philips_hue/domain_conf
 """
 
 import sys

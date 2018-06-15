@@ -12,8 +12,8 @@ scs_philips_hue.data.light.LightState document.
 
 The chroma utility requires the chroma_conf.json document, specifying the parameters of the mapping.
 
-https://en.wikipedia.org/wiki/Chromaticity
-https://developers.meethue.com/documentation/core-concepts
+SYNOPSIS
+chroma.py [-v]
 
 EXAMPLES
 ./osio_mqtt_subscriber.py -c | ./node.py -c | ./chroma.py | ./desk.py -v -e
@@ -21,12 +21,16 @@ EXAMPLES
 FILES
 ~/SCS/hue/chroma_conf.json
 
-DOCUMENT EXAMPLE
+DOCUMENT EXAMPLE - OUTPUT
 {"bri": 254, "transitiontime": 90, "xy": [0.3704, 0.5848]}
 
 SEE ALSO
-scs_philips_hue/chroma_conf.py
-scs_philips_hue/desk.py
+scs_philips_hue/chroma_conf
+scs_philips_hue/desk
+
+RESOURCES
+https://en.wikipedia.org/wiki/Chromaticity
+https://developers.meethue.com/documentation/core-concepts
 """
 
 import sys

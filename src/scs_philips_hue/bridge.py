@@ -8,7 +8,8 @@ Created on 11 Nov 2017
 DESCRIPTION
 The bridge utility is used to interrogate and update the Philips Hue Bridge device.
 
-https://developers.meethue.com/content/configuring-hue-without-phone-app-unable-update-software
+SYNOPSIS
+bridge.py [-n NAME] [-p PORTAL_SERVICES] [-c CHECK_UPDATE] [-u DO_UPDATE] [-z CHANNEL] [-v]
 
 EXAMPLES
 ./bridge.py -n scs-phb-001 -v
@@ -16,9 +17,15 @@ EXAMPLES
 FILES
 ~/SCS/hue/bridge_credentials.json
 
+DOCUMENT EXAMPLE
+{"bridge-id": "001788fffe795620", "username": "TIYoqrnwkvyODu8xE9zvRxjIJSRSde0qUzUqqIr7"}
+
 SEE ALSO
-scs_philips_hue/join.py
-scs_philips_hue/user.py
+scs_philips_hue/join
+scs_philips_hue/user
+
+RESOURCES
+https://developers.meethue.com/content/configuring-hue-without-phone-app-unable-update-software
 """
 
 import sys
