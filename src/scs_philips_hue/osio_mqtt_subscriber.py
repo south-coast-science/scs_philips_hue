@@ -43,7 +43,6 @@ import sys
 import time
 
 from scs_core.data.json import JSONify
-from scs_core.data.localized_datetime import LocalizedDatetime
 
 from scs_core.osio.client.api_auth import APIAuth
 from scs_core.osio.client.client_auth import ClientAuth
@@ -98,15 +97,6 @@ class OSIOMQTTHandler(object):
         if self.__verbose:
             print("osio_mqtt_subscriber: received: %s" % JSONify.dumps(pub), file=sys.stderr)
             sys.stderr.flush()
-
-
-    def print_status(self, status):
-        if not self.__verbose:
-            return
-
-        now = LocalizedDatetime.now()
-        print("%s:         mqtt: %s" % (now.as_iso8601(), status), file=sys.stderr)
-        sys.stderr.flush()
 
 
     # ----------------------------------------------------------------------------------------------------------------
