@@ -172,8 +172,22 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # run...
 
-        client.connect(auth)
+        # MQTT connect...
+        while True:
+            try:
+                if client.connect(auth):
+                    break
 
+                print("aws_mqtt_subscriber: connect: failed", file=sys.stderr)
+
+            except OSError as ex:
+                print("aws_mqtt_subscriber: connect: %s" % ex, file=sys.stderr)
+
+            time.sleep(2)       # wait for retry
+
+        print("aws_mqtt_subscriber: connect: done", file=sys.stderr)
+
+        # do nothing...
         # TODO: just join subscribers
         while True:
             time.sleep(1)
