@@ -40,7 +40,7 @@ from scs_core.sys.exception_report import ExceptionReport
 
 from scs_host.sys.host import Host
 
-from scs_philips_hue.cmd.cmd_simple import CmdSimple
+from scs_philips_hue.cmd.cmd_chroma import CmdChroma
 
 from scs_philips_hue.config.chroma_conf import ChromaConf
 
@@ -55,7 +55,7 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # cmd...
 
-    cmd = CmdSimple()
+    cmd = CmdChroma()
 
     if cmd.verbose:
         print("chroma: %s" % cmd, file=sys.stderr)
@@ -65,7 +65,7 @@ if __name__ == '__main__':
         # resources...
 
         # ChromaConf...
-        conf = ChromaConf.load(Host)
+        conf = ChromaConf.load_from_file(cmd.file) if cmd.file else ChromaConf.load(Host)
 
         if conf is None:
             print("chroma: ChromaConf not available.", file=sys.stderr)
