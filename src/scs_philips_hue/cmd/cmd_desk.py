@@ -16,9 +16,12 @@ class CmdDesk(object):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog [-e] [-v]", version="%prog 1.0")
+        self.__parser = optparse.OptionParser(usage="%prog [-f FILE] [-e] [-v]", version="%prog 1.0")
 
         # optional...
+        self.__parser.add_option("--file", "-f", type="string", nargs=1, action="store", dest="file",
+                                 help="chroma conf file")
+
         self.__parser.add_option("--echo", "-e", action="store_true", dest="echo", default=False,
                                  help="echo stdin to stdout")
 
@@ -29,6 +32,11 @@ class CmdDesk(object):
 
 
     # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    def file(self):
+        return self.__opts.file
+
 
     @property
     def echo(self):
@@ -52,4 +60,4 @@ class CmdDesk(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdDesk:{echo:%s, verbose:%s, args:%s}" %   (self.echo, self.verbose, self.args)
+        return "CmdDesk:{file:%s, echo:%s, verbose:%s, args:%s}" %   (self.file, self.echo, self.verbose, self.args)
