@@ -21,9 +21,9 @@ scs_analysis/socket_receiver
 
 import sys
 
-from scs_analysis.cmd.cmd_uds import CmdUDS
-
 from scs_host.comms.domain_socket import DomainSocket
+
+from scs_philips_hue.cmd.cmd_uds import CmdUDS
 
 
 # --------------------------------------------------------------------------------------------------------------------
