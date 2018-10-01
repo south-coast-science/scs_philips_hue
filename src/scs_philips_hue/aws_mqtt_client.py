@@ -37,9 +37,6 @@ import sys
 
 from collections import OrderedDict
 
-from scs_analysis.cmd.cmd_mqtt_client import CmdMQTTClient
-from scs_analysis.reporter.mqtt_reporter import MQTTReporter
-
 from scs_core.aws.client.client_auth import ClientAuth
 from scs_core.aws.client.mqtt_client import MQTTClient, MQTTSubscriber
 
@@ -50,6 +47,9 @@ from scs_host.comms.domain_socket import DomainSocket
 from scs_host.comms.stdio import StdIO
 
 from scs_host.sys.host import Host
+
+from scs_philips_hue.cmd.cmd_mqtt_client import CmdMQTTClient
+from scs_philips_hue.reporter.mqtt_reporter import MQTTReporter
 
 
 # --------------------------------------------------------------------------------------------------------------------
