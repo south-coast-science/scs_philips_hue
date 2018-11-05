@@ -10,7 +10,8 @@ document example:
 
 import optparse
 
-from scs_philips_hue.config.chroma_conf import ChromaConf
+from scs_philips_hue.config.chroma_conf import ChromaMin, ChromaInterval
+from scs_philips_hue.data.light.chroma import ChromaPoint
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -22,26 +23,25 @@ class CmdChromaConf(object):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog [{ [-d DOMAIN_MIN DOMAIN_MAX] "
-                                                    "[-r { R | G | B | W } { R | G | B | W }] "
-                                                    "[-b BRIGHTNESS] [-t TRANSITION] | -x }] [-v]",
+        self.__parser = optparse.OptionParser(usage="%prog [-m DOMAIN_MIN CHR_X CHR_Y] [-i DOMAIN_MAX CHR_X CHR_Y] "
+                                                    "[-b BRIGHTNESS] [-t TRANSITION] [-v]",
                                               version="%prog 1.0")
 
         # optional...
-        self.__parser.add_option("--domain", "-d", type="float", nargs=2, action="store", dest="domain",
-                                 help="set domain min and max values")
+        self.__parser.add_option("--min", "-m", type="float", nargs=3, action="store", dest="minimum",
+                                 help="set minimum values")
 
-        self.__parser.add_option("--range", "-r", type="string", nargs=2, action="store", dest="range",
-                                 help="set range min and max chromaticity")
+        self.__parser.add_option("--int", "-i", type="float", nargs=3, action="store", dest="insert_interval",
+                                 help="add or update an interval with the given DOMAIN_MAX")
+
+        self.__parser.add_option("--del", "-d", type="float", nargs=1, action="store", dest="delete_interval",
+                                 help="delete the interval with the given DOMAIN_MAX")
 
         self.__parser.add_option("--bright", "-b", type="int", nargs=1, action="store", dest="brightness",
                                  help="set the lamp brightness (max 254)")
 
         self.__parser.add_option("--trans", "-t", type="float", nargs=1, action="store", dest="transition_time",
                                  help="set the lamp transition time (seconds)")
-
-        self.__parser.add_option("--delete", "-x", action="store_true", dest="delete",
-                                 help="delete the Chroma configuration")
 
         self.__parser.add_option("--verbose", "-v", action="store_true", dest="verbose", default=False,
                                  help="report narrative to stderr")
@@ -52,18 +52,6 @@ class CmdChromaConf(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def is_valid(self):
-        if self.set() and self.delete is not None:
-            return False
-
-        if self.__opts.range is not None and self.__opts.range[0] not in ChromaConf.CANONICAL_CHROMAS:
-            return False
-
-        if self.__opts.range is not None and self.__opts.range[1] not in ChromaConf.CANONICAL_CHROMAS:
-            return False
-
-        if self.__opts.domain is not None and self.domain_min > self.domain_max:
-            return None
-
         if self.brightness is not None and (self.brightness < 0 or self.brightness > 254):
             return False
 
@@ -71,7 +59,7 @@ class CmdChromaConf(object):
 
 
     def is_complete(self):
-        if self.__opts.domain is None or self.__opts.range is None or \
+        if self.minimum is None or self.insert_interval is None or \
                 self.brightness is None or self.transition_time is None:
             return False
 
@@ -79,33 +67,34 @@ class CmdChromaConf(object):
 
 
     def set(self):
-        return self.__opts.domain is not None or self.__opts.range is not None or \
+        return self.minimum is not None or self.insert_interval is not None or \
                self.brightness is not None or self.transition_time is not None
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
-    def domain_min(self):
-        return None if self.__opts.domain is None else self.__opts.domain[0]
+    def minimum(self):
+        if self.__opts.minimum is None:
+            return None
+
+        return ChromaMin(self.__opts.minimum[0], ChromaPoint(self.__opts.minimum[1], self.__opts.minimum[2]))
 
 
     @property
-    def domain_max(self):
-        return None if self.__opts.domain is None else self.__opts.domain[1]
+    def insert_interval(self):
+        if self.__opts.insert_interval is None:
+            return None
+
+        point = ChromaPoint(self.__opts.insert_interval[1], self.__opts.insert_interval[2])
+
+        return ChromaInterval(self.__opts.insert_interval[0], point)
 
 
     @property
-    def range_min(self):
-        return None if self.__opts.range is None else ChromaConf.CANONICAL_CHROMAS[self.__opts.range[0]]
+    def delete_interval(self):
+        return self.__opts.delete_interval
 
-
-    @property
-    def range_max(self):
-        return None if self.__opts.range is None else ChromaConf.CANONICAL_CHROMAS[self.__opts.range[1]]
-
-
-    # ----------------------------------------------------------------------------------------------------------------
 
     @property
     def brightness(self):
@@ -115,11 +104,6 @@ class CmdChromaConf(object):
     @property
     def transition_time(self):
         return self.__opts.transition_time
-
-
-    @property
-    def delete(self):
-        return self.__opts.delete
 
 
     @property
@@ -139,7 +123,7 @@ class CmdChromaConf(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdChromaConf:{domain:%s, range:%s, brightness:%s, transition_time:%s, " \
-               "delete:%s, verbose:%s, args:%s}" % \
-                    (self.__opts.domain, self.__opts.range, self.brightness, self.transition_time,
-                     self.delete, self.verbose, self.args)
+        return "CmdChromaConf:{minimum:%s, insert_interval:%s, delete_interval:%s, " \
+               "brightness:%s, transition_time:%s, verbose:%s, args:%s}" % \
+                    (self.minimum, self.insert_interval, self.delete_interval,
+                     self.brightness, self.transition_time, self.verbose, self.args)

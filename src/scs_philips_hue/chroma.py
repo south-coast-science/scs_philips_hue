@@ -36,7 +36,6 @@ https://developers.meethue.com/documentation/core-concepts
 import sys
 
 from scs_core.data.json import JSONify
-from scs_core.sys.exception_report import ExceptionReport
 
 from scs_host.sys.host import Host
 
@@ -44,7 +43,7 @@ from scs_philips_hue.cmd.cmd_chroma import CmdChroma
 
 from scs_philips_hue.config.chroma_conf import ChromaConf
 
-from scs_philips_hue.data.light.chroma import ChromaSegment
+from scs_philips_hue.data.light.chroma import ChromaPath
 from scs_philips_hue.data.light.light_state import LightState
 
 
@@ -74,14 +73,11 @@ if __name__ == '__main__':
         if cmd.verbose:
             print("chroma: %s" % conf, file=sys.stderr)
 
-        domain_min = conf.domain_min
-        domain_max = conf.domain_max
-
-        # chromaticity segment...
-        segment = ChromaSegment(conf.range_min, conf.range_max)
+        # chromaticity path...
+        path = ChromaPath.construct(conf.minimum, conf.intervals)
 
         if cmd.verbose:
-            print("chroma: %s" % segment, file=sys.stderr)
+            print("chroma: %s" % path, file=sys.stderr)
             sys.stderr.flush()
 
 
@@ -104,14 +100,8 @@ if __name__ == '__main__':
             except ValueError:
                 continue
 
-            # clip...
-            domain_value = domain_min if value < domain_min else value
-            domain_value = domain_max if value > domain_max else value
-
             # interpolate...
-            intermediate = (domain_value - domain_min) / (domain_max - domain_min)
-
-            chroma = segment.interpolate(intermediate)
+            chroma = path.interpolate(value)
             state = LightState(bri=conf.brightness, xy=chroma, transition_time=conf.transition_time)
 
             print(JSONify.dumps(state))
@@ -124,6 +114,3 @@ if __name__ == '__main__':
     except KeyboardInterrupt:
         if cmd.verbose:
             print("chroma: KeyboardInterrupt", file=sys.stderr)
-
-    except Exception as ex:
-        print(JSONify.dumps(ExceptionReport.construct(ex)), file=sys.stderr)
