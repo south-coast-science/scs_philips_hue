@@ -23,8 +23,7 @@ class CmdChromaConf(object):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog [-m DOMAIN_MIN CHR_X CHR_Y] "
-                                                    "[-i DOMAIN_MAX CHR_X CHR_Y] [-d DOMAIN_MAX] "
+        self.__parser = optparse.OptionParser(usage="%prog [-m DOMAIN_MIN CHR_X CHR_Y] [-i DOMAIN_MAX CHR_X CHR_Y] "
                                                     "[-b BRIGHTNESS] [-t TRANSITION] [-v]",
                                               version="%prog 1.0")
 

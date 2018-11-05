@@ -7,27 +7,36 @@ Created on 16 Mar 2018
 
 DESCRIPTION
 The chroma_conf utility is used to specify the parameters of a mapping from environmental data domain values to
-chromaticity locations. In addition to chromaticity mapping, the configuration includes lamp brightness and
+locations in a chromaticity space. In addition to chromaticity mapping, the configuration includes lamp brightness and
 transition time.
+
+A chromaticity chart is available at: https://developers.meethue.com/documentation/core-concepts
+
+The mapping is specified as a start point - a minimum - followed by one or more intervals. When a chroma_conf
+configuration is first created, a minimum and one interval must be specified. Subsequent intervals may be added, one
+at a time. Intervals are stored in ascending order of their domain value.
 
 The chroma_conf.json document managed by the chroma_conf utility is used by chroma.py
 
 SYNOPSIS
-chroma_conf.py [{ [-d DOMAIN_MIN DOMAIN_MAX] [-r { R | G | B | W } { R | G | B | W }] [-b BRIGHTNESS] [-t TRANSITION] |
--x }] [-v]
+chroma_conf.py [-m DOMAIN_MIN CHR_X CHR_Y] [-i DOMAIN_MAX CHR_X CHR_Y] [-b BRIGHTNESS] [-t TRANSITION] [-v]
 
 EXAMPLES
-./chroma_conf.py -v -p /orgs/south-coast-science-demo/brighton/loc/1/particulates
+./chroma_conf.py -m 0 0.08 0.84 -i 100 0.74 0.26 -b 254 -t 9
 
 FILES
 ~/SCS/hue/chroma_conf.json
 
 DOCUMENT EXAMPLE
-{"domain-min": 0.0, "domain-max": 50.0, "range-min": [0.08, 0.84], "range-max": [0.74, 0.26],
+{"min": {"domain-min": 0, "range-min": [0.08, 0.84]}, "intervals": [{"domain-max": 100, "range-max": [0.74, 0.26]}],
 "brightness": 128, "transition-time": 9}
 
 SEE ALSO
 scs_philips_hue/chroma
+
+RESOURCES
+https://en.wikipedia.org/wiki/Chromaticity
+https://developers.meethue.com/documentation/core-concepts
 """
 
 import sys
