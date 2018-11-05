@@ -69,26 +69,46 @@ if __name__ == '__main__':
     # run...
 
     if cmd.set():
-        if conf is None and not cmd.is_complete():
-            print("chroma_conf: no configuration is stored. You must therefore set all fields:", file=sys.stderr)
-            cmd.print_help(sys.stderr)
-            exit(1)
+        if conf is None:
+            if not cmd.is_complete():
+                print("chroma_conf: no configuration is stored. You must therefore set all fields:", file=sys.stderr)
+                cmd.print_help(sys.stderr)
+                exit(1)
 
-        domain_min = conf.domain_min if cmd.domain_min is None else cmd.domain_min
-        domain_max = conf.domain_max if cmd.domain_max is None else cmd.domain_max
+            conf = ChromaConf(cmd.minimum, [cmd.insert_interval], cmd.brightness, cmd.transition_time)
 
-        range_min = conf.range_min if cmd.range_min is None else cmd.range_min
-        range_max = conf.range_max if cmd.range_max is None else cmd.range_max
+        else:
+            minimum = conf.minimum if cmd.minimum is None else cmd.minimum
 
-        brightness = conf.brightness if cmd.brightness is None else cmd.brightness
-        transition_time = conf.transition_time if cmd.transition_time is None else cmd.transition_time
+            if cmd.insert_interval is None:
+                intervals = conf.intervals
 
-        conf = ChromaConf(domain_min, domain_max, range_min, range_max, brightness, transition_time)
+            else:
+                conf.insert_interval(cmd.insert_interval)
+                intervals = conf.intervals
+
+            brightness = conf.brightness if cmd.brightness is None else cmd.brightness
+            transition_time = conf.transition_time if cmd.transition_time is None else cmd.transition_time
+
+            conf = ChromaConf(minimum, intervals, brightness, transition_time)
+
         conf.save(Host)
 
-    if cmd.delete:
-        conf.delete(Host)
-        conf = None
+    if cmd.delete_interval:
+        if conf is None:
+            print("chroma_conf: There are no intervals to be deleted.", file=sys.stderr)
+            exit(1)
+
+        if len(conf) < 2:
+            print("chroma_conf: There must be at least one interval.", file=sys.stderr)
+            exit(1)
+
+        if not conf.has_interval(cmd.delete_interval):
+            print("chroma_conf: No interval exists with that domain value.", file=sys.stderr)
+            exit(1)
+
+        conf.remove_interval(cmd.delete_interval)
+        conf.save(Host)
 
     if conf:
         print(JSONify.dumps(conf))

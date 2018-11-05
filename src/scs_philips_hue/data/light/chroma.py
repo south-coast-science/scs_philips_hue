@@ -7,7 +7,95 @@ https://en.wikipedia.org/wiki/Chromaticity
 https://developers.meethue.com/documentation/core-concepts
 """
 
+from collections import OrderedDict
+
 from scs_core.data.json import JSONable
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+class ChromaPath(object):
+    """
+    classdocs
+    """
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
+    def construct(cls, minimum, intervals):
+        # initialise...
+        domain_min = minimum.domain_min                 # int
+        domain_max = domain_min                         # int
+
+        range_min = minimum.range_min                   # ChromaPoint
+
+        # build segments...
+        segments = OrderedDict()
+
+        for interval in intervals:
+            if interval.domain_max < domain_max:
+                raise ValueError("ChromaConf intervals not presented in ascending domain order.")
+
+            segments[interval.domain_max] = ChromaSegment.construct(range_min, interval.range_max)
+            range_min = interval.range_max
+
+            domain_max = interval.domain_max
+
+        return ChromaPath(domain_min, domain_max, segments)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __init__(self, domain_min, domain_max, segments):
+        """
+        Constructor
+        """
+        self.__domain_min = domain_min                  # int
+        self.__domain_max = domain_max                  # int
+
+        self.__segments = segments                      # OrderedDict of int domain_max: ChromaSegment
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def interpolate(self, domain_value):
+        # adjust for out-of-range...
+        domain_value = self.domain_min if domain_value < self.domain_min else domain_value
+        domain_value = self.domain_max if domain_value > self.domain_max else domain_value
+
+        domain_min = self.domain_min
+
+        # find segment for interpolation...
+        for domain_max, segment in self.segments.items():
+            if domain_value <= domain_max:
+                return segment.interpolate(domain_min, domain_max, domain_value)
+
+            domain_min = domain_max
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    def domain_min(self):
+        return self.__domain_min
+
+
+    @property
+    def domain_max(self):
+        return self.__domain_max
+
+
+    @property
+    def segments(self):
+        return self.__segments
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __str__(self, *args, **kwargs):
+        segments = '{' + ', '.join(str(key) + ': ' + str(segment) for key, segment in self.__segments.items()) + '}'
+
+        return "ChromaPath:{domain_min:%s, domain_max:%s, segments:%s}" % (self.domain_min, self.domain_max, segments)
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -19,22 +107,33 @@ class ChromaSegment(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, start, end):
+    @classmethod
+    def construct(cls, start, end):
+        delta_x = end.x - start.x
+        delta_y = end.y - start.y
+
+        return ChromaSegment(start, end, delta_x, delta_y)
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __init__(self, start, end, delta_x, delta_y):
         """
         Constructor
         """
-        self.__start = start                            # ChromaPoint
-        self.__end = end                                # ChromaPoint
+        self.__start = start                        # ChromaPoint
+        self.__end = end                            # ChromaPoint
 
-        self.__delta_x = self.end.x - self.start.x
-        self.__delta_y = self.end.y - self.start.y
+        self.__delta_x = delta_x
+        self.__delta_y = delta_y
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def interpolate(self, intermediate):
+    def interpolate(self, domain_min, domain_max, domain_value):
+        intermediate = (domain_value - domain_min) / (domain_max - domain_min)
+
         if not (0.0 <= intermediate <= 1.0):
-            raise ValueError(intermediate)
+            raise ValueError(domain_value)
 
         x = self.start.x + (self.__delta_x * intermediate)
         y = self.start.y + (self.__delta_y * intermediate)
