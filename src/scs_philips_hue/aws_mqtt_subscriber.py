@@ -59,6 +59,8 @@ from scs_philips_hue.cmd.cmd_mqtt_subscriber import CmdMQTTSubscriber
 from scs_philips_hue.config.domain_conf import DomainConf
 
 
+# TODO: tear out the comms parameter to the handler - just use stdout
+
 # --------------------------------------------------------------------------------------------------------------------
 # subscription handler...
 
