@@ -6,37 +6,26 @@ Created on 11 Apr 2017
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 DESCRIPTION
-The node utility is used to extract a node from within a JSON document. Data is presented as a sequence of documents on
-stdin, and the extracted node is passed to stdout. The extracted node may be a leaf node or an internal node. If no
-node path is specified, the whole input document is passed to stdout.
+The node utility is used to extract a node within a JSON document. Data is presented as a sequence of documents on
+stdin, the node is passed to stdout. The extracted node may be a leaf node or an internal node.
 
+The node path can be specified either on the command line, or by referencing the domain_conf.json document.
 The node utility may be set to either ignore documents that do not contain the specified node, or to terminate if the
 node is not present.
 
-By default, output is in the form of a sequence of JSON documents, separated by newlines. If the array (-a) option is
-selected, output is in the form of a JSON array - the output opens with a '[' character, documents are separated by
-the ',' character, and the output is terminated by a ']' character.
-
-Alternatively, if the node is an array or other iterable type, then it may be output as a sequence (a list of items
-separated by newline characters) according to the -s flag.
-
 SYNOPSIS
-node.py [-i] [{ -a | -s }] [-v] [PATH]
+node.py {-c | -t TOPIC_PATH } [-i] [-v]
 
 EXAMPLES
-climate_sampler.py -i5 | node.py val
+./osio_mqtt_subscriber.py -c | ./node.py -c | ./chroma.py | ./desk.py -v -e
 
-DOCUMENT EXAMPLE - INPUT
-{"tag": "scs-ap1-6", "rec": "2018-04-04T14:50:38.394+00:00", "val": {"hmd": 59.7, "tmp": 23.8}}
-{"tag": "scs-ap1-6", "rec": "2018-04-04T14:55:38.394+00:00", "val": {"hmd": 59.8, "tmp": 23.9}}
+FILES
+~/SCS/hue/domain_conf.json
 
-DOCUMENT EXAMPLE - OUTPUT
-Default mode:
-{"hmd": 59.7, "tmp": 23.8}
-{"hmd": 59.8, "tmp": 23.9}
-
-Array mode:
-[{"hmd": 59.7, "tmp": 23.8}, {"hmd": 59.8, "tmp": 23.9}]
+SEE ALSO
+scs_philips_hue/aws_mqtt_subscriber
+scs_philips_hue/osio_mqtt_subscriber
+scs_philips_hue/domain_conf
 """
 
 import sys
@@ -44,7 +33,10 @@ import sys
 from scs_core.data.json import JSONify
 from scs_core.data.path_dict import PathDict
 
+from scs_host.sys.host import Host
+
 from scs_philips_hue.cmd.cmd_node import CmdNode
+from scs_philips_hue.config.domain_conf import DomainConf
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -64,14 +56,28 @@ if __name__ == '__main__':
         print("node: %s" % cmd, file=sys.stderr)
         sys.stderr.flush()
 
+
     try:
         # ------------------------------------------------------------------------------------------------------------
+        # resources...
+
+        # DomainConf...
+        if cmd.use_domain_conf:
+            domain = DomainConf.load(Host)
+            topic_path = domain.topic_path + '.' + domain.document_node
+
+            if domain is None:
+                print("node: Domain not available.", file=sys.stderr)
+                exit(1)
+
+            if cmd.verbose:
+                print("node: %s" % domain, file=sys.stderr)
+        else:
+            topic_path = cmd.topic_path
+
+
+        # ------------------------------------------------------------------------------------------------------------
         # run...
-
-        if cmd.array:
-            print('[', end='')
-
-        first = True
 
         for line in sys.stdin:
             datum = PathDict.construct_from_jstr(line)
@@ -79,31 +85,12 @@ if __name__ == '__main__':
             if datum is None:
                 continue
 
-            if cmd.ignore and not datum.has_path(cmd.path):
+            if cmd.ignore and not datum.has_path(topic_path):
                 continue
 
-            node = datum.node(cmd.path)
-            document = JSONify.dumps(node)
+            node = datum.node(topic_path)
 
-            if cmd.sequence:
-                try:
-                    for item in node:
-                        print(JSONify.dumps(item))
-                except TypeError:
-                    print(document)
-
-            else:
-                if cmd.array:
-                    if first:
-                        print(document, end='')
-                        first = False
-
-                    else:
-                        print(", %s" % document, end='')
-
-                else:
-                    print(document)
-
+            print(JSONify.dumps(node))
             sys.stdout.flush()
 
 
@@ -113,8 +100,3 @@ if __name__ == '__main__':
     except KeyboardInterrupt:
         if cmd.verbose:
             print("node: KeyboardInterrupt", file=sys.stderr)
-
-    finally:
-        if cmd.array:
-            print(']')
-

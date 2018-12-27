@@ -16,17 +16,18 @@ class CmdNode(object):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog [-i] [{ -a | -s }] [-v] [PATH]", version="%prog 1.0")
+        self.__parser = optparse.OptionParser(usage="%prog {-c | -t TOPIC_PATH } [-i] [-v]", version="%prog 1.0")
+
+        # compulsory...
+        self.__parser.add_option("--conf", "-c", action="store_true", dest="use_domain_conf", default=False,
+                                 help="get topic.node from the domain conf")
+
+        self.__parser.add_option("--topic", "-t", type="string", nargs=1, action="store", dest="topic_path",
+                                 help="use the given topic.node")
 
         # optional...
         self.__parser.add_option("--ignore", "-i", action="store_true", dest="ignore", default=False,
                                  help="ignore data where node is missing")
-
-        self.__parser.add_option("--array", "-a", action="store_true", dest="array", default=False,
-                                 help="output the sequence of input JSON documents as array")
-
-        self.__parser.add_option("--sequence", "-s", action="store_true", dest="sequence", default=False,
-                                 help="output the contents of the input array node as a sequence")
 
         self.__parser.add_option("--verbose", "-v", action="store_true", dest="verbose", default=False,
                                  help="report narrative to stderr")
@@ -37,7 +38,10 @@ class CmdNode(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def is_valid(self):
-        if self.array and self.sequence:
+        if self.use_domain_conf and self.topic_path is not None:
+            return False
+
+        if not self.use_domain_conf and self.topic_path is None:
             return False
 
         return True
@@ -46,28 +50,23 @@ class CmdNode(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
+    def use_domain_conf(self):
+        return self.__opts.use_domain_conf
+
+
+    @property
+    def topic_path(self):
+        return self.__opts.topic_path
+
+
+    @property
     def ignore(self):
         return self.__opts.ignore
 
 
     @property
-    def array(self):
-        return self.__opts.array
-
-
-    @property
-    def sequence(self):
-        return self.__opts.sequence
-
-
-    @property
     def verbose(self):
         return self.__opts.verbose
-
-
-    @property
-    def path(self):
-        return self.__args[0] if len(self.__args) > 0 else None
 
 
     @property
@@ -82,5 +81,5 @@ class CmdNode(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdNode:{ignore:%s, array:%s, sequence:%s, verbose:%s, path:%s, args:%s}" %  \
-               (self.ignore, self.array, self.sequence, self.verbose, self.path, self.args)
+        return "CmdNode:{use_domain_conf:%s, topic_path:%s, ignore:%s, verbose:%s, args:%s}" %  \
+               (self.use_domain_conf, self.topic_path, self.ignore, self.verbose, self.args)
