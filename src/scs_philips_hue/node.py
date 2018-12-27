@@ -79,6 +79,8 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # run...
 
+        node = None
+
         for line in sys.stdin:
             datum = PathDict.construct_from_jstr(line)
 
@@ -88,7 +90,12 @@ if __name__ == '__main__':
             if cmd.ignore and not datum.has_path(topic_path):
                 continue
 
-            node = datum.node(topic_path)
+            try:
+                node = datum.node(topic_path)
+
+            except KeyError as ex:
+                print("node: KeyError: %s" % ex, file=sys.stderr)
+                exit(1)
 
             print(JSONify.dumps(node))
             sys.stdout.flush()
