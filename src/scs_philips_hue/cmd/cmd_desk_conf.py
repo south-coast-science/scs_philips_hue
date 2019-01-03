@@ -69,11 +69,6 @@ class CmdDeskConf(object):
         return self.__opts.verbose
 
 
-    @property
-    def args(self):
-        return self.__args
-
-
     # ----------------------------------------------------------------------------------------------------------------
 
     def print_help(self, file):
@@ -81,5 +76,5 @@ class CmdDeskConf(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdDeskConf:{add_lamp:%s, remove_lamp:%s, delete:%s, verbose:%s, args:%s}" % \
-                    (self.add_lamp, self.remove_lamp, self.delete, self.verbose, self.args)
+        return "CmdDeskConf:{add_lamp:%s, remove_lamp:%s, delete:%s, verbose:%s}" % \
+                    (self.add_lamp, self.remove_lamp, self.delete, self.verbose)

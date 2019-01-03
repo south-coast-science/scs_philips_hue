@@ -48,11 +48,6 @@ class CmdDesk(object):
         return self.__opts.verbose
 
 
-    @property
-    def args(self):
-        return self.__args
-
-
     # ----------------------------------------------------------------------------------------------------------------
 
     def print_help(self, file):
@@ -60,4 +55,4 @@ class CmdDesk(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdDesk:{file:%s, echo:%s, verbose:%s, args:%s}" %   (self.file, self.echo, self.verbose, self.args)
+        return "CmdDesk:{file:%s, echo:%s, verbose:%s}" %  (self.file, self.echo, self.verbose)
