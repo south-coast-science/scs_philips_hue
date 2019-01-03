@@ -103,11 +103,6 @@ class CmdBridge(object):
         return self.__opts.verbose
 
 
-    @property
-    def args(self):
-        return self.__args
-
-
     # ----------------------------------------------------------------------------------------------------------------
 
     def print_help(self, file):
@@ -116,6 +111,6 @@ class CmdBridge(object):
 
     def __str__(self, *args, **kwargs):
         return "CmdBridge:{name:%s, portal_services:%s, check_update:%s, do_update:%s, zigbee_channel:%s, " \
-               "verbose:%s, args:%s}" %  \
+               "verbose:%s}" %  \
                (self.name, self.portal_services, self.check_update, self.do_update, self.zigbee_channel,
-                self.verbose, self.args)
+                self.verbose)

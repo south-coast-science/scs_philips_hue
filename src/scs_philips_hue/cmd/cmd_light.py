@@ -99,11 +99,6 @@ class CmdLight(object):
         return self.__opts.verbose
 
 
-    @property
-    def args(self):
-        return self.__args
-
-
     # ----------------------------------------------------------------------------------------------------------------
 
     def print_help(self, file):
@@ -111,5 +106,5 @@ class CmdLight(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdLight:{add:%s, search:%s, list:%s, delete:%s, name:%s, verbose:%s, args:%s}" %  \
-               (self.add, self.search, self.list, self.delete, self.name, self.verbose, self.args)
+        return "CmdLight:{add:%s, search:%s, list:%s, delete:%s, name:%s, verbose:%s}" %  \
+               (self.add, self.search, self.list, self.delete, self.name, self.verbose)

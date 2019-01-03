@@ -111,11 +111,6 @@ class CmdChromaConf(object):
         return self.__opts.verbose
 
 
-    @property
-    def args(self):
-        return self.__args
-
-
     # ----------------------------------------------------------------------------------------------------------------
 
     def print_help(self, file):
@@ -124,6 +119,6 @@ class CmdChromaConf(object):
 
     def __str__(self, *args, **kwargs):
         return "CmdChromaConf:{minimum:%s, insert_interval:%s, delete_interval:%s, " \
-               "brightness:%s, transition_time:%s, verbose:%s, args:%s}" % \
+               "brightness:%s, transition_time:%s, verbose:%s}" % \
                     (self.minimum, self.insert_interval, self.delete_interval,
-                     self.brightness, self.transition_time, self.verbose, self.args)
+                     self.brightness, self.transition_time, self.verbose)

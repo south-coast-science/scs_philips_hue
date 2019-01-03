@@ -69,11 +69,6 @@ class CmdNode(object):
         return self.__opts.verbose
 
 
-    @property
-    def args(self):
-        return self.__args
-
-
     # ----------------------------------------------------------------------------------------------------------------
 
     def print_help(self, file):
@@ -81,5 +76,5 @@ class CmdNode(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdNode:{use_domain_conf:%s, topic_path:%s, ignore:%s, verbose:%s, args:%s}" %  \
-               (self.use_domain_conf, self.topic_path, self.ignore, self.verbose, self.args)
+        return "CmdNode:{use_domain_conf:%s, topic_path:%s, ignore:%s, verbose:%s}" %  \
+               (self.use_domain_conf, self.topic_path, self.ignore, self.verbose)

@@ -80,11 +80,6 @@ class CmdDomainConf(object):
         return self.__opts.verbose
 
 
-    @property
-    def args(self):
-        return self.__args
-
-
     # ----------------------------------------------------------------------------------------------------------------
 
     def print_help(self, file):
@@ -92,5 +87,5 @@ class CmdDomainConf(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdDomainConf:{topic_path:%s, document_node:%s, delete:%s, verbose:%s, args:%s}" % \
-                    (self.topic_path, self.document_node, self.delete, self.verbose, self.args)
+        return "CmdDomainConf:{topic_path:%s, document_node:%s, delete:%s, verbose:%s}" % \
+                    (self.topic_path, self.document_node, self.delete, self.verbose)

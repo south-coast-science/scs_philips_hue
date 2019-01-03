@@ -61,11 +61,6 @@ class CmdMQTTSubscriber(object):
         return self.__opts.verbose
 
 
-    @property
-    def args(self):
-        return self.__args
-
-
     # ----------------------------------------------------------------------------------------------------------------
 
     def print_help(self, file):
@@ -73,5 +68,5 @@ class CmdMQTTSubscriber(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdMQTTSubscriber:{use_domain_conf:%s, topic_path:%s, verbose:%s, args:%s}" % \
-               (self.use_domain_conf, self.topic_path, self.verbose, self.args)
+        return "CmdMQTTSubscriber:{use_domain_conf:%s, topic_path:%s, verbose:%s}" % \
+               (self.use_domain_conf, self.topic_path, self.verbose)
