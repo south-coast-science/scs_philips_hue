@@ -30,8 +30,6 @@ class UPnPDiscovery(object):
     def find(self, id):
         descriptions = self.find_all()
 
-        print("descriptions: %s" % descriptions)
-
         for description in descriptions:
             if description.id == id:
                 return description

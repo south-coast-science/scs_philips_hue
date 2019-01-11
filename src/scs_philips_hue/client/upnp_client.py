@@ -61,7 +61,6 @@ class UPnPClient(object):
             response_jstr = self.__http_client.get(self.__PATH, {}, self.__headers)
         except HTTPException as exc:
             if exc.status == HTTPStatus.NOT_FOUND:
-                print("not found!")
                 return []
             else:
                 raise ClientException.construct(exc) from exc
