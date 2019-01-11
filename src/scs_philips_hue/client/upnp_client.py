@@ -19,8 +19,6 @@ from scs_core.sys.http_status import HTTPStatus
 from scs_philips_hue.client.client_exception import ClientException
 
 
-# TODO: https://discovery.meethue.com
-
 # --------------------------------------------------------------------------------------------------------------------
 
 class UPnPClient(object):
@@ -28,8 +26,11 @@ class UPnPClient(object):
     classdocs
     """
 
-    __HOST = "www.meethue.com"                  # hard-coded URL
-    __PATH = "/api/nupnp"                       # hard-coded URL
+    __HOST = "discovery.meethue.com"            # hard-coded URL
+    __PATH = ""                                 # hard-coded URL
+
+    # __HOST = "www.meethue.com"                # hard-coded URL
+    # __PATH = "/api/nupnp"                     # hard-coded URL
 
     __HEADER_ACCEPT = "application/json"
 
@@ -46,7 +47,7 @@ class UPnPClient(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def connect(self):
-        self.__http_client.connect(UPnPClient.__HOST)
+        self.__http_client.connect(self.__HOST)
 
 
     def close(self):
