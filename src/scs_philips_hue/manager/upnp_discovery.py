@@ -42,6 +42,7 @@ class UPnPDiscovery(object):
         try:
             self.__upnp_client.connect()
             response_jdict = self.__upnp_client.get()
+
         finally:
             self.__upnp_client.close()
 

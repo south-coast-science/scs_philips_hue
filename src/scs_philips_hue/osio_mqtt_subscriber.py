@@ -64,7 +64,7 @@ from scs_philips_hue.config.domain_conf import DomainConf
 # --------------------------------------------------------------------------------------------------------------------
 # subscription handler...
 
-class OSIOMQTTHandler(object):
+class OSIOMQTTClientHandler(object):
     """
     classdocs
     """
@@ -88,7 +88,7 @@ class OSIOMQTTHandler(object):
 
         except ConnectionRefusedError:
             if self.__verbose:
-                print("OSIOMQTTHandler: connection refused for %s" % self.__comms.address, file=sys.stderr)
+                print("OSIOMQTTClientHandler: connection refused for %s" % self.__comms.address, file=sys.stderr)
                 sys.stderr.flush()
 
         finally:
@@ -102,7 +102,7 @@ class OSIOMQTTHandler(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "OSIOMQTTHandler:{comms:%s, verbose:%s}" %  (self.__comms, self.__verbose)
+        return "OSIOMQTTClientHandler:{comms:%s, verbose:%s}" %  (self.__comms, self.__verbose)
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -171,7 +171,7 @@ if __name__ == '__main__':
             exit(1)
 
         # subscribers...
-        handler = OSIOMQTTHandler(StdIO(), cmd.verbose)
+        handler = OSIOMQTTClientHandler(StdIO(), cmd.verbose)
         subscriber = MQTTSubscriber(topic_path, handler.handle)
 
         # client...

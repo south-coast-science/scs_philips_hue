@@ -5,6 +5,8 @@ Created on 27 Oct 2017
 
 header:
 CURLOPT_HTTPHEADER => array('Accept: application/json')
+
+https://developers.meethue.com/news/
 """
 
 import json
@@ -24,8 +26,8 @@ class UPnPClient(object):
     classdocs
     """
 
-    __HOST = "www.meethue.com"                  # hard-coded URL
-    __PATH = "/api/nupnp"                       # hard-coded URL
+    __HOST = "discovery.meethue.com"            # hard-coded URL - was "www.meethue.com"
+    __PATH = ""                                 # hard-coded URL - was "/api/nupnp"
 
     __HEADER_ACCEPT = "application/json"
 
@@ -42,7 +44,7 @@ class UPnPClient(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def connect(self):
-        self.__http_client.connect(UPnPClient.__HOST)
+        self.__http_client.connect(self.__HOST)
 
 
     def close(self):
@@ -67,7 +69,7 @@ class UPnPClient(object):
 
     @property
     def __headers(self):
-        return {"Accept": UPnPClient.__HEADER_ACCEPT}
+        return {"Accept": self.__HEADER_ACCEPT}
 
 
     # ----------------------------------------------------------------------------------------------------------------
