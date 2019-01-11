@@ -94,7 +94,7 @@ class AWSMQTTHandler(object):
 
         except ConnectionRefusedError:
             if self.__verbose:
-                print("AWSMQTTHandler: connection refused for %s" % self.__comms.address, file=sys.stderr)
+                print("AWSMQTTClientHandler: connection refused for %s" % self.__comms.address, file=sys.stderr)
                 sys.stderr.flush()
 
         finally:
@@ -108,7 +108,7 @@ class AWSMQTTHandler(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "AWSMQTTHandler:{comms:%s, verbose:%s}" % (self.__comms, self.__verbose)
+        return "AWSMQTTClientHandler:{comms:%s, verbose:%s}" % (self.__comms, self.__verbose)
 
 
 # --------------------------------------------------------------------------------------------------------------------
