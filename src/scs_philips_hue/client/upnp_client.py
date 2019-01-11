@@ -69,7 +69,7 @@ class UPnPClient(object):
 
     @property
     def __headers(self):
-        return {"Accept": UPnPClient.__HEADER_ACCEPT}
+        return {"Accept": self.__HEADER_ACCEPT}
 
 
     # ----------------------------------------------------------------------------------------------------------------
