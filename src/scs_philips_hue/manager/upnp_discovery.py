@@ -30,6 +30,8 @@ class UPnPDiscovery(object):
     def find(self, id):
         descriptions = self.find_all()
 
+        print("descriptions: %s" % descriptions)
+
         for description in descriptions:
             if description.id == id:
                 return description
@@ -42,6 +44,7 @@ class UPnPDiscovery(object):
         try:
             self.__upnp_client.connect()
             response_jdict = self.__upnp_client.get()
+
         finally:
             self.__upnp_client.close()
 

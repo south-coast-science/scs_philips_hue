@@ -5,6 +5,8 @@ Created on 27 Oct 2017
 
 header:
 CURLOPT_HTTPHEADER => array('Accept: application/json')
+
+https://developers.meethue.com/news/
 """
 
 import json
@@ -16,6 +18,8 @@ from scs_core.sys.http_status import HTTPStatus
 
 from scs_philips_hue.client.client_exception import ClientException
 
+
+# TODO: https://discovery.meethue.com
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -56,6 +60,7 @@ class UPnPClient(object):
             response_jstr = self.__http_client.get(self.__PATH, {}, self.__headers)
         except HTTPException as exc:
             if exc.status == HTTPStatus.NOT_FOUND:
+                print("not found!")
                 return []
             else:
                 raise ClientException.construct(exc) from exc
