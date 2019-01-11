@@ -26,11 +26,8 @@ class UPnPClient(object):
     classdocs
     """
 
-    __HOST = "discovery.meethue.com"            # hard-coded URL
-    __PATH = ""                                 # hard-coded URL
-
-    # __HOST = "www.meethue.com"                # hard-coded URL
-    # __PATH = "/api/nupnp"                     # hard-coded URL
+    __HOST = "discovery.meethue.com"            # hard-coded URL - was "www.meethue.com"
+    __PATH = ""                                 # hard-coded URL - was "/api/nupnp"
 
     __HEADER_ACCEPT = "application/json"
 
