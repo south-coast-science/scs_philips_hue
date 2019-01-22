@@ -55,6 +55,13 @@ from scs_philips_hue.manager.upnp_discovery import UPnPDiscovery
 
 if __name__ == '__main__':
 
+    bridge = None
+    manager = None
+    timeout = False
+
+    indices = {}
+    initial_state = {}
+
     # ----------------------------------------------------------------------------------------------------------------
     # cmd...
 
@@ -62,12 +69,6 @@ if __name__ == '__main__':
 
     if cmd.verbose:
         print("desk: %s" % cmd, file=sys.stderr)
-
-    manager = None
-    timeout = False
-
-    indices = {}
-    initial_state = {}
 
     try:
         # ------------------------------------------------------------------------------------------------------------
@@ -95,7 +96,13 @@ if __name__ == '__main__':
 
         # bridge...
         upnp = UPnPDiscovery(HTTPClient())
-        bridge = upnp.find(credentials.bridge_id)
+
+        try:
+            bridge = upnp.find(credentials.bridge_id)
+
+        except OSError as ex:
+            print("desk: %s" % ex)
+            exit(1)
 
         if bridge is None:
             print("desk: no bridge matching the stored credentials")
