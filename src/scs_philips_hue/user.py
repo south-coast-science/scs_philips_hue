@@ -50,6 +50,8 @@ from scs_philips_hue.manager.user_manager import UserManager
 
 if __name__ == '__main__':
 
+    bridge = None
+
     # ----------------------------------------------------------------------------------------------------------------
     # cmd...
 
@@ -78,7 +80,13 @@ if __name__ == '__main__':
 
     # bridge...
     upnp = UPnPDiscovery(HTTPClient())
-    bridge = upnp.find(credentials.bridge_id)
+
+    try:
+        bridge = upnp.find(credentials.bridge_id)
+
+    except OSError as ex:
+        print("user: %s" % ex)
+        exit(1)
 
     if bridge is None:
         print("user: no bridge matching the stored credentials", file=sys.stderr)
