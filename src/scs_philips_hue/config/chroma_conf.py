@@ -45,8 +45,8 @@ class ChromaConf(PersistentJSONable):
     __FILENAME =        "chroma_conf.json"
 
     @classmethod
-    def filename(cls, host):
-        return os.path.join(host.scs_dir(), cls.__DIR, cls.__FILENAME)
+    def persistence_location(cls, host):
+        return os.path.join(host.scs_dir(), cls.__DIR), cls.__FILENAME
 
 
     # ----------------------------------------------------------------------------------------------------------------
