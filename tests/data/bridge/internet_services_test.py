@@ -8,8 +8,6 @@ Created on 28 Oct 2017
 
 import json
 
-from collections import OrderedDict
-
 from scs_core.data.json import JSONify
 
 from scs_philips_hue.data.bridge.internet_services import InternetServices
@@ -22,7 +20,7 @@ print(jstr)
 
 print("-")
 
-jdict = json.loads(jstr, object_pairs_hook=OrderedDict)
+jdict = json.loads(jstr)
 print(jdict)
 
 services = InternetServices.construct_from_jdict(jdict)

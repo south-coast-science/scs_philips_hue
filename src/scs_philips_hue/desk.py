@@ -35,8 +35,6 @@ import json
 import sys
 import time
 
-from collections import OrderedDict
-
 from scs_host.client.http_client import HTTPClient
 from scs_host.sys.host import Host
 
@@ -159,7 +157,7 @@ if __name__ == '__main__':
                 sys.stdout.flush()
 
             try:
-                jdict = json.loads(datum, object_pairs_hook=OrderedDict)
+                jdict = json.loads(datum)
             except ValueError:
                 continue
 

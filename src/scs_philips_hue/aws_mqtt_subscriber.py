@@ -41,8 +41,6 @@ import json
 import sys
 import time
 
-from collections import OrderedDict
-
 from scs_core.aws.client.client_auth import ClientAuth
 from scs_core.aws.client.mqtt_client import MQTTClient, MQTTSubscriber
 
@@ -85,7 +83,7 @@ class AWSMQTTHandler(object):
     # noinspection PyUnusedLocal,PyShadowingNames
 
     def handle(self, client, userdata, message):
-        payload = json.loads(message.payload.decode(), object_pairs_hook=OrderedDict)
+        payload = json.loads(message.payload.decode())
 
         pub = Publication(message.topic, payload)
 

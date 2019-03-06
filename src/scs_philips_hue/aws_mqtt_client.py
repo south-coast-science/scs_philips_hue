@@ -35,8 +35,6 @@ When run as a background process, aws_mqtt_client will exit if it has no stdin s
 import json
 import sys
 
-from collections import OrderedDict
-
 from scs_core.aws.client.client_auth import ClientAuth
 from scs_core.aws.client.mqtt_client import MQTTClient, MQTTSubscriber
 
@@ -77,7 +75,7 @@ class AWSMQTTHandler(object):
 
     def handle(self, client, userdata, message):
         payload = message.payload.decode()
-        payload_jdict = json.loads(payload, object_pairs_hook=OrderedDict)
+        payload_jdict = json.loads(payload)
 
         pub = Publication(message.topic, payload_jdict)
 
@@ -172,7 +170,7 @@ if __name__ == '__main__':
 
         for message in pub_comms.read():
             try:
-                jdict = json.loads(message, object_pairs_hook=OrderedDict)
+                jdict = json.loads(message)
             except ValueError:
                 reporter.print("bad datum: %s" % message)
                 continue

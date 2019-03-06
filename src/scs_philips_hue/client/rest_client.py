@@ -9,8 +9,6 @@ CURLOPT_HTTPHEADER => array('Accept: application/json'),
 
 import json
 
-from collections import OrderedDict
-
 from scs_core.data.json import JSONify
 
 from scs_core.sys.http_exception import HTTPException
@@ -67,7 +65,7 @@ class RESTClient(object):
                 raise ClientException.construct(exc) from exc
 
         try:
-            response = json.loads(response_jstr, object_pairs_hook=OrderedDict)
+            response = json.loads(response_jstr)
         except ValueError:
             response = None
 
@@ -89,7 +87,7 @@ class RESTClient(object):
             raise ClientException.construct(ex) from ex
 
         try:
-            response = json.loads(response_jstr, object_pairs_hook=OrderedDict)
+            response = json.loads(response_jstr)
         except ValueError:
             response = None
 
@@ -111,7 +109,7 @@ class RESTClient(object):
             raise ClientException.construct(ex) from ex
 
         try:
-            response = json.loads(response_jstr, object_pairs_hook=OrderedDict)
+            response = json.loads(response_jstr)
         except ValueError:
             response = None
 
@@ -129,7 +127,7 @@ class RESTClient(object):
             raise ClientException.construct(ex) from ex
 
         try:
-            response = json.loads(response_jstr, object_pairs_hook=OrderedDict)
+            response = json.loads(response_jstr)
         except ValueError:
             response = None
 

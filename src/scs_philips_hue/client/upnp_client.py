@@ -11,8 +11,6 @@ https://developers.meethue.com/news/
 
 import json
 
-from collections import OrderedDict
-
 from scs_core.sys.http_exception import HTTPException
 from scs_core.sys.http_status import HTTPStatus
 
@@ -62,7 +60,7 @@ class UPnPClient(object):
             else:
                 raise ClientException.construct(exc) from exc
 
-        return json.loads(response_jstr, object_pairs_hook=OrderedDict)
+        return json.loads(response_jstr)
 
 
     # ----------------------------------------------------------------------------------------------------------------

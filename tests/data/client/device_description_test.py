@@ -8,8 +8,6 @@ Created on 3 Nov 2017
 
 import json
 
-from collections import OrderedDict
-
 from scs_core.data.json import JSONify
 
 from scs_philips_hue.data.client.client_description import ClientDescription
@@ -36,7 +34,7 @@ jstr = JSONify.dumps(jdict)
 print(jstr)
 
 print("-")
-jdict = json.loads(jstr, object_pairs_hook=OrderedDict)
+jdict = json.loads(jstr)
 
 device = DeviceDescription.construct_from_jdict(jdict)
 print(device)
