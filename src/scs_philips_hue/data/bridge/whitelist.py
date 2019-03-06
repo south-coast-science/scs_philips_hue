@@ -27,8 +27,6 @@ class WhitelistGroup(JSONable):
 
     @classmethod
     def construct_from_jdict(cls, jdict):
-        # print(JSONify.dumps(jdict))
-
         if not jdict:
             return None
 

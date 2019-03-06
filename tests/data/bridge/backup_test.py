@@ -7,7 +7,6 @@ Created on 28 Oct 2017
 """
 
 import json
-from collections import OrderedDict
 
 from scs_core.data.json import JSONify
 
@@ -21,7 +20,7 @@ print(jstr)
 
 print("-")
 
-jdict = json.loads(jstr, object_pairs_hook=OrderedDict)
+jdict = json.loads(jstr)
 print(jdict)
 
 backup = Backup.construct_from_jdict(jdict)

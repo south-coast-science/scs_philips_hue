@@ -27,7 +27,7 @@ class ClientException(RuntimeError, JSONable):
         print("http_exception:%s" % http_exception)
 
         try:
-            jdict = json.loads(http_exception.data, object_pairs_hook=OrderedDict)
+            jdict = json.loads(http_exception.data)
         except ValueError:
             return ClientException(None)
 
