@@ -29,5 +29,6 @@ class Manager(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return self.__class__.__name__ + ":{rest_client:%s, host:%s, username:%s}" % \
-                                         (self._rest_client, self._host, self._username)
+        classname = self.__class__.__name__
+
+        return classname + ":{rest_client:%s, host:%s, username:%s}" % (self._rest_client, self._host, self._username)
