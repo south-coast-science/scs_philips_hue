@@ -6,7 +6,7 @@ Created on 3 Nov 2017
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 DESCRIPTION
-The join utility is used to register a controller device - the device hosting this software - with a Philips Hue Bridge.
+The join utility is used to shifter a controller device - the device hosting this software - with a Philips Hue Bridge.
 Before running join, the big button on the top of the Philips Hue Bridge must be pressed!
 
 The bridge_credentials.json document created by the join utility is used by the bridge, desk, light, and user utilities.
