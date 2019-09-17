@@ -80,9 +80,9 @@ class AWSMQTTHandler(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    # noinspection PyUnusedLocal,PyShadowingNames
+    # noinspection PyShadowingNames
 
-    def handle(self, client, userdata, message):
+    def handle(self, _client, _userdata, message):
         payload = json.loads(message.payload.decode())
 
         pub = Publication(message.topic, payload)
