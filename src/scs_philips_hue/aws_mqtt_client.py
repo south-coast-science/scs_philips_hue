@@ -166,7 +166,7 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # run...
 
-        client.connect(auth)
+        client.connect(auth, False)
 
         pub_comms.connect()
 

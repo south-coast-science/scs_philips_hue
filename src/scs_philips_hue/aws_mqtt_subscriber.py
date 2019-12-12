@@ -176,7 +176,7 @@ if __name__ == '__main__':
         # MQTT connect...
         while True:
             try:
-                if client.connect(auth):
+                if client.connect(auth, False):
                     break
 
                 print("aws_mqtt_subscriber: connect: failed", file=sys.stderr)
