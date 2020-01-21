@@ -79,7 +79,7 @@ class AWSMQTTHandler(object):
         payload = message.payload.decode()
         payload_jdict = json.loads(payload)
 
-        pub = Publication(message.topic, payload_jdict)
+        pub = Publication(message.topic, 0, payload_jdict)
 
         try:
             self.__comms.connect()
