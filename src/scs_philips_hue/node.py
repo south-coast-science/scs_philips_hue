@@ -95,6 +95,7 @@ if __name__ == '__main__':
 
             except KeyError as ex:
                 print("node: KeyError: %s datum:%s" % (ex, datum), file=sys.stderr)
+                sys.stderr.flush()
                 continue
 
             print(JSONify.dumps(node))
