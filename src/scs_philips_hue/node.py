@@ -94,8 +94,9 @@ if __name__ == '__main__':
                 node = datum.node(topic_path)
 
             except KeyError as ex:
-                print("node: KeyError: %s" % ex, file=sys.stderr)
-                exit(1)
+                print("node: KeyError: %s datum:%s" % (ex, datum), file=sys.stderr)
+                continue
+                # exit(1)
 
             print(JSONify.dumps(node))
             sys.stdout.flush()
