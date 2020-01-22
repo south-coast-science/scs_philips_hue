@@ -82,8 +82,6 @@ if __name__ == '__main__':
         node = None
 
         for line in sys.stdin:
-            print("node: line:%s" % line, file=sys.stderr)
-
             datum = PathDict.construct_from_jstr(line)
 
             if datum is None:
@@ -98,7 +96,6 @@ if __name__ == '__main__':
             except KeyError as ex:
                 print("node: KeyError: %s datum:%s" % (ex, datum), file=sys.stderr)
                 continue
-                # exit(1)
 
             print(JSONify.dumps(node))
             sys.stdout.flush()
