@@ -165,10 +165,16 @@ if __name__ == '__main__':
 
             for name in conf.lamp_names:
                 for index in indices[name]:
-                    response = manager.set_state(index, state)
 
-                    if cmd.verbose:
-                        print("desk: %s" % response, file=sys.stderr)
+                    try:
+                        response = manager.set_state(index, state)
+
+                        if cmd.verbose:
+                            print("desk: %s" % response, file=sys.stderr)
+                            sys.stderr.flush()
+
+                    except ConnectionResetError as ex:
+                        print("desk: %s" % ex, file=sys.stderr)
                         sys.stderr.flush()
 
 
