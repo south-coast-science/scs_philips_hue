@@ -64,7 +64,7 @@ if __name__ == '__main__':
         # DomainConf...
         if cmd.use_domain_conf:
             domain = DomainConf.load(Host)
-            topic_path = domain.topic_path + '.' + domain.document_node
+            topic_path = '.'.join((domain.topic_path, domain.document_node))
 
             if domain is None:
                 print("node: Domain not available.", file=sys.stderr)
