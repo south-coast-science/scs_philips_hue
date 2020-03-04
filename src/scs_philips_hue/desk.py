@@ -47,7 +47,8 @@ from scs_philips_hue.config.desk_conf import DeskConf
 
 from scs_philips_hue.data.light.light_state import LightState
 
-from scs_philips_hue.manager.discovery import Discovery
+from scs_philips_hue.discovery.discovery import Discovery
+
 from scs_philips_hue.manager.light_manager import LightManager
 
 

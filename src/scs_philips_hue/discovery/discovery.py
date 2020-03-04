@@ -4,8 +4,8 @@ Created on 4 Mar 2020
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-from scs_philips_hue.manager.ip_discovery import IPDiscovery
-from scs_philips_hue.manager.upnp_discovery import UPnPDiscovery
+from scs_philips_hue.discovery.ip_discovery import IPDiscovery
+from scs_philips_hue.discovery.upnp_discovery import UPnPDiscovery
 
 
 # --------------------------------------------------------------------------------------------------------------------

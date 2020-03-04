@@ -11,8 +11,9 @@ from scs_host.sys.host import Host
 
 from scs_philips_hue.config.bridge_credentials import BridgeCredentials
 
+from scs_philips_hue.discovery.discovery import Discovery
+
 from scs_philips_hue.manager.bridge_manager import BridgeManager
-from scs_philips_hue.manager.discovery import Discovery
 
 
 # --------------------------------------------------------------------------------------------------------------------
