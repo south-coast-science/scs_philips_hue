@@ -65,7 +65,6 @@ class IPDiscovery(object):
         bridges = []
 
         for ip_address in self.__host.scan(timeout=self.__BRIDGE_DEFAULT_TIMEOUT):
-            print("checking: %s" % ip_address)
             if self.__is_bridge(ip_address):
                 bridges.append(IPHost(ip_address))
 
