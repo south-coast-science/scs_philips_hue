@@ -12,7 +12,7 @@ from scs_host.sys.host import Host
 from scs_philips_hue.config.bridge_credentials import BridgeCredentials
 
 from scs_philips_hue.manager.bridge_manager import BridgeManager
-from scs_philips_hue.manager.upnp_discovery import UPnPDiscovery
+from scs_philips_hue.manager.discovery import Discovery
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -22,12 +22,12 @@ print(credentials)
 
 print("-")
 
-upnp = UPnPDiscovery(HTTPClient())
-print(upnp)
+discovery = Discovery(Host, HTTPClient())
+print(discovery)
 
 print("-")
 
-bridge = upnp.find(credentials.bridge_id)
+bridge = discovery.find(credentials)
 print(bridge)
 
 print("=")

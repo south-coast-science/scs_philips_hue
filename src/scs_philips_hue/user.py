@@ -42,13 +42,15 @@ from scs_philips_hue.cmd.cmd_user import CmdUser
 
 from scs_philips_hue.config.bridge_credentials import BridgeCredentials
 
-from scs_philips_hue.manager.upnp_discovery import UPnPDiscovery
+from scs_philips_hue.manager.discovery import Discovery
 from scs_philips_hue.manager.user_manager import UserManager
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
+
+    application_key = ''
 
     bridge = None
 
@@ -79,10 +81,10 @@ if __name__ == '__main__':
         print("user: %s" % credentials, file=sys.stderr)
 
     # bridge...
-    upnp = UPnPDiscovery(HTTPClient())
+    discovery = Discovery(Host, HTTPClient())
 
     try:
-        bridge = upnp.find(credentials.bridge_id)
+        bridge = discovery.find(credentials)
 
     except OSError as ex:
         print("user: %s" % ex)
@@ -109,7 +111,7 @@ if __name__ == '__main__':
     if cmd.delete:
         for user in users:
             if user.description.user == cmd.delete:
-                response = manager.delete(user.username)
+                response = manager.delete(application_key, user.username)
 
                 if cmd.verbose:
                     print("user: %s" % response, file=sys.stderr)
