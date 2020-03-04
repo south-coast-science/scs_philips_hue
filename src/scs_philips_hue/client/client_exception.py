@@ -24,7 +24,7 @@ class ClientException(RuntimeError, JSONable):
 
     @classmethod
     def construct(cls, http_exception):
-        print("http_exception:%s" % http_exception)
+        # print("http_exception:%s" % http_exception)
 
         try:
             jdict = json.loads(http_exception.data)

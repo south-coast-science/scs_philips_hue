@@ -5,6 +5,8 @@ Created on 4 Oct 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
+source repo: scs_philips_hue
+
 DESCRIPTION
 The aws_mqtt_subscriber utility is used to obtain live data from an Amazon Web Services (AWS) messaging topic. The topic
 path can be specified either on the command line, or by referencing the domain_conf.json document.
@@ -18,105 +20,52 @@ certificate and API auth specified in the aws_api_auth.json and client_credentia
 WARNING: only one MQTT client should run at any one time, per TCP/IP host.
 
 SYNOPSIS
-aws_mqtt_subscriber.py {-c | -t TOPIC_PATH } [-v]
+aws_mqtt_subscriber.py {-c | -t TOPIC_PATH } [-s UDS_SUB] [-v]
 
 EXAMPLES
-./aws_mqtt_subscriber.py -c | ./node.py -c | ./chroma.py | ./desk.py -v -e
+./aws_mqtt_subscriber.py -c | ./node.py -c | ./chroma.py | ./desk.py -v
 
 FILES
 ~/SCS/aws/aws_client_auth.json
 ~/SCS/hue/domain_conf.json
 
-DOCUMENT EXAMPLE
-{"south-coast-science-dev/production-test/loc/1/climate":
-    {"tag": "scs-be2-2", "rec": "2018-03-17T09:18:07.681+00:00", "val": {"hmd": 46.7, "tmp": 23.9}}}
-
 SEE ALSO
 scs_philips_hue/aws_client_auth
-scs_philips_hue/osio_mqtt_subscriber
+scs_philips_hue/aws_mqtt_subscriber
 scs_philips_hue/domain_conf
 """
 
-import json
 import sys
 import time
 
 from scs_core.aws.client.client_auth import ClientAuth
 from scs_core.aws.client.mqtt_client import MQTTClient, MQTTSubscriber
 
-from scs_core.data.json import JSONify
-from scs_core.data.publication import Publication
+from scs_core.comms.mqtt_conf import MQTTConf
+from scs_core.comms.uds_writer import UDSWriter
 
-from scs_core.sys.exception_report import ExceptionReport
-
-from scs_host.comms.stdio import StdIO
+from scs_core.sys.filesystem import Filesystem
+from scs_core.sys.signalled_exit import SignalledExit
 
 from scs_host.sys.host import Host
 
 from scs_philips_hue.cmd.cmd_mqtt_subscriber import CmdMQTTSubscriber
+
 from scs_philips_hue.config.domain_conf import DomainConf
 
-
-# TODO: option to terminate the service if no message for N minutes?
-# TODO: tear out the comms parameter to the handler - just use stdout
-
-# --------------------------------------------------------------------------------------------------------------------
-# subscription handler...
-
-class AWSMQTTHandler(object):
-    """
-    classdocs
-    """
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def __init__(self, comms=None, verbose=False):
-        """
-        Constructor
-        """
-        self.__comms = comms
-        self.__verbose = verbose
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    # noinspection PyShadowingNames
-
-    def handle(self, _client, _userdata, message):
-        payload = json.loads(message.payload.decode())
-
-        pub = Publication(message.topic, payload)
-
-        try:
-            self.__comms.connect()
-            self.__comms.write(JSONify.dumps(pub), False)
-
-        except ConnectionRefusedError:
-            if self.__verbose:
-                print("AWSMQTTClientHandler: connection refused for %s" % self.__comms.address, file=sys.stderr)
-                sys.stderr.flush()
-
-        finally:
-            self.__comms.close()
-
-        if self.__verbose:
-            print("received: %s" % JSONify.dumps(pub), file=sys.stderr)
-            sys.stderr.flush()
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def __str__(self, *args, **kwargs):
-        return "AWSMQTTClientHandler:{comms:%s, verbose:%s}" % (self.__comms, self.__verbose)
+from scs_philips_hue.handler.aws_mqtt_subscription_handler import AWSMQTTSubscriptionHandler
+from scs_philips_hue.handler.aws_mqtt_publisher import AWSMQTTPublisher
+from scs_philips_hue.handler.mqtt_reporter import MQTTReporter
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
 
-    client = None
-    pub_comms = None
-
+    conf = None
+    source = None
+    reporter = None
+    publisher = None
 
     # ----------------------------------------------------------------------------------------------------------------
     # cmd...
@@ -134,6 +83,12 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # resources...
 
+        # MQTTConf
+        conf = MQTTConf.load(Host)
+
+        if cmd.verbose:
+            print("aws_mqtt_subscriber: conf: %s" % conf, file=sys.stderr)
+
         # ClientAuth...
         auth = ClientAuth.load(Host)
 
@@ -141,8 +96,8 @@ if __name__ == '__main__':
             print("aws_mqtt_subscriber: ClientAuth not available.", file=sys.stderr)
             exit(1)
 
-        if cmd.verbose:
-            print("aws_mqtt_subscriber: %s" % auth, file=sys.stderr)
+        # reporter...
+        reporter = MQTTReporter(cmd.verbose)
 
         # DomainConf...
         if cmd.use_domain_conf:
@@ -158,52 +113,52 @@ if __name__ == '__main__':
         else:
             topic_path = cmd.topic_path
 
+        # writer...
+        sub_comms = UDSWriter(cmd.uds_sub)
+
         # subscriber...
-        handler = AWSMQTTHandler(StdIO(), cmd.verbose)
+        handler = AWSMQTTSubscriptionHandler(reporter, sub_comms, False)
         subscriber = MQTTSubscriber(topic_path, handler.handle)
 
         # client...
         client = MQTTClient(subscriber)
-
-        if cmd.verbose:
-            print("aws_mqtt_subscriber: %s" % client, file=sys.stderr)
-            sys.stderr.flush()
+        publisher = AWSMQTTPublisher(conf, auth, client, reporter)
 
 
         # ------------------------------------------------------------------------------------------------------------
         # run...
 
-        # MQTT connect...
+        # signal handler...
+        SignalledExit.construct("aws_mqtt_subscriber", cmd.verbose)
+
+        # client...
+        publisher.connect()
+
         while True:
-            try:
-                if client.connect(auth, False):
-                    break
-
-                print("aws_mqtt_subscriber: connect: failed", file=sys.stderr)
-
-            except OSError as ex:
-                print("aws_mqtt_subscriber: connect: %s" % ex, file=sys.stderr)
-
-            time.sleep(2)       # wait for retry
-
-        print("aws_mqtt_subscriber: connect: done", file=sys.stderr)
-
-        # do nothing...
-        # TODO: just join subscribers
-        while True:
-            time.sleep(1)
+            time.sleep(1.0)
 
 
     # ----------------------------------------------------------------------------------------------------------------
     # end...
 
-    except KeyboardInterrupt:
-        if cmd.verbose:
-            print("aws_mqtt_subscriber: KeyboardInterrupt", file=sys.stderr)
+    except ConnectionError as ex:
+        print("aws_mqtt_subscriber: %s" % ex, file=sys.stderr)
 
-    except Exception as ex:
-        print(JSONify.dumps(ExceptionReport.construct(ex)), file=sys.stderr)
+    except (KeyboardInterrupt, SystemExit):
+        pass
 
     finally:
-        if client:
-            client.disconnect()
+        if cmd and cmd.verbose:
+            print("aws_mqtt_subscriber: finishing", file=sys.stderr)
+
+        if source:
+            source.close()
+
+        if publisher:
+            publisher.disconnect()
+
+        if conf:
+            Filesystem.rm(conf.report_file)
+
+        if reporter:
+            reporter.print("finished")

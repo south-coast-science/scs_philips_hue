@@ -16,7 +16,8 @@ class CmdMQTTSubscriber(object):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog {-c | -t TOPIC_PATH } [-v]", version="%prog 1.0")
+        self.__parser = optparse.OptionParser(usage="%prog {-c | -t TOPIC_PATH } [-s UDS_SUB] [-v]",
+                                              version="%prog 1.0")
 
         # compulsory...
         self.__parser.add_option("--conf", "-c", action="store_true", dest="use_domain_conf", default=False,
@@ -26,6 +27,9 @@ class CmdMQTTSubscriber(object):
                                  help="use the given topic path")
 
         # optional...
+        self.__parser.add_option("--sub", "-s", type="string", nargs=1, action="store", dest="uds_sub",
+                                 help="write subscription to UDS instead of stdout")
+
         self.__parser.add_option("--verbose", "-v", action="store_true", dest="verbose", default=False,
                                  help="report narrative to stderr")
 
@@ -57,6 +61,11 @@ class CmdMQTTSubscriber(object):
 
 
     @property
+    def uds_sub(self):
+        return self.__opts.uds_sub
+
+
+    @property
     def verbose(self):
         return self.__opts.verbose
 
@@ -68,5 +77,5 @@ class CmdMQTTSubscriber(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdMQTTSubscriber:{use_domain_conf:%s, topic_path:%s, verbose:%s}" % \
-               (self.use_domain_conf, self.topic_path, self.verbose)
+        return "CmdMQTTSubscriber:{use_domain_conf:%s, topic_path:%s, uds_sub:%s, verbose:%s}" % \
+               (self.use_domain_conf, self.topic_path, self.uds_sub, self.verbose)

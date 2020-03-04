@@ -38,8 +38,8 @@ class RESTClient(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def connect(self, host, username):
-        self.__http_client.connect(host, secure=False)
+    def connect(self, host, username, timeout=None):
+        self.__http_client.connect(host, secure=False, timeout=timeout)
         self.__username = username
 
 

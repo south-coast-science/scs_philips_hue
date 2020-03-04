@@ -5,6 +5,8 @@ Created on 11 Nov 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
+source repo: scs_philips_hue
+
 DESCRIPTION
 The bridge utility is used to interrogate and update the Philips Hue Bridge device.
 
@@ -43,7 +45,7 @@ from scs_philips_hue.data.bridge.bridge_config import BridgeConfig
 from scs_philips_hue.data.bridge.sw_update import SWUpdate
 
 from scs_philips_hue.manager.bridge_manager import BridgeManager
-from scs_philips_hue.manager.upnp_discovery import UPnPDiscovery
+from scs_philips_hue.manager.discovery import Discovery
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -80,11 +82,10 @@ if __name__ == '__main__':
             print("bridge: %s" % credentials, file=sys.stderr)
 
         # bridge...
-        upnp = UPnPDiscovery(HTTPClient())
+        discovery = Discovery(Host, HTTPClient())
 
         try:
-            bridge = upnp.find(credentials.bridge_id)
-
+            bridge = discovery.find(credentials)
         except OSError as ex:
             print("bridge: %s" % ex)
             exit(1)

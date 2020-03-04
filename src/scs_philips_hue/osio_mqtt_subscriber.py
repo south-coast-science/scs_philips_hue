@@ -5,6 +5,8 @@ Created on 23 Mar 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
+source repo: scs_philips_hue
+
 DESCRIPTION
 The osio_mqtt_subscriber utility is used to obtain live data from an OpenSensors messaging topic. The topic
 path can be specified either on the command line, or by referencing the domain_conf.json document.

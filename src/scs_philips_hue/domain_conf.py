@@ -5,6 +5,8 @@ Created on 16 Mar 2018
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
+source repo: scs_philips_hue
+
 DESCRIPTION
 The domain_conf utility is used to specify an environmental data messaging topic path, plus a leaf node within
 documents delivered on that messaging topic. Together, these two parameters yield a scalar value that can be

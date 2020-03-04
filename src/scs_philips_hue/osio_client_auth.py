@@ -5,6 +5,8 @@ Created on 21 Nov 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
+source repo: scs_philips_hue
+
 DESCRIPTION
 The osio_client_auth utility is used to store or read the client ID and client password required by the OpenSensors.io
 Community Edition messaging system. This client authentication is required to subscribe to any messaging topic.

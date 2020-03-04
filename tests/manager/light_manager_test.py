@@ -17,7 +17,7 @@ from scs_philips_hue.config.bridge_credentials import BridgeCredentials
 
 from scs_philips_hue.data.light.light_state import LightState
 
-from scs_philips_hue.manager.upnp_discovery import UPnPDiscovery
+from scs_philips_hue.manager.discovery import Discovery
 from scs_philips_hue.manager.light_manager import LightManager
 
 
@@ -28,12 +28,12 @@ print(credentials)
 
 print("-")
 
-upnp = UPnPDiscovery(HTTPClient())
-print(upnp)
+discovery = Discovery(Host, HTTPClient())
+print(discovery)
 
 print("-")
 
-bridge = upnp.find(credentials.bridge_id)
+bridge = discovery.find(credentials)
 print(bridge)
 
 print("=")

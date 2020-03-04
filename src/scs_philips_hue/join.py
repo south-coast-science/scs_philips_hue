@@ -5,6 +5,8 @@ Created on 3 Nov 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
+source repo: scs_philips_hue
+
 DESCRIPTION
 The join utility is used to shifter a controller device - the device hosting this software - with a Philips Hue Bridge.
 Before running join, the big button on the top of the Philips Hue Bridge must be pressed!
@@ -43,7 +45,7 @@ from scs_philips_hue.cmd.cmd_simple import CmdSimple
 from scs_philips_hue.config.bridge_credentials import BridgeCredentials
 
 from scs_philips_hue.manager.bridge_manager import BridgeManager
-from scs_philips_hue.manager.upnp_discovery import UPnPDiscovery
+from scs_philips_hue.manager.discovery import Discovery
 from scs_philips_hue.manager.user_manager import UserManager
 
 from scs_philips_hue.data.client.client_description import ClientDescription
@@ -53,6 +55,10 @@ from scs_philips_hue.data.client.device_description import DeviceDescription
 # --------------------------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
+
+    application_key = ''
+
+    bridge = None
 
     # ----------------------------------------------------------------------------------------------------------------
     # cmd...
@@ -67,13 +73,11 @@ if __name__ == '__main__':
     # resource...
 
     # bridge...
-    upnp = UPnPDiscovery(HTTPClient())
-
-    bridges = upnp.find_all()
+    discovery = Discovery(Host, HTTPClient())
+    bridges = discovery.find_all()
 
     if len(bridges) == 0:
         print("join: no bridge found", file=sys.stderr)
-        bridge = None
         exit(0)
 
     elif len(bridges) == 1:
@@ -119,20 +123,25 @@ if __name__ == '__main__':
             print("join: error: %s" % error.description, file=sys.stderr)
         exit(1)
 
-    # save credentials...
+    # get credentials...
     success = response.successes.pop()
 
-    credentials = BridgeCredentials(bridge.id, success.value)
+    # find bridge...
+    bridge_manager = BridgeManager(HTTPClient(), bridge.ip_address, success.value)
+    config = bridge_manager.find()
+
+    # save credentials...
+    credentials = BridgeCredentials(config.bridge_id, success.value)
     credentials.save(Host)
 
     # delete old whitelist entries for this user...
     user_manager = UserManager(HTTPClient(), bridge.ip_address, credentials.username)
-
     users = user_manager.find_all()
 
     for user in users:
         if user.description.user == Host.name() and user.username != credentials.username:
-            response = user_manager.delete(user.username)
+            response = user_manager.delete(application_key, user.username)
+            # print("response: %s" % response)
 
     # report...
     bridge_manager = BridgeManager(HTTPClient(), bridge.ip_address, credentials.username)

@@ -5,6 +5,8 @@ Created on 16 Mar 2018
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
+source repo: scs_philips_hue
+
 DESCRIPTION
 The desk_conf utility is used to specify which lamps should be driven by the desk utility.
 
