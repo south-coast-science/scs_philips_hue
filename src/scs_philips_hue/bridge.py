@@ -5,6 +5,8 @@ Created on 11 Nov 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
+source repo: scs_philips_hue
+
 DESCRIPTION
 The bridge utility is used to interrogate and update the Philips Hue Bridge device.
 

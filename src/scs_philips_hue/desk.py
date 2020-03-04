@@ -5,6 +5,8 @@ Created on 25 Nov 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
+source repo: scs_philips_hue
+
 DESCRIPTION
 The desk utility (a lighting control desk) is used to drive the Philips Hue Bridge device. Input data is received
 from stdin, and is interpreted as a scs_philips_hue.data.light.LightState document.

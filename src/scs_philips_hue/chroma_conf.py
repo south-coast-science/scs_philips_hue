@@ -5,6 +5,8 @@ Created on 16 Mar 2018
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
+source repo: scs_philips_hue
+
 DESCRIPTION
 The chroma_conf utility is used to specify the parameters of a mapping from environmental data domain values to
 locations in a chromaticity space. In addition to chromaticity mapping, the configuration includes lamp brightness and

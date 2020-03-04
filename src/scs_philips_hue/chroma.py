@@ -5,6 +5,8 @@ Created on 4 Nov 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
+source repo: scs_philips_hue
+
 DESCRIPTION
 The chroma utility is used to map environmental data domain values to chromaticity locations. Input data is received
 from stdin, and is interpreted as a float value. The mapped value is written to stdout in the form of a JSON

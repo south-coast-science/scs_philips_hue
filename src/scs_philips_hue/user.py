@@ -5,6 +5,8 @@ Created on 4 Nov 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
+source repo: scs_philips_hue
+
 DESCRIPTION
 The user utility is used to manage user accounts or "whitelist entries" on a Philips Hue Bridge device.
 

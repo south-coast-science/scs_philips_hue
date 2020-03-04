@@ -5,6 +5,8 @@ Created on 4 Nov 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
+source repo: scs_philips_hue
+
 DESCRIPTION
 The light utility is used to shifter a Philips Hue light bulb with a Philips Hue Bridge device, to update bulb
 settings, or de-shifter the bulb.
