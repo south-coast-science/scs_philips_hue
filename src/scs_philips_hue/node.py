@@ -5,6 +5,8 @@ Created on 11 Apr 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
+source repo: scs_philips_hue
+
 DESCRIPTION
 The node utility is used to extract a node within a JSON document. Data is presented as a sequence of documents on
 stdin, the node is passed to stdout. The extracted node may be a leaf node or an internal node.

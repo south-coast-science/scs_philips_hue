@@ -58,8 +58,8 @@ class UserManager(Manager):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def delete(self, username):
-        request_path = '/config/whitelist/' + username
+    def delete(self, application_key, username):
+        request_path = '/api/' + application_key + '/config/whitelist/' + username
 
         # request...
         self._rest_client.connect(self._host, self._username)

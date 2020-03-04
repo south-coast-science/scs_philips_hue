@@ -4,9 +4,9 @@ Created on 30 Oct 2017
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-from scs_philips_hue.data.bridge.bridge_summary import BridgeSummary
-
 from scs_philips_hue.client.upnp_client import UPnPClient
+
+from scs_philips_hue.data.bridge.bridge_summary import BridgeSummary
 
 
 # --------------------------------------------------------------------------------------------------------------------

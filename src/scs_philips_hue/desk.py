@@ -5,6 +5,8 @@ Created on 25 Nov 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
+source repo: scs_philips_hue
+
 DESCRIPTION
 The desk utility (a lighting control desk) is used to drive the Philips Hue Bridge device. Input data is received
 from stdin, and is interpreted as a scs_philips_hue.data.light.LightState document.
@@ -45,8 +47,8 @@ from scs_philips_hue.config.desk_conf import DeskConf
 
 from scs_philips_hue.data.light.light_state import LightState
 
+from scs_philips_hue.manager.discovery import Discovery
 from scs_philips_hue.manager.light_manager import LightManager
-from scs_philips_hue.manager.upnp_discovery import UPnPDiscovery
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -93,10 +95,10 @@ if __name__ == '__main__':
             print("desk: %s" % credentials, file=sys.stderr)
 
         # bridge...
-        upnp = UPnPDiscovery(HTTPClient())
+        discovery = Discovery(Host, HTTPClient())
 
         try:
-            bridge = upnp.find(credentials.bridge_id)
+            bridge = discovery.find(credentials)
 
         except OSError as ex:
             print("desk: %s" % ex)

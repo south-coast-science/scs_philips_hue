@@ -5,6 +5,8 @@ Created on 4 Nov 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
+source repo: scs_philips_hue
+
 DESCRIPTION
 The light utility is used to shifter a Philips Hue light bulb with a Philips Hue Bridge device, to update bulb
 settings, or de-shifter the bulb.
@@ -49,8 +51,8 @@ from scs_philips_hue.config.bridge_credentials import BridgeCredentials
 
 from scs_philips_hue.data.light.light_device import LightDevice
 
+from scs_philips_hue.manager.discovery import Discovery
 from scs_philips_hue.manager.light_manager import LightManager
-from scs_philips_hue.manager.upnp_discovery import UPnPDiscovery
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -88,10 +90,10 @@ if __name__ == '__main__':
             print("light: %s" % credentials, file=sys.stderr)
 
         # bridge...
-        upnp = UPnPDiscovery(HTTPClient())
+        discovery = Discovery(Host, HTTPClient())
 
         try:
-            bridge = upnp.find(credentials.bridge_id)
+            bridge = discovery.find(credentials)
 
         except OSError as ex:
             print("light: %s" % ex)
