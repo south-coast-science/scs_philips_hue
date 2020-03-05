@@ -190,7 +190,7 @@ if __name__ == '__main__':
         print("desk: Timeout", file=sys.stderr)
 
     finally:
-        if cmd and cmd.verbose:
+        if cmd.verbose:
             print("desk: finishing", file=sys.stderr)
 
         if manager is not None:

@@ -76,7 +76,7 @@ if __name__ == '__main__':
         pass
 
     finally:
-        if cmd and cmd.verbose:
+        if cmd.verbose:
             print("uds_receiver: finishing", file=sys.stderr)
 
         uds.close()
