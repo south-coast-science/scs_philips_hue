@@ -87,7 +87,7 @@ class IPDiscovery(object):
             # response...
             return Response.construct_from_jdict(jdict) is not None
 
-        except (ClientException, socket.timeout):
+        except (ClientException, OSError, socket.timeout):
             return False
 
         finally:
