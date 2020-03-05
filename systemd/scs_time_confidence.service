@@ -1,0 +1,11 @@
+[Unit]
+Description=SCS Time Confidence Service - waiting for network time sync
+After=time-sync.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/bin/sh -c 'while ! ( [ -f /run/systemd/timesync/synchronized ] || ( [ -f /dev/rtc0 ] && ! [ -d /sys/devices/platform/ocp/44e3e000.rtc/rtc/rtc0 ] ) ) ; do echo No battery-backed RTC found - waiting for network time sync ; sleep 10 ; done && /usr/bin/touch /run/time_probably_ok'
+
+[Install]
+WantedBy=multi-user.target
