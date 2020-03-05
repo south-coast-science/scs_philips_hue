@@ -35,6 +35,8 @@ import sys
 from scs_core.data.json import JSONify
 from scs_core.data.path_dict import PathDict
 
+from scs_core.sys.signalled_exit import SignalledExit
+
 from scs_host.sys.host import Host
 
 from scs_philips_hue.cmd.cmd_node import CmdNode
@@ -81,6 +83,9 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # run...
 
+        # signal handler...
+        SignalledExit.construct("aws_mqtt_subscriber", cmd.verbose)
+
         node = None
 
         for line in sys.stdin:
@@ -107,6 +112,9 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # end...
 
-    except KeyboardInterrupt:
-        if cmd.verbose:
-            print("node: KeyboardInterrupt", file=sys.stderr)
+    except (KeyboardInterrupt, SystemExit):
+        pass
+
+    finally:
+        if cmd and cmd.verbose:
+            print("node: finishing", file=sys.stderr)
