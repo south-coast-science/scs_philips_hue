@@ -149,7 +149,7 @@ if __name__ == '__main__':
         pass
 
     finally:
-        if cmd and cmd.verbose:
+        if cmd.verbose:
             print("aws_mqtt_subscriber: finishing", file=sys.stderr)
 
         if source:

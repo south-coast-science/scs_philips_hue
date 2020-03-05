@@ -84,7 +84,7 @@ if __name__ == '__main__':
         # run...
 
         # signal handler...
-        SignalledExit.construct("aws_mqtt_subscriber", cmd.verbose)
+        SignalledExit.construct("node", cmd.verbose)
 
         node = None
 
@@ -116,5 +116,5 @@ if __name__ == '__main__':
         pass
 
     finally:
-        if cmd and cmd.verbose:
+        if cmd.verbose:
             print("node: finishing", file=sys.stderr)

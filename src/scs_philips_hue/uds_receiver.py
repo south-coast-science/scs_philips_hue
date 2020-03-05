@@ -23,10 +23,11 @@ scs_analysis/socket_receiver
 
 import sys
 
-from scs_host.comms.domain_socket import DomainSocket
+from scs_core.comms.uds_reader import UDSReader
+from scs_core.sys.signalled_exit import SignalledExit
 
 from scs_philips_hue.cmd.cmd_uds import CmdUDS
-from scs_core.comms.uds_reader import UDSReader
+
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -58,6 +59,9 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # run...
 
+        # signal handler...
+        SignalledExit.construct("uds_receiver", cmd.verbose)
+
         uds.connect()
 
         for message in uds.messages():
@@ -68,9 +72,11 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # end...
 
-    except KeyboardInterrupt:
-        if cmd.verbose:
-            print("uds_receiver: KeyboardInterrupt", file=sys.stderr)
+    except (KeyboardInterrupt, SystemExit):
+        pass
 
     finally:
+        if cmd.verbose:
+            print("uds_receiver: finishing", file=sys.stderr)
+
         uds.close()

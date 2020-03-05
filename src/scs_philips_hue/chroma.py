@@ -121,5 +121,5 @@ if __name__ == '__main__':
         pass
 
     finally:
-        if cmd and cmd.verbose:
+        if cmd.verbose:
             print("chroma: finishing", file=sys.stderr)
