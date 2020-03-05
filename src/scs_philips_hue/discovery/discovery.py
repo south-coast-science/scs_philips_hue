@@ -4,6 +4,8 @@ Created on 4 Mar 2020
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
+import time
+
 from scs_philips_hue.discovery.ip_discovery import IPDiscovery
 from scs_philips_hue.discovery.upnp_discovery import UPnPDiscovery
 
@@ -14,6 +16,8 @@ class Discovery(object):
     """
     classdocs
     """
+
+    __RETRY_DELAY = 10.0                # seconds
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -27,37 +31,52 @@ class Discovery(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def find(self, credentials):
-        # UPnP...
-        upnp = UPnPDiscovery(self.__http_client)
-        bridge = upnp.find(credentials.bridge_id)
+    def find(self, credentials, timeout=None):
+        timeout_time = None if timeout is None else time.time() + timeout
 
-        if bridge:
-            return bridge
+        while True:
+            # UPnP...
+            upnp = UPnPDiscovery(self.__http_client)
+            bridge = upnp.find(credentials.bridge_id)
 
-        # IP scan...
-        scanner = IPDiscovery(self.__host, self.__http_client)
-        bridge = scanner.find(credentials)
+            if bridge:
+                return bridge
 
-        return bridge
+            # IP scan...
+            scanner = IPDiscovery(self.__host, self.__http_client)
+            bridge = scanner.find(credentials)
+
+            if bridge:
+                return bridge
+
+            if timeout_time and time.time() > timeout_time:
+                return None
+
+            time.sleep(self.__RETRY_DELAY)
 
 
-    def find_all(self):
-        # UPnP...
-        upnp = UPnPDiscovery(self.__http_client)
-        bridges = upnp.find_all()
+    def find_all(self, timeout=None):
+        timeout_time = None if timeout is None else time.time() + timeout
 
-        if bridges:
-            return bridges
+        while True:
+            # UPnP...
+            upnp = UPnPDiscovery(self.__http_client)
+            bridges = upnp.find_all()
 
-        # IP scan...
-        scanner = IPDiscovery(self.__host, self.__http_client)
-        bridge = scanner.find_first()
+            if bridges:
+                return bridges
 
-        if bridge:
-            return [bridge]
+            # IP scan...
+            scanner = IPDiscovery(self.__host, self.__http_client)
+            bridge = scanner.find_first()
 
-        return []
+            if bridge:
+                return [bridge]
+
+            if timeout_time and time.time() > timeout_time:
+                return []
+
+            time.sleep(self.__RETRY_DELAY)
 
 
     # ----------------------------------------------------------------------------------------------------------------

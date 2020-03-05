@@ -85,13 +85,7 @@ if __name__ == '__main__':
 
     # bridge...
     discovery = Discovery(Host, HTTPClient())
-
-    try:
-        bridge = discovery.find(credentials)
-
-    except OSError as ex:
-        print("user: %s" % ex)
-        exit(1)
+    bridge = discovery.find(credentials)
 
     if bridge is None:
         print("user: no bridge matching the stored credentials", file=sys.stderr)
