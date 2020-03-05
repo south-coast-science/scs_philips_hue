@@ -16,7 +16,7 @@ class CmdNode(object):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog {-c | -t TOPIC_PATH } [-i] [-v]", version="%prog 1.0")
+        self.__parser = optparse.OptionParser(usage="%prog { -c | -t TOPIC_PATH } [-i] [-v]", version="%prog 1.0")
 
         # compulsory...
         self.__parser.add_option("--conf", "-c", action="store_true", dest="use_domain_conf", default=False,
