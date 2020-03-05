@@ -1,0 +1,14 @@
+[Unit]
+Description=SCS MQTT Client
+
+[Service]
+Type=simple
+EnvironmentFile=/home/pi/.scs.env
+ExecStart=/home/pi/scs-venv/bin/python3 /home/pi/SCS/scs_philips_hue/src/scs_philips_hue/aws_mqtt_client.py -v -c -s /home/pi/SCS/pipes/mqtt_subscription.uds
+User=pi
+Group=pi
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
