@@ -26,7 +26,7 @@ import sys
 from scs_host.comms.domain_socket import DomainSocket
 
 from scs_philips_hue.cmd.cmd_uds import CmdUDS
-
+from scs_core.comms.uds_reader import UDSReader
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -48,7 +48,7 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # resources...
 
-    uds = DomainSocket(cmd.path)
+    uds = UDSReader(cmd.path)
 
     if cmd.verbose:
         print("uds_receiver: %s" % uds, file=sys.stderr)
@@ -60,7 +60,7 @@ if __name__ == '__main__':
 
         uds.connect()
 
-        for message in uds.read():
+        for message in uds.messages():
             print(message)
             sys.stdout.flush()
 
