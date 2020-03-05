@@ -38,6 +38,7 @@ https://developers.meethue.com/documentation/core-concepts
 import sys
 
 from scs_core.data.json import JSONify
+from scs_core.sys.signalled_exit import SignalledExit
 
 from scs_host.sys.host import Host
 
@@ -86,6 +87,9 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # run...
 
+        # signal handler...
+        SignalledExit.construct("chroma", cmd.verbose)
+
         # read stdin...
         for line in sys.stdin:
             datum = line.strip()
@@ -113,6 +117,9 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # end...
 
-    except KeyboardInterrupt:
+    except (KeyboardInterrupt, SystemExit):
+        pass
+
+    finally:
         if cmd.verbose:
-            print("chroma: KeyboardInterrupt", file=sys.stderr)
+            print("chroma: finishing", file=sys.stderr)

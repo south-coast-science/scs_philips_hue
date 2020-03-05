@@ -37,6 +37,8 @@ import json
 import sys
 import time
 
+from scs_core.sys.signalled_exit import SignalledExit
+
 from scs_host.client.http_client import HTTPClient
 from scs_host.sys.host import Host
 
@@ -115,6 +117,9 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # run...
 
+        # signal handler...
+        SignalledExit.construct("desk", cmd.verbose)
+
         # check for bridge availability...
         timeout = time.time() + 10
 
@@ -178,14 +183,16 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # end...
 
-    except KeyboardInterrupt:
-        if cmd.verbose:
-            print("desk: KeyboardInterrupt", file=sys.stderr)
+    except (KeyboardInterrupt, SystemExit):
+        pass
 
     except TimeoutError:
         print("desk: Timeout", file=sys.stderr)
 
     finally:
+        if cmd.verbose:
+            print("desk: finishing", file=sys.stderr)
+
         if manager is not None:
             for index, state in initial_state.items():
                 state = LightState(on=state.on, bri=state.bri, hue=state.hue, sat=state.sat, transition_time=1.0)

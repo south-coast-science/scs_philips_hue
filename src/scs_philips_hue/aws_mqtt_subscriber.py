@@ -66,6 +66,7 @@ if __name__ == '__main__':
     source = None
     reporter = None
     publisher = None
+    sub_comms = None
 
     # ----------------------------------------------------------------------------------------------------------------
     # cmd...
@@ -148,7 +149,7 @@ if __name__ == '__main__':
         pass
 
     finally:
-        if cmd and cmd.verbose:
+        if cmd.verbose:
             print("aws_mqtt_subscriber: finishing", file=sys.stderr)
 
         if source:
@@ -156,6 +157,9 @@ if __name__ == '__main__':
 
         if publisher:
             publisher.disconnect()
+
+        if sub_comms:
+            sub_comms.close()
 
         if conf:
             Filesystem.rm(conf.report_file)
