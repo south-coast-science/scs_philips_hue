@@ -53,8 +53,8 @@ from scs_philips_hue.cmd.cmd_mqtt_subscriber import CmdMQTTSubscriber
 
 from scs_philips_hue.config.domain_conf import DomainConf
 
-from scs_philips_hue.handler.aws_mqtt_subscription_handler import AWSMQTTSubscriptionHandler
 from scs_philips_hue.handler.aws_mqtt_publisher import AWSMQTTPublisher
+from scs_philips_hue.handler.aws_mqtt_subscription_handler import AWSMQTTSubscriptionHandler
 from scs_philips_hue.handler.mqtt_reporter import MQTTReporter
 
 

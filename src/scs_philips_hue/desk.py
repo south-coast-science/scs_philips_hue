@@ -47,7 +47,8 @@ from scs_philips_hue.config.desk_conf import DeskConf
 
 from scs_philips_hue.data.light.light_state import LightState
 
-from scs_philips_hue.manager.discovery import Discovery
+from scs_philips_hue.discovery.discovery import Discovery
+
 from scs_philips_hue.manager.light_manager import LightManager
 
 
@@ -96,13 +97,7 @@ if __name__ == '__main__':
 
         # bridge...
         discovery = Discovery(Host, HTTPClient())
-
-        try:
-            bridge = discovery.find(credentials)
-
-        except OSError as ex:
-            print("desk: %s" % ex)
-            exit(1)
+        bridge = discovery.find(credentials)
 
         if bridge is None:
             print("desk: no bridge matching the stored credentials")
@@ -176,7 +171,7 @@ if __name__ == '__main__':
                             sys.stderr.flush()
 
                     except ConnectionResetError as ex:
-                        print("desk: %s" % ex, file=sys.stderr)
+                        print("desk: %s: %s" % (ex.__class__.__name__, ex), file=sys.stderr)
                         sys.stderr.flush()
 
 

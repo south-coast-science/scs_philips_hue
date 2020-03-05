@@ -44,8 +44,9 @@ from scs_philips_hue.cmd.cmd_simple import CmdSimple
 
 from scs_philips_hue.config.bridge_credentials import BridgeCredentials
 
+from scs_philips_hue.discovery.discovery import Discovery
+
 from scs_philips_hue.manager.bridge_manager import BridgeManager
-from scs_philips_hue.manager.discovery import Discovery
 from scs_philips_hue.manager.user_manager import UserManager
 
 from scs_philips_hue.data.client.client_description import ClientDescription
