@@ -1,6 +1,7 @@
 [Unit]
 Description=SCS Philips Hue Display
-After=scs_mqtt_subscriber.service
+Requires=scs_time_confidence.service
+After=scs_time_confidence.service
 
 [Service]
 Type=simple

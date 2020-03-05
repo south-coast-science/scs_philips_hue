@@ -1,6 +1,7 @@
 [Unit]
 Description=SCS MQTT Client
-Before=scs_philips_hue.service
+Requires=scs_time_confidence.service
+After=scs_time_confidence.service
 
 [Service]
 Type=simple
