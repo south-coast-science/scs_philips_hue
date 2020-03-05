@@ -8,5 +8,4 @@
 # ******
 # ****** IMPORTANT ******
 
-# Set the PYTHONPATH for the heart of SCS...
 export PYTHONPATH=/home/pi/SCS/scs_analysis/src:/home/pi/SCS/scs_core/src:/home/pi/SCS/scs_host_rpi/src:/home/pi/SCS/scs_philips_hue/src
