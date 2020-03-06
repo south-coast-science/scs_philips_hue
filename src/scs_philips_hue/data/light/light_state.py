@@ -39,6 +39,13 @@ class LightState(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
+    def white(cls, bri=254):
+        return cls(on=True, bri=bri, hue=8418, sat=140, transition_time=1.0)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
     def construct_from_jdict(cls, jdict):
         if not jdict:
             return None
