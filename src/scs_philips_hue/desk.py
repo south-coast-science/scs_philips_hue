@@ -145,7 +145,7 @@ if __name__ == '__main__':
 
             # save initial states...
             for index in indices[name]:
-                initial_state[index] = manager.find(index).state
+                initial_state[index] = manager.find(index).state        # in case we want to restore these states
 
         # read stdin...
         for line in sys.stdin:
@@ -195,8 +195,7 @@ if __name__ == '__main__':
 
         if manager is not None:
             for index, state in initial_state.items():
-                state = LightState(on=state.on, bri=state.bri, hue=state.hue, sat=state.sat, transition_time=1.0)
-                response = manager.set_state(index, state)
+                response = manager.set_state(index, LightState.white())     # restore to white
 
                 if cmd.verbose:
                     print("desk: %s" % response, file=sys.stderr)
