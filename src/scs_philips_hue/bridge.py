@@ -83,11 +83,11 @@ if __name__ == '__main__':
             print("bridge: %s" % credentials, file=sys.stderr)
 
         # bridge...
-        discovery = Discovery(Host, HTTPClient())
-        bridge = discovery.find(credentials)
-
         if cmd.verbose:
             print("bridge: looking for bridge...", file=sys.stderr)
+
+        discovery = Discovery(Host, HTTPClient())
+        bridge = discovery.find(credentials)
 
         if bridge is None:
             print("bridge: no bridge matching the stored credentials")
