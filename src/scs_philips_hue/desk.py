@@ -101,6 +101,9 @@ if __name__ == '__main__':
         discovery = Discovery(Host, HTTPClient())
         bridge = discovery.find(credentials)
 
+        if cmd.verbose:
+            print("desk: looking for bridge...", file=sys.stderr)
+
         if bridge is None:
             print("desk: no bridge matching the stored credentials")
             exit(1)

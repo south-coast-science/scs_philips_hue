@@ -14,6 +14,8 @@ from scs_philips_hue.data.bridge.response import Response
 from scs_philips_hue.manager.bridge_manager import BridgeManager
 
 
+# TODO: https://github.com/flyte/upnpclient
+
 # --------------------------------------------------------------------------------------------------------------------
 
 class IPDiscovery(object):
