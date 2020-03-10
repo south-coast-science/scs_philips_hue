@@ -5,7 +5,7 @@ Created on 27 Sep 2018
 """
 
 import json
-import sys
+# import sys
 
 from scs_core.data.json import JSONify
 from scs_core.data.publication import Publication
