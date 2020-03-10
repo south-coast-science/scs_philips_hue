@@ -10,6 +10,8 @@ from scs_philips_hue.discovery.ip_discovery import IPDiscovery
 from scs_philips_hue.discovery.upnp_discovery import UPnPDiscovery
 
 
+# TODO: can we report connected bridges that we are not users of?
+
 # --------------------------------------------------------------------------------------------------------------------
 
 class Discovery(object):
