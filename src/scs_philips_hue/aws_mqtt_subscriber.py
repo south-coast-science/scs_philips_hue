@@ -118,7 +118,7 @@ if __name__ == '__main__':
         sub_comms = UDSWriter(cmd.uds_sub)
 
         # subscriber...
-        handler = AWSMQTTSubscriptionHandler(reporter, sub_comms, False)
+        handler = AWSMQTTSubscriptionHandler(reporter, sub_comms, cmd.echo)
         subscriber = MQTTSubscriber(topic_path, handler.handle)
 
         # client...

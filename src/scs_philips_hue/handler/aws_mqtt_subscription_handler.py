@@ -51,8 +51,8 @@ class AWSMQTTSubscriptionHandler(object):
             self.__comms.close()
 
         if self.__echo:
-            print(JSONify.dumps(publication))
-            sys.stdout.flush()
+            print(JSONify.dumps(publication), file=sys.stderr)
+            sys.stderr.flush()
 
             self.__reporter.print("received: %s" % JSONify.dumps(publication))
 
