@@ -5,7 +5,7 @@ Created on 27 Sep 2018
 """
 
 import json
-import sys
+# import sys
 
 from scs_core.data.json import JSONify
 from scs_core.data.publication import Publication
@@ -51,8 +51,8 @@ class AWSMQTTSubscriptionHandler(object):
             self.__comms.close()
 
         if self.__echo:
-            print(JSONify.dumps(publication), file=sys.stderr)
-            sys.stderr.flush()
+            # print(JSONify.dumps(publication), file=sys.stderr)
+            # sys.stderr.flush()
 
             self.__reporter.print("received: %s" % JSONify.dumps(publication))
 
