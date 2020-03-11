@@ -97,14 +97,16 @@ if __name__ == '__main__':
             if datum is None:
                 break
 
-            if cmd.verbose:
-                print("chroma: %s" % datum, file=sys.stderr)
-                sys.stderr.flush()
-
             try:
                 value = float(datum)
             except ValueError:
+                print("chroma: ValueError: %s" % datum, file=sys.stderr)
+                sys.stderr.flush()
                 continue
+
+            if cmd.verbose:
+                print("chroma: %s" % datum, file=sys.stderr)
+                sys.stderr.flush()
 
             # interpolate...
             chroma = path.interpolate(value)
