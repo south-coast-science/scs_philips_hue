@@ -17,7 +17,7 @@ from scs_philips_hue.discovery.ip_discovery import IPDiscovery
 # --------------------------------------------------------------------------------------------------------------------
 # run...
 
-discovery = IPDiscovery(Host, HTTPClient())
+discovery = IPDiscovery(Host, HTTPClient(False))
 print("discovery: %s" % discovery)
 print("-")
 

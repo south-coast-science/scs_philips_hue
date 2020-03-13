@@ -13,7 +13,7 @@ from scs_host.client.http_client import HTTPClient
 
 # --------------------------------------------------------------------------------------------------------------------
 
-client = UPnPClient(HTTPClient())
+client = UPnPClient(HTTPClient(False))
 print(client)
 
 try:

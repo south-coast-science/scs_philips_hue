@@ -73,8 +73,11 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # resource...
 
+    # HTTPClient...
+    http_client = HTTPClient(False)
+
     # bridge...
-    discovery = Discovery(Host, HTTPClient())
+    discovery = Discovery(Host, http_client)
     bridges = discovery.find_all()
 
     if len(bridges) == 0:
@@ -95,7 +98,7 @@ if __name__ == '__main__':
         print("join: %s" % bridge, file=sys.stderr)
 
     # manager...
-    bridge_manager = BridgeManager(HTTPClient(), bridge.ip_address, None)
+    bridge_manager = BridgeManager(http_client, bridge.ip_address, None)
 
     # device...
     client = ClientDescription(ClientDescription.APP, Host.name())
@@ -128,7 +131,7 @@ if __name__ == '__main__':
     success = response.successes.pop()
 
     # find bridge...
-    bridge_manager = BridgeManager(HTTPClient(), bridge.ip_address, success.value)
+    bridge_manager = BridgeManager(http_client, bridge.ip_address, success.value)
     config = bridge_manager.find()
 
     # save credentials...
@@ -136,7 +139,7 @@ if __name__ == '__main__':
     credentials.save(Host)
 
     # delete old whitelist entries for this user...
-    user_manager = UserManager(HTTPClient(), bridge.ip_address, credentials.username)
+    user_manager = UserManager(http_client, bridge.ip_address, credentials.username)
     users = user_manager.find_all()
 
     for user in users:
@@ -145,7 +148,7 @@ if __name__ == '__main__':
             # print("response: %s" % response)
 
     # report...
-    bridge_manager = BridgeManager(HTTPClient(), bridge.ip_address, credentials.username)
+    bridge_manager = BridgeManager(http_client, bridge.ip_address, credentials.username)
     config = bridge_manager.find()
 
     print(JSONify.dumps(credentials))

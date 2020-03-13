@@ -90,11 +90,14 @@ if __name__ == '__main__':
         if cmd.verbose:
             print("light: %s" % credentials, file=sys.stderr)
 
+        # HTTPClient...
+        http_client = HTTPClient(False)
+
         # bridge...
         if cmd.verbose:
             print("light: looking for bridge...", file=sys.stderr)
 
-        discovery = Discovery(Host, HTTPClient())
+        discovery = Discovery(Host, http_client)
         bridge = discovery.find(credentials)
 
         if bridge is None:
@@ -107,7 +110,7 @@ if __name__ == '__main__':
         sys.stderr.flush()
 
         # manager...
-        manager = LightManager(HTTPClient(), bridge.ip_address, credentials.username)
+        manager = LightManager(http_client, bridge.ip_address, credentials.username)
 
 
         # ------------------------------------------------------------------------------------------------------------

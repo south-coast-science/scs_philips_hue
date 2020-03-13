@@ -21,7 +21,7 @@ print(credentials)
 
 print("-")
 
-discovery = Discovery(Host, HTTPClient())
+discovery = Discovery(Host, HTTPClient(False))
 print(discovery)
 
 print("-")

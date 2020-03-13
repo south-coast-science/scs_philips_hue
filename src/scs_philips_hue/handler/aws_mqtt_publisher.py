@@ -10,14 +10,14 @@ from socket import gaierror
 
 from AWSIoTPythonSDK.exception.operationTimeoutException import operationTimeoutException
 
-from scs_analysis.handler.mqtt_reporter import MQTTReporter
-
 from scs_core.aws.client.client_auth import ClientAuth
 from scs_core.aws.client.mqtt_client import MQTTClient
 
 from scs_core.comms.mqtt_conf import MQTTConf
 
 from scs_core.data.queue_report import QueueReport, ClientStatus
+
+from scs_philips_hue.handler.mqtt_reporter import MQTTReporter
 
 
 # --------------------------------------------------------------------------------------------------------------------
