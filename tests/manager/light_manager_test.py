@@ -29,7 +29,7 @@ print(credentials)
 
 print("-")
 
-discovery = Discovery(Host, HTTPClient())
+discovery = Discovery(Host, HTTPClient(False))
 print(discovery)
 
 print("-")
@@ -39,7 +39,7 @@ print(bridge)
 
 print("=")
 
-manager = LightManager(HTTPClient(), bridge.ip_address, credentials.username)
+manager = LightManager(HTTPClient(False), bridge.ip_address, credentials.username)
 print(manager)
 
 print("-")

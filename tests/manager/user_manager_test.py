@@ -23,7 +23,7 @@ print(credentials)
 
 print("-")
 
-discovery = Discovery(Host, HTTPClient())
+discovery = Discovery(Host, HTTPClient(False))
 print(discovery)
 
 print("-")
@@ -33,7 +33,7 @@ print(bridge)
 
 print("=")
 
-user_manager = UserManager(HTTPClient(), bridge.ip_address, credentials.username)
+user_manager = UserManager(HTTPClient(False), bridge.ip_address, credentials.username)
 print(user_manager)
 
 print("-")

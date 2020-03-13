@@ -165,7 +165,7 @@ if __name__ == '__main__':
             topic_path = cmd.topic_path
 
         # manager...
-        manager = TopicManager(HTTPClient(), api_auth.api_key)
+        manager = TopicManager(HTTPClient(True), api_auth.api_key)
 
         # check topics...
         if not manager.find(topic_path):
