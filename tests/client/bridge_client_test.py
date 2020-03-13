@@ -15,7 +15,7 @@ from scs_philips_hue.client.rest_client import RESTClient
 
 # --------------------------------------------------------------------------------------------------------------------
 
-client = RESTClient(HTTPClient())
+client = RESTClient(HTTPClient(False))
 print(client)
 
 try:

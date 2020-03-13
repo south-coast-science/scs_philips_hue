@@ -18,12 +18,15 @@ from scs_philips_hue.manager.user_manager import UserManager
 
 # --------------------------------------------------------------------------------------------------------------------
 
+# HTTPClient...
+http_client = HTTPClient(False)
+
 credentials = BridgeCredentials.load(Host)
 print(credentials)
 
 print("-")
 
-discovery = Discovery(Host, HTTPClient())
+discovery = Discovery(Host, http_client)
 print(discovery)
 
 print("-")
@@ -33,7 +36,7 @@ print(bridge)
 
 print("=")
 
-user_manager = UserManager(HTTPClient(), bridge.ip_address, credentials.username)
+user_manager = UserManager(http_client, bridge.ip_address, credentials.username)
 print(user_manager)
 
 print("-")
