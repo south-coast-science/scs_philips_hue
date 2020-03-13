@@ -83,11 +83,14 @@ if __name__ == '__main__':
     if cmd.verbose:
         print("user: %s" % credentials, file=sys.stderr)
 
+    # HTTPClient...
+    http_client = HTTPClient(False)
+
     # bridge...
     if cmd.verbose:
         print("user: looking for bridge...", file=sys.stderr)
 
-    discovery = Discovery(Host, HTTPClient(False))
+    discovery = Discovery(Host, http_client)
     bridge = discovery.find(credentials)
 
     if bridge is None:
@@ -100,7 +103,7 @@ if __name__ == '__main__':
     sys.stderr.flush()
 
     # manager...
-    manager = UserManager(HTTPClient(False), bridge.ip_address, credentials.username)
+    manager = UserManager(http_client, bridge.ip_address, credentials.username)
 
 
     # ----------------------------------------------------------------------------------------------------------------

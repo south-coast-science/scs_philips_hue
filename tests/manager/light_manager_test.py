@@ -24,12 +24,15 @@ from scs_philips_hue.manager.light_manager import LightManager
 
 # --------------------------------------------------------------------------------------------------------------------
 
+# HTTPClient...
+http_client = HTTPClient(False)
+
 credentials = BridgeCredentials.load(Host)
 print(credentials)
 
 print("-")
 
-discovery = Discovery(Host, HTTPClient(False))
+discovery = Discovery(Host, http_client)
 print(discovery)
 
 print("-")
@@ -39,7 +42,7 @@ print(bridge)
 
 print("=")
 
-manager = LightManager(HTTPClient(False), bridge.ip_address, credentials.username)
+manager = LightManager(http_client, bridge.ip_address, credentials.username)
 print(manager)
 
 print("-")
