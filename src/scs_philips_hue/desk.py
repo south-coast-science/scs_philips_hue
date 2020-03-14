@@ -16,6 +16,8 @@ In verbose mode, the desk utility provides a detailed report on the command outc
 The desk utility requires the desk_conf.json document, specifying which light(s) should receive the LightState
 command.
 
+Note: this utility waits forever for a network connection and domain name server.
+
 SYNOPSIS
 desk.py [-e] [-v]
 
