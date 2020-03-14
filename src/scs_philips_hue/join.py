@@ -70,7 +70,6 @@ if __name__ == '__main__':
     if cmd.verbose:
         print("join: %s" % cmd, file=sys.stderr)
 
-
     try:
 
         # ----------------------------------------------------------------------------------------------------------------
@@ -162,3 +161,8 @@ if __name__ == '__main__':
 
     except (ConnectionError, HTTPException) as ex:
         print("join: %s: %s" % (ex.__class__.__name__, ex), file=sys.stderr)
+
+    except KeyboardInterrupt:
+        if cmd.verbose:
+            print("join: KeyboardInterrupt", file=sys.stderr)
+
