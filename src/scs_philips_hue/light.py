@@ -178,7 +178,7 @@ if __name__ == '__main__':
     # end...
 
     except (ConnectionError, HTTPException) as ex:
-        print("join: %s: %s" % (ex.__class__.__name__, ex), file=sys.stderr)
+        print("light: %s: %s" % (ex.__class__.__name__, ex), file=sys.stderr)
 
     except KeyboardInterrupt:
         if cmd.verbose:
