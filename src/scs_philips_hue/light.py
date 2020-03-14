@@ -41,6 +41,7 @@ import sys
 import time
 
 from scs_core.data.json import JSONify
+from scs_core.sys.http_exception import HTTPException
 
 from scs_host.client.http_client import HTTPClient
 from scs_host.sys.host import Host
@@ -175,6 +176,9 @@ if __name__ == '__main__':
 
     # ----------------------------------------------------------------------------------------------------------------
     # end...
+
+    except (ConnectionError, HTTPException) as ex:
+        print("join: %s: %s" % (ex.__class__.__name__, ex), file=sys.stderr)
 
     except KeyboardInterrupt:
         if cmd.verbose:
