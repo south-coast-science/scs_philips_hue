@@ -19,7 +19,7 @@ client_credentials.json documents.
 
 Note: this utility waits forever for a network connection and domain name server.
 
-WARNING: only one MQTT client should run at any one time, per TCP/IP host.
+Warning: only one MQTT client should run at any one time, per TCP/IP host.
 
 SYNOPSIS
 osio_mqtt_subscriber.py {-c | -t TOPIC_PATH } [-v]
