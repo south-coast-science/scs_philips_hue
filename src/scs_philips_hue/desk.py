@@ -37,6 +37,7 @@ import json
 import sys
 import time
 
+from scs_core.sys.http_exception import HTTPException
 from scs_core.sys.signalled_exit import SignalledExit
 
 from scs_host.client.http_client import HTTPClient
@@ -98,7 +99,7 @@ if __name__ == '__main__':
             print("desk: %s" % credentials, file=sys.stderr)
 
         # HTTPClient...
-        http_client = HTTPClient(True)
+        http_client = HTTPClient(False)
 
         # bridge...
         if cmd.verbose:
@@ -189,11 +190,14 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # end...
 
-    except (KeyboardInterrupt, SystemExit):
-        pass
+    except (ConnectionError, HTTPException) as ex:
+        print("desk: %s: %s" % (ex.__class__.__name__, ex), file=sys.stderr)
 
     except TimeoutError:
         print("desk: Timeout", file=sys.stderr)
+
+    except (KeyboardInterrupt, SystemExit):
+        pass
 
     finally:
         if cmd.verbose:

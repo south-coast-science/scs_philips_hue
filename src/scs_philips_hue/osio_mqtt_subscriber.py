@@ -17,6 +17,8 @@ path as a field name, thus identifying which topic the data was gained from.
 In order to operate, the API auth and client auth must be specified in the aws_api_auth.json and
 client_credentials.json documents.
 
+Note: this utility waits forever for a network connection and domain name server.
+
 WARNING: only one MQTT client should run at any one time, per TCP/IP host.
 
 SYNOPSIS
