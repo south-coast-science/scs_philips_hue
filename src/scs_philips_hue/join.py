@@ -35,6 +35,7 @@ scs_philips_hue/user
 import sys
 
 from scs_core.data.json import JSONify
+from scs_core.sys.http_exception import HTTPException
 
 from scs_host.client.http_client import HTTPClient
 from scs_host.comms.stdio import StdIO
@@ -70,85 +71,94 @@ if __name__ == '__main__':
         print("join: %s" % cmd, file=sys.stderr)
 
 
-    # ----------------------------------------------------------------------------------------------------------------
-    # resource...
-
-    # HTTPClient...
-    http_client = HTTPClient(False)
-
-    # bridge...
-    discovery = Discovery(Host, http_client)
-    bridges = discovery.find_all()
-
-    if len(bridges) == 0:
-        print("join: no bridge found", file=sys.stderr)
-        exit(0)
-
-    elif len(bridges) == 1:
-        bridge = bridges.pop()
-
-    else:
-        for i in range(len(bridges)):
-            print("%d: %s" % ((i + 1), bridges[i]))
-
-        index = StdIO.prompt("Bridge (1 - %d) ?: " % len(bridges))
-        bridge = bridges[int(index) - 1]
-
-    if cmd.verbose:
-        print("join: %s" % bridge, file=sys.stderr)
-
-    # manager...
-    bridge_manager = BridgeManager(http_client, bridge.ip_address, None)
-
-    # device...
-    client = ClientDescription(ClientDescription.APP, Host.name())
-    device = DeviceDescription(client)
-
-    if cmd.verbose:
-        print("join: %s" % device, file=sys.stderr)
-
-    sys.stderr.flush()
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-    # run...
-
-    # join...
-    response = None
-
     try:
-        response = bridge_manager.register(device)
-    except TimeoutError:
-        print("join: bridge not found", file=sys.stderr)
-        exit(1)
 
-    if response.has_errors():
-        for error in response.errors:
-            print("join: error: %s" % error.description, file=sys.stderr)
-        exit(1)
+        # ----------------------------------------------------------------------------------------------------------------
+        # resources...
 
-    # get credentials...
-    success = response.successes.pop()
+        # HTTPClient...
+        http_client = HTTPClient(False)
 
-    # find bridge...
-    bridge_manager = BridgeManager(http_client, bridge.ip_address, success.value)
-    config = bridge_manager.find()
+        # bridge...
+        discovery = Discovery(Host, http_client)
+        bridges = discovery.find_all()
 
-    # save credentials...
-    credentials = BridgeCredentials(config.bridge_id, success.value)
-    credentials.save(Host)
+        if len(bridges) == 0:
+            print("join: no bridge found", file=sys.stderr)
+            exit(0)
 
-    # delete old whitelist entries for this user...
-    user_manager = UserManager(http_client, bridge.ip_address, credentials.username)
-    users = user_manager.find_all()
+        elif len(bridges) == 1:
+            bridge = bridges.pop()
 
-    for user in users:
-        if user.description.user == Host.name() and user.username != credentials.username:
-            response = user_manager.delete(application_key, user.username)
-            # print("response: %s" % response)
+        else:
+            for i in range(len(bridges)):
+                print("%d: %s" % ((i + 1), bridges[i]))
 
-    # report...
-    bridge_manager = BridgeManager(http_client, bridge.ip_address, credentials.username)
-    config = bridge_manager.find()
+            index = StdIO.prompt("Bridge (1 - %d) ?: " % len(bridges))
+            bridge = bridges[int(index) - 1]
 
-    print(JSONify.dumps(credentials))
+        if cmd.verbose:
+            print("join: %s" % bridge, file=sys.stderr)
+
+        # manager...
+        bridge_manager = BridgeManager(http_client, bridge.ip_address, None)
+
+        # device...
+        client = ClientDescription(ClientDescription.APP, Host.name())
+        device = DeviceDescription(client)
+
+        if cmd.verbose:
+            print("join: %s" % device, file=sys.stderr)
+
+        sys.stderr.flush()
+
+
+        # ----------------------------------------------------------------------------------------------------------------
+        # run...
+
+        # join...
+        response = None
+
+        try:
+            response = bridge_manager.register(device)
+        except TimeoutError:
+            print("join: bridge not found", file=sys.stderr)
+            exit(1)
+
+        if response.has_errors():
+            for error in response.errors:
+                print("join: error: %s" % error.description, file=sys.stderr)
+            exit(1)
+
+        # get credentials...
+        success = response.successes.pop()
+
+        # find bridge...
+        bridge_manager = BridgeManager(http_client, bridge.ip_address, success.value)
+        config = bridge_manager.find()
+
+        # save credentials...
+        credentials = BridgeCredentials(config.bridge_id, success.value)
+        credentials.save(Host)
+
+        # delete old whitelist entries for this user...
+        user_manager = UserManager(http_client, bridge.ip_address, credentials.username)
+        users = user_manager.find_all()
+
+        for user in users:
+            if user.description.user == Host.name() and user.username != credentials.username:
+                response = user_manager.delete(application_key, user.username)
+                # print("response: %s" % response)
+
+        # report...
+        bridge_manager = BridgeManager(http_client, bridge.ip_address, credentials.username)
+        config = bridge_manager.find()
+
+        print(JSONify.dumps(credentials))
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+    # end...
+
+    except (ConnectionError, HTTPException) as ex:
+        print("join: %s: %s" % (ex.__class__.__name__, ex), file=sys.stderr)
