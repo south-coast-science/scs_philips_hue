@@ -16,6 +16,8 @@ In verbose mode, the desk utility provides a detailed report on the command outc
 The desk utility requires the desk_conf.json document, specifying which light(s) should receive the LightState
 command.
 
+Note: this utility waits forever for a network connection and domain name server.
+
 SYNOPSIS
 desk.py [-e] [-v]
 
@@ -189,11 +191,11 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # end...
 
-    except (KeyboardInterrupt, SystemExit):
-        pass
-
     except TimeoutError:
         print("desk: Timeout", file=sys.stderr)
+
+    except (KeyboardInterrupt, SystemExit):
+        pass
 
     finally:
         if cmd.verbose:
