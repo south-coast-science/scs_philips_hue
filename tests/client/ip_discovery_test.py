@@ -8,7 +8,8 @@ Created on 4 Mar 2020
 
 import time
 
-from scs_host.client.http_client import HTTPClient
+from scs_core.client.http_client import HTTPClient
+
 from scs_host.sys.host import Host
 
 from scs_philips_hue.discovery.ip_discovery import IPDiscovery
