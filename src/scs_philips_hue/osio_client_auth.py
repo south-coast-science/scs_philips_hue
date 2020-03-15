@@ -35,6 +35,8 @@ scs_philips_hue/osio_mqtt_subscriber
 
 import sys
 
+from scs_core.client.http_client import HTTPClient
+
 from scs_core.data.json import JSONify
 
 from scs_core.osio.client.api_auth import APIAuth
@@ -45,7 +47,6 @@ from scs_core.osio.manager.user_manager import UserManager
 
 from scs_core.sys.system_id import SystemID
 
-from scs_host.client.http_client import HTTPClient
 from scs_host.sys.host import Host
 
 from scs_philips_hue.cmd.cmd_osio_client_auth import CmdOSIOClientAuth

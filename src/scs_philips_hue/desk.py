@@ -39,9 +39,10 @@ import json
 import sys
 import time
 
+from scs_core.client.http_client import HTTPClient
+
 from scs_core.sys.signalled_exit import SignalledExit
 
-from scs_host.client.http_client import HTTPClient
 from scs_host.sys.host import Host
 
 from scs_philips_hue.cmd.cmd_desk import CmdDesk

@@ -35,9 +35,9 @@ scs_philips_hue/desk
 
 import sys
 
-from scs_core.data.json import JSONify
+from scs_core.client.http_client import HTTPClient
 
-from scs_host.client.http_client import HTTPClient
+from scs_core.data.json import JSONify
 
 from scs_host.sys.host import Host
 from scs_core.sys.http_exception import HTTPException

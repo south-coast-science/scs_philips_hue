@@ -32,10 +32,11 @@ https://developers.meethue.com/content/configuring-hue-without-phone-app-unable-
 
 import sys
 
+from scs_core.client.http_client import HTTPClient
+
 from scs_core.data.json import JSONify
 from scs_core.sys.http_exception import HTTPException
 
-from scs_host.client.http_client import HTTPClient
 from scs_host.sys.host import Host
 
 from scs_philips_hue.cmd.cmd_bridge import CmdBridge
