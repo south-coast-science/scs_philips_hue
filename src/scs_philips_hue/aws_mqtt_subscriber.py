@@ -63,7 +63,6 @@ from scs_philips_hue.handler.mqtt_reporter import MQTTReporter
 if __name__ == '__main__':
 
     conf = None
-    source = None
     reporter = None
     publisher = None
     sub_comms = None
@@ -151,9 +150,6 @@ if __name__ == '__main__':
     finally:
         if cmd.verbose:
             print("aws_mqtt_subscriber: finishing", file=sys.stderr)
-
-        if source:
-            source.close()
 
         if publisher:
             publisher.disconnect()
