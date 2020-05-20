@@ -33,6 +33,7 @@ https://developers.meethue.com/content/configuring-hue-without-phone-app-unable-
 import sys
 
 from scs_core.client.http_client import HTTPClient
+from scs_core.client.network_unavailable_exception import NetworkUnavailableException
 
 from scs_core.data.json import JSONify
 from scs_core.sys.http_exception import HTTPException
@@ -166,6 +167,9 @@ if __name__ == '__main__':
 
     except (ConnectionError, HTTPException) as ex:
         print("bridge: %s: %s" % (ex.__class__.__name__, ex), file=sys.stderr)
+
+    except NetworkUnavailableException:
+        print("bridge: network not available.", file=sys.stderr)
 
     except KeyboardInterrupt:
         if cmd.verbose:
