@@ -101,7 +101,7 @@ if __name__ == '__main__':
             print("desk: %s" % credentials, file=sys.stderr)
 
         # HTTPClient...
-        http_client = HTTPClient(True)
+        http_client = HTTPClient(False)         # if True then IP scanning cannot happen!
 
         # bridge...
         if cmd.verbose:
