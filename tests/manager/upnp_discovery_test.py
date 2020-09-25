@@ -18,22 +18,22 @@ from scs_philips_hue.discovery.discovery import Discovery
 # --------------------------------------------------------------------------------------------------------------------
 
 credentials = BridgeCredentials.load(Host)
-print(credentials)
+print("credentials: %s" % credentials)
 
 print("-")
 
 discovery = Discovery(Host, HTTPClient(False))
-print(discovery)
+print("discovery: %s" % discovery)
 
 print("-")
 
 bridges = discovery.find_all()
 
 for bridge in bridges:
-    print(bridge)
+    print("bridge: %s" % bridge)
 
 print("-")
 
 bridge = discovery.find(credentials)
-print(bridge)
+print("found: %s" % bridge)
 

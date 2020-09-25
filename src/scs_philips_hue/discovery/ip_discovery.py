@@ -6,6 +6,8 @@ Created on 4 Mar 2020
 
 import socket
 
+from scs_core.client.network_unavailable_exception import NetworkUnavailableException
+
 from scs_philips_hue.client.client_exception import ClientException
 from scs_philips_hue.client.rest_client import RESTClient
 
@@ -46,7 +48,11 @@ class IPDiscovery(object):
 
         # config...
         manager = BridgeManager(self.__http_client, host.ip_address, credentials.username)
-        config = manager.find()
+
+        try:
+            config = manager.find()
+        except NetworkUnavailableException:
+            return None
 
         # check...
         if config.bridge_id == credentials.bridge_id:
@@ -57,8 +63,11 @@ class IPDiscovery(object):
 
     def find_first(self):
         for ip_address in self.__host.scan_accessible_subnets(timeout=self.__BRIDGE_DEFAULT_TIMEOUT):
-            if self.__is_bridge(ip_address):
-                return IPHost(ip_address)
+            try:
+                if self.__is_bridge(ip_address):
+                    return IPHost(ip_address)
+            except NetworkUnavailableException:
+                continue
 
         return None
 
