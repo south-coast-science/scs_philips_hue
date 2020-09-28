@@ -4,8 +4,6 @@ Created on 4 Mar 2020
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-import socket
-
 from scs_core.client.resource_unavailable_exception import ResourceUnavailableException
 
 from scs_philips_hue.client.client_exception import ClientException
@@ -94,7 +92,7 @@ class IPDiscovery(object):
             # response...
             return Response.construct_from_jdict(jdict) is not None
 
-        except ResourceUnavailableException:
+        except (ClientException, ResourceUnavailableException):
             return False
 
         finally:
