@@ -32,6 +32,7 @@ https://developers.meethue.com/content/configuring-hue-without-phone-app-unable-
 
 import sys
 
+from scs_core.client.network import Network
 from scs_core.client.resource_unavailable_exception import ResourceUnavailableException
 
 from scs_core.data.json import JSONify
@@ -73,6 +74,14 @@ if __name__ == '__main__':
     try:
         # ------------------------------------------------------------------------------------------------------------
         # resources...
+
+        # network...
+        if not Network.is_available():
+            if cmd.verbose:
+                print("bridge: waiting for network...", file=sys.stderr, end='')
+                sys.stderr.flush()
+
+            Network.wait()
 
         # credentials...
         credentials = BridgeCredentials.load(Host)
@@ -165,7 +174,7 @@ if __name__ == '__main__':
         print("bridge: %s: %s" % (ex.__class__.__name__, ex), file=sys.stderr)
 
     except ResourceUnavailableException as ex:
-        print("bridge: %s: %s" % (ex.resource, str(ex.original_exception)), file=sys.stderr)
+        print("bridge: %s" % repr(ex), file=sys.stderr)
 
     except KeyboardInterrupt:
         if cmd.verbose:

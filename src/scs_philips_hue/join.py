@@ -34,6 +34,7 @@ scs_philips_hue/user
 
 import sys
 
+from scs_core.client.network import Network
 from scs_core.client.resource_unavailable_exception import ResourceUnavailableException
 
 from scs_core.data.json import JSONify
@@ -75,6 +76,14 @@ if __name__ == '__main__':
 
         # ----------------------------------------------------------------------------------------------------------------
         # resources...
+
+        # network...
+        if not Network.is_available():
+            if cmd.verbose:
+                print("join: waiting for network...", file=sys.stderr, end='')
+                sys.stderr.flush()
+
+            Network.wait()
 
         # bridge...
         discovery = Discovery(Host)
@@ -161,7 +170,7 @@ if __name__ == '__main__':
         print("join: %s: %s" % (ex.__class__.__name__, ex), file=sys.stderr)
 
     except ResourceUnavailableException as ex:
-        print("join: %s: %s" % (ex.resource, str(ex.original_exception)), file=sys.stderr)
+        print("join: %s" % repr(ex), file=sys.stderr)
 
     except KeyboardInterrupt:
         if cmd.verbose:

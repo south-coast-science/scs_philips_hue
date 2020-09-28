@@ -80,6 +80,14 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # resources...
 
+        # network...
+        if not Network.is_available():
+            if cmd.verbose:
+                print("desk: waiting for network...", file=sys.stderr, end='')
+                sys.stderr.flush()
+
+            Network.wait()
+
         # DeskConf...
         conf = DeskConf.load_from_file(cmd.file) if cmd.file else DeskConf.load(Host)
 
@@ -99,14 +107,6 @@ if __name__ == '__main__':
 
         if cmd.verbose:
             print("desk: %s" % credentials, file=sys.stderr)
-
-        # network...
-        if not Network.is_available():
-            if cmd.verbose:
-                print("desk: waiting for network...", file=sys.stderr, end='')
-                sys.stderr.flush()
-
-            Network.wait()
 
         # bridge...
         if cmd.verbose:
