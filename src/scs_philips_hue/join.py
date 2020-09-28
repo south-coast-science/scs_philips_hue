@@ -34,7 +34,7 @@ scs_philips_hue/user
 
 import sys
 
-from scs_core.client.network_unavailable_exception import NetworkUnavailableException
+from scs_core.client.resource_unavailable_exception import ResourceUnavailableException
 
 from scs_core.data.json import JSONify
 from scs_core.sys.http_exception import HTTPException
@@ -160,8 +160,8 @@ if __name__ == '__main__':
     except (ConnectionError, HTTPException) as ex:
         print("join: %s: %s" % (ex.__class__.__name__, ex), file=sys.stderr)
 
-    except NetworkUnavailableException:
-        print("join: network not available.", file=sys.stderr)
+    except ResourceUnavailableException as ex:
+        print("join: %s: %s" % (ex.resource, str(ex.original_exception)), file=sys.stderr)
 
     except KeyboardInterrupt:
         if cmd.verbose:

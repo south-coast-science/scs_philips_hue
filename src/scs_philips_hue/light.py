@@ -40,7 +40,7 @@ does not find the light, then the light should be acquired with -a SERIAL_NUMBER
 import sys
 import time
 
-from scs_core.client.network_unavailable_exception import NetworkUnavailableException
+from scs_core.client.resource_unavailable_exception import ResourceUnavailableException
 
 from scs_core.data.json import JSONify
 from scs_core.sys.http_exception import HTTPException
@@ -178,8 +178,8 @@ if __name__ == '__main__':
     except (ConnectionError, HTTPException) as ex:
         print("light: %s: %s" % (ex.__class__.__name__, ex), file=sys.stderr)
 
-    except NetworkUnavailableException:
-        print("light: network not available.", file=sys.stderr)
+    except ResourceUnavailableException as ex:
+        print("light: %s: %s" % (ex.resource, str(ex.original_exception)), file=sys.stderr)
 
     except KeyboardInterrupt:
         if cmd.verbose:

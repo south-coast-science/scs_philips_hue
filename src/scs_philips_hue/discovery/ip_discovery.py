@@ -6,7 +6,7 @@ Created on 4 Mar 2020
 
 import socket
 
-from scs_core.client.network_unavailable_exception import NetworkUnavailableException
+from scs_core.client.resource_unavailable_exception import ResourceUnavailableException
 
 from scs_philips_hue.client.client_exception import ClientException
 from scs_philips_hue.client.rest_client import RESTClient
@@ -50,7 +50,7 @@ class IPDiscovery(object):
 
         try:
             config = manager.find()
-        except NetworkUnavailableException:
+        except ResourceUnavailableException:
             return None
 
         # check...
@@ -62,11 +62,8 @@ class IPDiscovery(object):
 
     def find_first(self):
         for ip_address in self.__host.scan_accessible_subnets(timeout=self.__BRIDGE_DEFAULT_TIMEOUT):
-            try:
-                if self.__is_bridge(ip_address):
-                    return IPHost(ip_address)
-            except NetworkUnavailableException:
-                continue
+            if self.__is_bridge(ip_address):
+                return IPHost(ip_address)
 
         return None
 
@@ -97,7 +94,7 @@ class IPDiscovery(object):
             # response...
             return Response.construct_from_jdict(jdict) is not None
 
-        except (ClientException, OSError, socket.timeout):  # TODO: don't need these exceptions - handled by HttpClient
+        except ResourceUnavailableException:
             return False
 
         finally:
