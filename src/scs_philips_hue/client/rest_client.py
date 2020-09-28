@@ -11,6 +11,8 @@ import json
 
 from scs_core.data.json import JSONify
 
+from scs_core.client.http_client import HTTPClient
+
 from scs_core.sys.http_exception import HTTPException
 from scs_core.sys.http_status import HTTPStatus
 
@@ -28,11 +30,11 @@ class RESTClient(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, http_client):
+    def __init__(self):
         """
         Constructor
         """
-        self.__http_client = http_client
+        self.__http_client = HTTPClient()
         self.__username = None
 
 

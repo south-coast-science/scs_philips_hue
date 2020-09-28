@@ -29,12 +29,11 @@ class IPDiscovery(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, host, http_client):
+    def __init__(self, host):
         """
         Constructor
         """
         self.__host = host
-        self.__http_client = http_client
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -47,7 +46,7 @@ class IPDiscovery(object):
             return None
 
         # config...
-        manager = BridgeManager(self.__http_client, host.ip_address, credentials.username)
+        manager = BridgeManager(host.ip_address, credentials.username)
 
         try:
             config = manager.find()
@@ -85,7 +84,7 @@ class IPDiscovery(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __is_bridge(self, ip_address):
-        rest_client = RESTClient(self.__http_client)
+        rest_client = RESTClient()
 
         try:
             # request...
@@ -98,7 +97,7 @@ class IPDiscovery(object):
             # response...
             return Response.construct_from_jdict(jdict) is not None
 
-        except (ClientException, OSError, socket.timeout):  # TODO: don't need these exceptions - handled by HTTPClient
+        except (ClientException, OSError, socket.timeout):  # TODO: don't need these exceptions - handled by HttpClient
             return False
 
         finally:
@@ -108,7 +107,7 @@ class IPDiscovery(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "IPDiscovery:{host:%s, http_client:%s}" % (self.__host, self.__http_client)
+        return "IPDiscovery:{host:%s}" % self.__host
 
 
 # --------------------------------------------------------------------------------------------------------------------
