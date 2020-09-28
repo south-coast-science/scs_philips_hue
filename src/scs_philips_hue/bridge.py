@@ -78,7 +78,7 @@ if __name__ == '__main__':
         # network...
         if not Network.is_available():
             if cmd.verbose:
-                print("bridge: waiting for network...", file=sys.stderr, end='')
+                print("bridge: waiting for network", file=sys.stderr)
                 sys.stderr.flush()
 
             Network.wait()

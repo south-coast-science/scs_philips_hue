@@ -86,7 +86,7 @@ if __name__ == '__main__':
         # network...
         if not Network.is_available():
             if cmd.verbose:
-                print("light: waiting for network...", file=sys.stderr, end='')
+                print("light: waiting for network", file=sys.stderr)
                 sys.stderr.flush()
 
             Network.wait()
