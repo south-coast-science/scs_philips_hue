@@ -4,9 +4,7 @@ Created on 4 Mar 2020
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-import socket
-
-from scs_core.client.network_unavailable_exception import NetworkUnavailableException
+from scs_core.client.resource_unavailable_exception import ResourceUnavailableException
 
 from scs_philips_hue.client.client_exception import ClientException
 from scs_philips_hue.client.rest_client import RESTClient
@@ -29,12 +27,11 @@ class IPDiscovery(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, host, http_client):
+    def __init__(self, host):
         """
         Constructor
         """
         self.__host = host
-        self.__http_client = http_client
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -47,11 +44,11 @@ class IPDiscovery(object):
             return None
 
         # config...
-        manager = BridgeManager(self.__http_client, host.ip_address, credentials.username)
+        manager = BridgeManager(host.ip_address, credentials.username)
 
         try:
             config = manager.find()
-        except NetworkUnavailableException:
+        except ResourceUnavailableException:
             return None
 
         # check...
@@ -63,11 +60,8 @@ class IPDiscovery(object):
 
     def find_first(self):
         for ip_address in self.__host.scan_accessible_subnets(timeout=self.__BRIDGE_DEFAULT_TIMEOUT):
-            try:
-                if self.__is_bridge(ip_address):
-                    return IPHost(ip_address)
-            except NetworkUnavailableException:
-                continue
+            if self.__is_bridge(ip_address):
+                return IPHost(ip_address)
 
         return None
 
@@ -85,7 +79,7 @@ class IPDiscovery(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __is_bridge(self, ip_address):
-        rest_client = RESTClient(self.__http_client)
+        rest_client = RESTClient()
 
         try:
             # request...
@@ -98,7 +92,7 @@ class IPDiscovery(object):
             # response...
             return Response.construct_from_jdict(jdict) is not None
 
-        except (ClientException, OSError, socket.timeout):
+        except (ClientException, ResourceUnavailableException):
             return False
 
         finally:
@@ -108,7 +102,7 @@ class IPDiscovery(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "IPDiscovery:{host:%s, http_client:%s}" % (self.__host, self.__http_client)
+        return "IPDiscovery:{host:%s}" % self.__host
 
 
 # --------------------------------------------------------------------------------------------------------------------

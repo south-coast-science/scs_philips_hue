@@ -19,11 +19,11 @@ class BridgeManager(Manager):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, http_client, host, username):
+    def __init__(self, host, username):
         """
         Constructor
         """
-        super().__init__(http_client, host, username)
+        super().__init__(host, username)
 
 
     # ----------------------------------------------------------------------------------------------------------------

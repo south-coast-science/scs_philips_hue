@@ -6,8 +6,6 @@ Created on 29 Oct 2017
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-from scs_core.client.http_client import HTTPClient
-
 from scs_host.sys.host import Host
 
 from scs_philips_hue.config.bridge_credentials import BridgeCredentials
@@ -19,15 +17,12 @@ from scs_philips_hue.manager.user_manager import UserManager
 
 # --------------------------------------------------------------------------------------------------------------------
 
-# HTTPClient...
-http_client = HTTPClient(False)
-
 credentials = BridgeCredentials.load(Host)
 print(credentials)
 
 print("-")
 
-discovery = Discovery(Host, http_client)
+discovery = Discovery(Host)
 print(discovery)
 
 print("-")
@@ -37,7 +32,7 @@ print(bridge)
 
 print("=")
 
-user_manager = UserManager(http_client, bridge.ip_address, credentials.username)
+user_manager = UserManager(bridge.ip_address, credentials.username)
 print(user_manager)
 
 print("-")

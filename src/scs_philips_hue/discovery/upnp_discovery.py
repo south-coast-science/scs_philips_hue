@@ -18,11 +18,11 @@ class UPnPDiscovery(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, http_client):
+    def __init__(self):
         """
         Constructor
         """
-        self.__upnp_client = UPnPClient(http_client)
+        self.__upnp_client = UPnPClient()
 
 
     # ----------------------------------------------------------------------------------------------------------------

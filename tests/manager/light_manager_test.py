@@ -8,8 +8,6 @@ Created on 30 Oct 2017
 
 import time
 
-from scs_core.client.http_client import HTTPClient
-
 from scs_core.data.json import JSONify
 
 from scs_host.sys.host import Host
@@ -25,15 +23,12 @@ from scs_philips_hue.manager.light_manager import LightManager
 
 # --------------------------------------------------------------------------------------------------------------------
 
-# HTTPClient...
-http_client = HTTPClient(False)
-
 credentials = BridgeCredentials.load(Host)
 print(credentials)
 
 print("-")
 
-discovery = Discovery(Host, http_client)
+discovery = Discovery(Host)
 print(discovery)
 
 print("-")
@@ -43,7 +38,7 @@ print(bridge)
 
 print("=")
 
-manager = LightManager(http_client, bridge.ip_address, credentials.username)
+manager = LightManager(bridge.ip_address, credentials.username)
 print(manager)
 
 print("-")

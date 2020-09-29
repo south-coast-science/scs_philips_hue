@@ -46,8 +46,6 @@ scs_philips_hue/aws_mqtt_subscriber
 import sys
 import time
 
-from scs_core.client.http_client import HTTPClient
-
 from scs_core.data.json import JSONify
 
 from scs_core.osio.client.api_auth import APIAuth
@@ -168,7 +166,7 @@ if __name__ == '__main__':
             topic_path = cmd.topic_path
 
         # manager...
-        manager = TopicManager(HTTPClient(True), api_auth.api_key)
+        manager = TopicManager(api_auth.api_key)
 
         # check topics...
         if not manager.find(topic_path):

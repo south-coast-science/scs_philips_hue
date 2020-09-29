@@ -6,14 +6,12 @@ Created on 27 Oct 2017
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-from scs_core.client.http_client import HTTPClient
-
 from scs_philips_hue.client.upnp_client import UPnPClient
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-client = UPnPClient(HTTPClient(False))
+client = UPnPClient()
 print(client)
 
 try:
