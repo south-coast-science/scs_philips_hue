@@ -81,15 +81,18 @@ if __name__ == '__main__':
 
     try:
         # ------------------------------------------------------------------------------------------------------------
-        # resources...
+        # check...
 
-        # network...
         if not Network.is_available():
             if cmd.verbose:
                 print("light: waiting for network", file=sys.stderr)
                 sys.stderr.flush()
 
             Network.wait()
+
+
+        # ------------------------------------------------------------------------------------------------------------
+        # resources...
 
         # credentials...
         credentials = BridgeCredentials.load(Host)

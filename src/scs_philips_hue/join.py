@@ -73,17 +73,19 @@ if __name__ == '__main__':
         print("join: %s" % cmd, file=sys.stderr)
 
     try:
+        # ------------------------------------------------------------------------------------------------------------
+        # check...
 
-        # ----------------------------------------------------------------------------------------------------------------
-        # resources...
-
-        # network...
         if not Network.is_available():
             if cmd.verbose:
                 print("join: waiting for network", file=sys.stderr)
                 sys.stderr.flush()
 
             Network.wait()
+
+
+        # ----------------------------------------------------------------------------------------------------------------
+        # resources...
 
         # bridge...
         discovery = Discovery(Host)
