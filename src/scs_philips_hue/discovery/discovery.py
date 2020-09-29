@@ -21,12 +21,11 @@ class Discovery(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, host, http_client):
+    def __init__(self, host):
         """
         Constructor
         """
         self.__host = host
-        self.__http_client = http_client
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -36,14 +35,14 @@ class Discovery(object):
 
         while True:
             # UPnP...
-            upnp = UPnPDiscovery(self.__http_client)
+            upnp = UPnPDiscovery()
             bridge = upnp.find(credentials.bridge_id)
 
             if bridge:
                 return bridge
 
             # IP scan...
-            scanner = IPDiscovery(self.__host, self.__http_client)
+            scanner = IPDiscovery(self.__host)
             bridge = scanner.find(credentials)
 
             if bridge:
@@ -60,14 +59,14 @@ class Discovery(object):
 
         while True:
             # UPnP...
-            upnp = UPnPDiscovery(self.__http_client)
+            upnp = UPnPDiscovery()
             bridges = upnp.find_all()
 
             if bridges:
                 return bridges
 
             # IP scan...
-            scanner = IPDiscovery(self.__host, self.__http_client)
+            scanner = IPDiscovery(self.__host)
             bridge = scanner.find_first()
 
             if bridge:
@@ -82,4 +81,4 @@ class Discovery(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "Discovery:{host:%s, http_client:%s}" % (self.__host, self.__http_client)
+        return "Discovery:{host:%s}" % self.__host

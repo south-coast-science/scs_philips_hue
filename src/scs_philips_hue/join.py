@@ -34,8 +34,8 @@ scs_philips_hue/user
 
 import sys
 
-from scs_core.client.http_client import HTTPClient
-from scs_core.client.network_unavailable_exception import NetworkUnavailableException
+from scs_core.client.network import Network
+from scs_core.client.resource_unavailable_exception import ResourceUnavailableException
 
 from scs_core.data.json import JSONify
 from scs_core.sys.http_exception import HTTPException
@@ -73,15 +73,22 @@ if __name__ == '__main__':
         print("join: %s" % cmd, file=sys.stderr)
 
     try:
+        # ------------------------------------------------------------------------------------------------------------
+        # check...
+
+        if not Network.is_available():
+            if cmd.verbose:
+                print("join: waiting for network", file=sys.stderr)
+                sys.stderr.flush()
+
+            Network.wait()
+
 
         # ----------------------------------------------------------------------------------------------------------------
         # resources...
 
-        # HTTPClient...
-        http_client = HTTPClient(False)
-
         # bridge...
-        discovery = Discovery(Host, http_client)
+        discovery = Discovery(Host)
         bridges = discovery.find_all()
 
         if len(bridges) == 0:
@@ -102,7 +109,7 @@ if __name__ == '__main__':
             print("join: %s" % bridge, file=sys.stderr)
 
         # manager...
-        bridge_manager = BridgeManager(http_client, bridge.ip_address, None)
+        bridge_manager = BridgeManager(bridge.ip_address, None)
 
         # device...
         client = ClientDescription(ClientDescription.APP, Host.name())
@@ -135,7 +142,7 @@ if __name__ == '__main__':
         success = response.successes.pop()
 
         # find bridge...
-        bridge_manager = BridgeManager(http_client, bridge.ip_address, success.value)
+        bridge_manager = BridgeManager(bridge.ip_address, success.value)
         config = bridge_manager.find()
 
         # save credentials...
@@ -143,7 +150,7 @@ if __name__ == '__main__':
         credentials.save(Host)
 
         # delete old whitelist entries for this user...
-        user_manager = UserManager(http_client, bridge.ip_address, credentials.username)
+        user_manager = UserManager(bridge.ip_address, credentials.username)
         users = user_manager.find_all()
 
         for user in users:
@@ -152,7 +159,7 @@ if __name__ == '__main__':
                 # print("response: %s" % response)
 
         # report...
-        bridge_manager = BridgeManager(http_client, bridge.ip_address, credentials.username)
+        bridge_manager = BridgeManager(bridge.ip_address, credentials.username)
         config = bridge_manager.find()
 
         print(JSONify.dumps(credentials))
@@ -164,8 +171,8 @@ if __name__ == '__main__':
     except (ConnectionError, HTTPException) as ex:
         print("join: %s: %s" % (ex.__class__.__name__, ex), file=sys.stderr)
 
-    except NetworkUnavailableException:
-        print("join: network not available.", file=sys.stderr)
+    except ResourceUnavailableException as ex:
+        print("join: %s" % repr(ex), file=sys.stderr)
 
     except KeyboardInterrupt:
         if cmd.verbose:

@@ -16,11 +16,11 @@ class Manager(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, http_client, host, username):
+    def __init__(self, host, username):
         """
         Constructor
         """
-        self._rest_client = RESTClient(http_client)
+        self._rest_client = RESTClient()
 
         self._host = host
         self._username = username

@@ -6,8 +6,6 @@ Created on 27 Oct 2017
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-from scs_core.client.http_client import HTTPClient
-
 from scs_core.data.json import JSONify
 
 from scs_philips_hue.client.rest_client import RESTClient
@@ -15,7 +13,7 @@ from scs_philips_hue.client.rest_client import RESTClient
 
 # --------------------------------------------------------------------------------------------------------------------
 
-client = RESTClient(HTTPClient(False))
+client = RESTClient()
 print(client)
 
 try:

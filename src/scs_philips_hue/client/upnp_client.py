@@ -11,6 +11,8 @@ https://developers.meethue.com/news/
 
 import json
 
+from scs_core.client.http_client import HTTPClient
+
 from scs_core.sys.http_exception import HTTPException
 from scs_core.sys.http_status import HTTPStatus
 
@@ -32,11 +34,11 @@ class UPnPClient(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, http_client):
+    def __init__(self):
         """
         Constructor
         """
-        self.__http_client = http_client
+        self.__http_client = HTTPClient()
 
 
     # ----------------------------------------------------------------------------------------------------------------

@@ -32,8 +32,8 @@ https://developers.meethue.com/content/configuring-hue-without-phone-app-unable-
 
 import sys
 
-from scs_core.client.http_client import HTTPClient
-from scs_core.client.network_unavailable_exception import NetworkUnavailableException
+from scs_core.client.network import Network
+from scs_core.client.resource_unavailable_exception import ResourceUnavailableException
 
 from scs_core.data.json import JSONify
 from scs_core.sys.http_exception import HTTPException
@@ -73,6 +73,17 @@ if __name__ == '__main__':
 
     try:
         # ------------------------------------------------------------------------------------------------------------
+        # check...
+
+        if not Network.is_available():
+            if cmd.verbose:
+                print("bridge: waiting for network.", file=sys.stderr)
+                sys.stderr.flush()
+
+            Network.wait()
+
+
+        # ------------------------------------------------------------------------------------------------------------
         # resources...
 
         # credentials...
@@ -85,14 +96,11 @@ if __name__ == '__main__':
         if cmd.verbose:
             print("bridge: %s" % credentials, file=sys.stderr)
 
-        # HTTPClient...
-        http_client = HTTPClient(False)
-
         # bridge...
         if cmd.verbose:
             print("bridge: looking for bridge...", file=sys.stderr)
 
-        discovery = Discovery(Host, http_client)
+        discovery = Discovery(Host)
         bridge = discovery.find(credentials)
 
         if bridge is None:
@@ -105,7 +113,7 @@ if __name__ == '__main__':
         sys.stderr.flush()
 
         # manager...
-        manager = BridgeManager(http_client, bridge.ip_address, credentials.username)
+        manager = BridgeManager(bridge.ip_address, credentials.username)
 
 
         # ------------------------------------------------------------------------------------------------------------
@@ -168,8 +176,8 @@ if __name__ == '__main__':
     except (ConnectionError, HTTPException) as ex:
         print("bridge: %s: %s" % (ex.__class__.__name__, ex), file=sys.stderr)
 
-    except NetworkUnavailableException:
-        print("bridge: network not available.", file=sys.stderr)
+    except ResourceUnavailableException as ex:
+        print("bridge: %s" % repr(ex), file=sys.stderr)
 
     except KeyboardInterrupt:
         if cmd.verbose:
