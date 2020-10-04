@@ -89,7 +89,6 @@ class ChromaConf(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-
     def has_interval(self, domain_max):
         for i in range(len(self.__intervals)):
             if self.__intervals[i].domain_max == domain_max:
