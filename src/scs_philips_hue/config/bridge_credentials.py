@@ -39,7 +39,7 @@ class BridgeCredentials(PersistentJSONable):
         bridge_id = jdict.get('bridge-id')
         username = jdict.get('username')
 
-        return BridgeCredentials(bridge_id, username)
+        return cls(bridge_id, username)
 
 
     # ----------------------------------------------------------------------------------------------------------------

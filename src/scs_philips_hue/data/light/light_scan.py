@@ -37,7 +37,7 @@ class LightScan(JSONable):
             else:
                 entries.append(LightScanEntry.construct_from_jdict(index, value))
 
-        return LightScan(last_scan, entries)
+        return cls(last_scan, entries)
 
 
     # ----------------------------------------------------------------------------------------------------------------

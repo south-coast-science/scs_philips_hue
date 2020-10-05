@@ -40,7 +40,7 @@ class DeskConf(PersistentJSONable):
 
         lamp_names = jdict.get('lamp-names')
 
-        return DeskConf(lamp_names)
+        return cls(lamp_names)
 
 
     # ----------------------------------------------------------------------------------------------------------------

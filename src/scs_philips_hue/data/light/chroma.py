@@ -14,7 +14,7 @@ from scs_core.data.json import JSONable
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class ChromaPath(object):
+class ChromaMapping(object):
     """
     classdocs
     """
@@ -22,26 +22,27 @@ class ChromaPath(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct(cls, minimum, intervals):
-        # initialise...
-        domain_min = minimum.domain_min                 # int
-        domain_max = domain_min                         # int
+    def construct(cls, conf, path):
+        if len(path) < 2:
+            raise ValueError("path too short: %s" % path)
 
-        range_min = minimum.range_min                   # ChromaPoint
+        # initialise...
+        interval_domain_max = conf.domain_min
+        domain_delta = (conf.domain_max - conf.domain_min) / (len(path) - 1)
 
         # build segments...
+        prev_point = None
         segments = OrderedDict()
 
-        for interval in intervals:
-            if interval.domain_max < domain_max:
-                raise ValueError("ChromaConf intervals not presented in ascending domain order.")
+        for point in path.points:
+            if prev_point is not None:
+                key = round(interval_domain_max, 1)
+                segments[key] = ChromaSegment.construct(prev_point, point)
 
-            segments[interval.domain_max] = ChromaSegment.construct(range_min, interval.range_max)
-            range_min = interval.range_max
+            prev_point = point
+            interval_domain_max += domain_delta
 
-            domain_max = interval.domain_max
-
-        return ChromaPath(domain_min, domain_max, segments)
+        return cls(conf.domain_min, conf.domain_max, segments)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -54,6 +55,10 @@ class ChromaPath(object):
         self.__domain_max = domain_max                  # int
 
         self.__segments = segments                      # OrderedDict of int domain_max: ChromaSegment
+
+
+    def __len__(self):
+        return len(self.segments)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -95,7 +100,8 @@ class ChromaPath(object):
     def __str__(self, *args, **kwargs):
         segments = '{' + ', '.join(str(key) + ': ' + str(segment) for key, segment in self.__segments.items()) + '}'
 
-        return "ChromaPath:{domain_min:%s, domain_max:%s, segments:%s}" % (self.domain_min, self.domain_max, segments)
+        return "ChromaMapping:{domain_min:%s, domain_max:%s, segments:%s}" % \
+               (self.domain_min, self.domain_max, segments)
 
 
 # --------------------------------------------------------------------------------------------------------------------

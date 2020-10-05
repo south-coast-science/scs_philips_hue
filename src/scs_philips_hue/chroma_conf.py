@@ -14,24 +14,24 @@ transition time.
 
 A chromaticity chart is available at: https://developers.meethue.com/documentation/core-concepts
 
-The mapping is specified as a start point - a minimum - followed by one or more intervals. When a chroma_conf
-configuration is first created, a minimum and one interval must be specified. Subsequent intervals may be added, one
-at a time. Intervals are stored in ascending order of their domain value.
+The chroma_conf utility works in conjunction with a chroma path: the path specifies two or more ordered points in
+chroma space, indicating a progression through different colours as a domain value changes. The chroma path
+specifies the shape of this route, the chroma conf specifies the minimum and maximum domain values associated
+with a progression though the chroma space.
 
-The chroma_conf.json document managed by the chroma_conf utility is used by chroma.py
+Note that - currently - there is no command line utility to edit chroma paths, and only default paths can be used.
 
 SYNOPSIS
-chroma_conf.py [-m DOMAIN_MIN CHR_X CHR_Y] [-i DOMAIN_MAX CHR_X CHR_Y] [-b BRIGHTNESS] [-t TRANSITION] [-v]
+chroma_conf.py [-p PATH_NAME] [-l DOMAIN_MIN] [-u DOMAIN_MAX] [-b BRIGHTNESS] [-t TRANSITION] [-v]
 
 EXAMPLES
-./chroma_conf.py -m 0 0.08 0.84 -i 100 0.74 0.26 -b 254 -t 9
+./chroma_conf.py -p risk -l 5 -u 30 -b 254 -t 9
 
 FILES
 ~/SCS/hue/chroma_conf.json
 
 DOCUMENT EXAMPLE
-{"min": {"domain-min": 0, "range-min": [0.08, 0.84]}, "intervals": [{"domain-max": 100, "range-max": [0.74, 0.26]}],
-"brightness": 128, "transition-time": 9}
+{"path-name": "risk", "domain-min": 5, "domain-max": 30, "brightness": 254, "transition-time": 9}
 
 SEE ALSO
 scs_philips_hue/chroma
@@ -84,41 +84,19 @@ if __name__ == '__main__':
             if not cmd.is_complete():
                 print("chroma_conf: no configuration is stored. You must therefore set all fields:", file=sys.stderr)
                 cmd.print_help(sys.stderr)
-                exit(1)
+                exit(2)
 
-            conf = ChromaConf(cmd.minimum, [cmd.insert_interval], cmd.brightness, cmd.transition_time)
+            conf = ChromaConf(cmd.path_name, cmd.domain_min, cmd.domain_max, cmd.brightness, cmd.transition_time)
 
         else:
-            minimum = conf.minimum if cmd.minimum is None else cmd.minimum
-
-            if cmd.insert_interval is None:
-                intervals = conf.intervals
-
-            else:
-                conf.insert_interval(cmd.insert_interval)
-                intervals = conf.intervals
-
+            path_name = conf.path_name if cmd.path_name is None else cmd.path_name
+            domain_min = conf.domain_min if cmd.domain_min is None else cmd.domain_min
+            domain_max = conf.domain_max if cmd.domain_max is None else cmd.domain_max
             brightness = conf.brightness if cmd.brightness is None else cmd.brightness
             transition_time = conf.transition_time if cmd.transition_time is None else cmd.transition_time
 
-            conf = ChromaConf(minimum, intervals, brightness, transition_time)
+            conf = ChromaConf(path_name, domain_min, domain_max, brightness, transition_time)
 
-        conf.save(Host)
-
-    if cmd.delete_interval:
-        if conf is None:
-            print("chroma_conf: There are no intervals to be deleted.", file=sys.stderr)
-            exit(1)
-
-        if len(conf) < 2:
-            print("chroma_conf: There must be at least one interval.", file=sys.stderr)
-            exit(1)
-
-        if not conf.has_interval(cmd.delete_interval):
-            print("chroma_conf: No interval exists with that domain value.", file=sys.stderr)
-            exit(1)
-
-        conf.remove_interval(cmd.delete_interval)
         conf.save(Host)
 
     if conf:

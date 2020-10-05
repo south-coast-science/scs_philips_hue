@@ -28,7 +28,7 @@ class LightName(JSONable):
 
         name = jdict.get('name')
 
-        return LightName(name)
+        return cls(name)
 
 
     # ----------------------------------------------------------------------------------------------------------------
