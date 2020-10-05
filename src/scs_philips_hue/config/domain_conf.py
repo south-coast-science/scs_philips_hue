@@ -39,7 +39,7 @@ class DomainConf(PersistentJSONable):
         topic_path = jdict.get('topic-path')
         document_node = jdict.get('document-node')
 
-        return DomainConf(topic_path, document_node)
+        return cls(topic_path, document_node)
 
 
     # ----------------------------------------------------------------------------------------------------------------

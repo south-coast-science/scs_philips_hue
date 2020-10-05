@@ -29,7 +29,7 @@ class SWUpdate(JSONable):
         state = jdict.get('state')
         lastinstall = jdict.get('lastinstall')
 
-        return SWUpdate(state, lastinstall)
+        return cls(state, lastinstall)
 
 
     # ----------------------------------------------------------------------------------------------------------------

@@ -16,12 +16,9 @@ class CmdChroma(object):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog [-f FILE] [-v]", version="%prog 1.0")
+        self.__parser = optparse.OptionParser(usage="%prog [-v]", version="%prog 1.0")
 
         # optional...
-        self.__parser.add_option("--file", "-f", type="string", nargs=1, action="store", dest="file",
-                                 help="chroma conf file")
-
         self.__parser.add_option("--verbose", "-v", action="store_true", dest="verbose", default=False,
                                  help="report narrative to stderr")
 
@@ -31,11 +28,6 @@ class CmdChroma(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
-    def file(self):
-        return self.__opts.file
-
-
-    @property
     def verbose(self):
         return self.__opts.verbose
 
@@ -43,4 +35,4 @@ class CmdChroma(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "CmdSimple:{file:%s, verbose:%s}" % (self.file, self.verbose)
+        return "CmdChroma:{verbose:%s}" % self.verbose

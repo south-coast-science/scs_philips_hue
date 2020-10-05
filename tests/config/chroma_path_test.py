@@ -1,14 +1,12 @@
 #!/usr/bin/env python3
 
 """
-Created on 16 Mar 2018
+Created on 4 Oct 2020
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 document example:
-{"min": {"domain-min": 0, "range-min": [0.08, 0.84]},
-"intervals": [{"domain-max": 50, "range-max": [0.48, 0.41]}, {"domain-max": 100, "range-max": [0.74, 0.26]}],
-"brightness": 128, "transition-time": 9}
+{"name": "test", "points": [[0.74, 0.26], [0.48, 0.41], [0.08, 0.84]]}
 """
 
 from scs_core.data.json import JSONify
@@ -47,3 +45,15 @@ print(path)
 print("-")
 
 print(JSONify.dumps(path.as_json()))
+print("-")
+
+print("defaults...")
+defaults = ChromaPath.defaults()
+for default in defaults:
+    print(default)
+print("-")
+
+print("risk...")
+risk = ChromaPath.load_default('risk')
+print(risk)
+print("-")

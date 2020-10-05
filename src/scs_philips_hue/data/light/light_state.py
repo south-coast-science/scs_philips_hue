@@ -64,8 +64,8 @@ class LightState(JSONable):
         ct = jdict.get('ct')
         alert = jdict.get('alert')
 
-        return LightState(on=on, bri=bri, hue=hue, sat=sat, effect=effect, transition_time=transition_time,
-                          xy=xy, ct=ct, alert=alert)
+        return cls(on=on, bri=bri, hue=hue, sat=sat, effect=effect, transition_time=transition_time, xy=xy, ct=ct,
+                   alert=alert)
 
 
     # ----------------------------------------------------------------------------------------------------------------

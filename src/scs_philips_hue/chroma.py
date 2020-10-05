@@ -12,13 +12,13 @@ The chroma utility is used to map environmental data domain values to chromatici
 from stdin, and is interpreted as a float value. The mapped value is written to stdout in the form of a JSON
 scs_philips_hue.data.light.LightState document.
 
-The chroma utility requires the chroma_conf.json document, specifying the parameters of the mapping.
+The chroma utility requires the chroma_conf.json document, specifying the parameters for the mapping.
 
 SYNOPSIS
 chroma.py [-v]
 
 EXAMPLES
-./osio_mqtt_subscriber.py -c | ./node.py -c | ./chroma.py | ./desk.py -v -e
+./aws_mqtt_subscriber.py -vce | ./node.py -c | ./chroma.py -v
 
 FILES
 ~/SCS/hue/chroma_conf.json
@@ -46,7 +46,6 @@ from scs_philips_hue.cmd.cmd_chroma import CmdChroma
 
 from scs_philips_hue.config.chroma_conf import ChromaConf
 
-from scs_philips_hue.data.light.chroma import ChromaPath
 from scs_philips_hue.data.light.light_state import LightState
 
 
@@ -67,7 +66,7 @@ if __name__ == '__main__':
         # resources...
 
         # ChromaConf...
-        conf = ChromaConf.load_from_file(cmd.file) if cmd.file else ChromaConf.load(Host)
+        conf = ChromaConf.load(Host)
 
         if conf is None:
             print("chroma: ChromaConf not available.", file=sys.stderr)
@@ -76,12 +75,18 @@ if __name__ == '__main__':
         if cmd.verbose:
             print("chroma: %s" % conf, file=sys.stderr)
 
-        # chromaticity path...
-        path = ChromaPath.construct(conf.minimum, conf.intervals)
+        # ChromaPath...
+        path = conf.path()
+
+        if path is None:
+            print("chroma: ChromaPath not available.", file=sys.stderr)
+            exit(1)
 
         if cmd.verbose:
             print("chroma: %s" % path, file=sys.stderr)
             sys.stderr.flush()
+
+        mapping = conf.mapping(path)
 
 
         # ------------------------------------------------------------------------------------------------------------
@@ -109,7 +114,7 @@ if __name__ == '__main__':
                 sys.stderr.flush()
 
             # interpolate...
-            chroma = path.interpolate(value)
+            chroma = mapping.interpolate(value)
             state = LightState(bri=conf.brightness, xy=chroma, transition_time=conf.transition_time)
 
             print(JSONify.dumps(state))

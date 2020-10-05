@@ -12,6 +12,7 @@ import os
 from collections import OrderedDict
 
 from scs_core.data.json import MultiPersistentJSONable
+from scs_core.sys.filesystem import Filesystem
 
 from scs_philips_hue.data.light.chroma import ChromaPoint
 
@@ -38,7 +39,25 @@ class ChromaPath(MultiPersistentJSONable):
 
     @classmethod
     def persistence_location(cls, host, name):
-        return os.path.join(host.scs_dir(), cls.__DIR), cls.__PREFIX + name + '.json'
+        return os.path.join(host.scs_dir(), cls.__DIR), '.'.join((cls.__PREFIX, name, 'json'))
+
+
+    @classmethod
+    def defaults(cls):
+        archive = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'paths')
+        paths = Filesystem.ls(archive)
+
+        return [path.name.split('.')[0] for path in paths]
+
+
+    @classmethod
+    def load_default(cls, name):
+        file = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'paths', '.'.join((name, 'json')))
+
+        if not os.path.exists(file):
+            raise FileNotFoundError(name)
+
+        return cls.load_from_file(file)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -51,7 +70,7 @@ class ChromaPath(MultiPersistentJSONable):
         name = jdict.get('name')
         points = [ChromaPoint.construct_from_jdict(point_jdict) for point_jdict in jdict.get('points')]
 
-        return ChromaPath(name, points)
+        return cls(name, points)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -60,7 +79,8 @@ class ChromaPath(MultiPersistentJSONable):
         """
         Constructor
         """
-        self.__name = name                          # string
+        super().__init__(name)
+
         self.__points = points                      # array of ChromaPoint
 
 
@@ -70,8 +90,11 @@ class ChromaPath(MultiPersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def save(self, host):
-        self.save_to_file(*self.persistence_location(host, self.name))
+    def range_min(self):
+        if not len(self):
+            return None
+
+        return self.__points[0]
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -100,11 +123,6 @@ class ChromaPath(MultiPersistentJSONable):
 
 
     # ----------------------------------------------------------------------------------------------------------------
-
-    @property
-    def name(self):
-        return self.__name
-
 
     @property
     def points(self):
