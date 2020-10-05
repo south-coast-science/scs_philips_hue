@@ -71,8 +71,8 @@ class Light(JSONable):
         sw_config_id = jdict.get('swconfigid')
         product_id = jdict.get('productid')
 
-        return Light(state, swupdate, light_type, name, model_id, manufacturer_name,
-                     unique_id, sw_version, sw_config_id, product_id)
+        return cls(state, swupdate, light_type, name, model_id, manufacturer_name, unique_id,
+                   sw_version, sw_config_id, product_id)
 
 
     # ----------------------------------------------------------------------------------------------------------------

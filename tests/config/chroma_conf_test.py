@@ -15,27 +15,15 @@ from scs_core.data.json import JSONify
 
 from scs_host.sys.host import Host
 
-from scs_philips_hue.config.chroma_conf import ChromaConf, ChromaMin, ChromaInterval
+from scs_philips_hue.config.chroma_conf import ChromaConf
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-domain_min = 0
-domain_mid = 50
-domain_max = 100
+conf = ChromaConf('risk-level', 5, 30, 254, 9)
+print(conf)
+print("-")
 
-range_min = ChromaConf.CANONICAL_CHROMAS['G']
-range_mid = ChromaConf.CANONICAL_CHROMAS['W']
-range_max = ChromaConf.CANONICAL_CHROMAS['R']
-
-brightness = 128
-transition_time = 9
-
-minimum = ChromaMin(domain_min, range_min)
-
-intervals = [ChromaInterval(domain_mid, range_mid), ChromaInterval(domain_max, range_max)]
-
-conf = ChromaConf(minimum, intervals, brightness, transition_time)
 
 print("build...")
 print(conf)

@@ -4,14 +4,12 @@ Created on 16 Mar 2018
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 document example:
-{"domain-min": 0.0, "domain-max": 50.0, "range-min": [0.08, 0.84], "range-max": [0.74, 0.26],
-"brightness": 128, "transition-time": 9}
+{"path-name": "risk", "domain-min": 5, "domain-max": 30, "brightness": 254, "transition-time": 9}
 """
 
 import optparse
 
-from scs_philips_hue.config.chroma_conf import ChromaMin, ChromaInterval
-from scs_philips_hue.data.light.chroma import ChromaPoint
+from scs_philips_hue.config.chroma_path import ChromaPath
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -23,19 +21,21 @@ class CmdChromaConf(object):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog [-m DOMAIN_MIN CHR_X CHR_Y] [-i DOMAIN_MAX CHR_X CHR_Y] "
+        path_names = ' | '.join(ChromaPath.defaults())
+
+        self.__parser = optparse.OptionParser(usage="%prog [-p PATH_NAME] [-l DOMAIN_MIN] [-u DOMAIN_MAX] "
                                                     "[-b BRIGHTNESS] [-t TRANSITION] [-v]",
                                               version="%prog 1.0")
 
         # optional...
-        self.__parser.add_option("--min", "-m", type="float", nargs=3, action="store", dest="minimum",
-                                 help="set minimum values")
+        self.__parser.add_option("--path", "-p", type="string", nargs=1, action="store", dest="path_name",
+                                 help="name of chroma path { %s }" % path_names)
 
-        self.__parser.add_option("--int", "-i", type="float", nargs=3, action="store", dest="insert_interval",
-                                 help="add or update an interval with the given DOMAIN_MAX")
+        self.__parser.add_option("--lower", "-l", type="float", nargs=1, action="store", dest="domain_min",
+                                 help="specify the domain lower bound")
 
-        self.__parser.add_option("--del", "-d", type="float", nargs=1, action="store", dest="delete_interval",
-                                 help="delete the interval with the given DOMAIN_MAX")
+        self.__parser.add_option("--upper", "-u", type="float", nargs=1, action="store", dest="domain_max",
+                                 help="specify the domain upper bound")
 
         self.__parser.add_option("--bright", "-b", type="int", nargs=1, action="store", dest="brightness",
                                  help="set the lamp brightness (max 254)")
@@ -52,6 +52,9 @@ class CmdChromaConf(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def is_valid(self):
+        if self.path_name is not None and self.path_name not in ChromaPath.defaults():
+            return False
+
         if self.brightness is not None and (self.brightness < 0 or self.brightness > 254):
             return False
 
@@ -59,7 +62,7 @@ class CmdChromaConf(object):
 
 
     def is_complete(self):
-        if self.minimum is None or self.insert_interval is None or \
+        if self.path_name is None or self.domain_min is None or self.domain_max is None or \
                 self.brightness is None or self.transition_time is None:
             return False
 
@@ -67,33 +70,25 @@ class CmdChromaConf(object):
 
 
     def set(self):
-        return self.minimum is not None or self.insert_interval is not None or \
+        return self.path_name is not None or self.domain_min is not None or self.domain_max is not None or \
                self.brightness is not None or self.transition_time is not None
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
-    def minimum(self):
-        if self.__opts.minimum is None:
-            return None
-
-        return ChromaMin(self.__opts.minimum[0], ChromaPoint(self.__opts.minimum[1], self.__opts.minimum[2]))
+    def path_name(self):
+        return self.__opts.path_name
 
 
     @property
-    def insert_interval(self):
-        if self.__opts.insert_interval is None:
-            return None
-
-        point = ChromaPoint(self.__opts.insert_interval[1], self.__opts.insert_interval[2])
-
-        return ChromaInterval(self.__opts.insert_interval[0], point)
+    def domain_min(self):
+        return self.__opts.domain_min
 
 
     @property
-    def delete_interval(self):
-        return self.__opts.delete_interval
+    def domain_max(self):
+        return self.__opts.domain_max
 
 
     @property
@@ -118,7 +113,7 @@ class CmdChromaConf(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdChromaConf:{minimum:%s, insert_interval:%s, delete_interval:%s, " \
+        return "CmdChromaConf:{path_name:%s, domain_min:%s, domain_max:%s, " \
                "brightness:%s, transition_time:%s, verbose:%s}" % \
-                    (self.minimum, self.insert_interval, self.delete_interval,
+                    (self.path_name, self.domain_min, self.domain_max,
                      self.brightness, self.transition_time, self.verbose)
