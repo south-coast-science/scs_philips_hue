@@ -25,13 +25,13 @@ SYNOPSIS
 chroma_conf.py [-p PATH_NAME] [-l DOMAIN_MIN] [-u DOMAIN_MAX] [-b BRIGHTNESS] [-t TRANSITION] [-v]
 
 EXAMPLES
-./chroma_conf.py -p risk -l 5 -u 30 -b 254 -t 9
+./chroma_conf.py -p risk-level -l 5 -u 30 -b 254 -t 9
 
 FILES
 ~/SCS/hue/chroma_conf.json
 
 DOCUMENT EXAMPLE
-{"path-name": "risk", "domain-min": 5, "domain-max": 30, "brightness": 254, "transition-time": 9}
+{"path-name": "risk-level", "domain-min": 5, "domain-max": 30, "brightness": 254, "transition-time": 9}
 
 SEE ALSO
 scs_philips_hue/chroma
@@ -82,7 +82,7 @@ if __name__ == '__main__':
     if cmd.set():
         if conf is None:
             if not cmd.is_complete():
-                print("chroma_conf: no configuration is stored. You must therefore set all fields:", file=sys.stderr)
+                print("chroma_conf: no configuration is stored - you must therefore set all fields.", file=sys.stderr)
                 cmd.print_help(sys.stderr)
                 exit(2)
 
