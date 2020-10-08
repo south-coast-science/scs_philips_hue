@@ -11,8 +11,8 @@ import os
 
 from collections import OrderedDict
 
-from scs_core.data.format import Format
 from scs_core.data.json import MultiPersistentJSONable
+from scs_core.data.str import Str
 
 from scs_core.sys.filesystem import Filesystem
 
@@ -134,4 +134,4 @@ class ChromaPath(MultiPersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "ChromaPath:{name:%s, points:%s}" % (self.name, Format.collection(self.__points))
+        return "ChromaPath:{name:%s, points:%s}" % (self.name, Str.collection(self.__points))

@@ -9,8 +9,8 @@ https://developers.meethue.com/documentation/core-concepts
 
 from collections import OrderedDict
 
-from scs_core.data.format import Format
 from scs_core.data.json import JSONable
+from scs_core.data.str import Str
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -100,7 +100,7 @@ class ChromaMapping(object):
 
     def __str__(self, *args, **kwargs):
         return "ChromaMapping:{domain_min:%s, domain_max:%s, segments:%s}" % \
-               (self.domain_min, self.domain_max, Format.collection(self.__segments))
+               (self.domain_min, self.domain_max, Str.collection(self.__segments))
 
 
 # --------------------------------------------------------------------------------------------------------------------
