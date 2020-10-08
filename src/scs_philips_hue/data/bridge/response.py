@@ -12,6 +12,7 @@ example:
 
 from collections import OrderedDict
 
+from scs_core.data.format import Format
 from scs_core.data.json import JSONable
 
 
@@ -92,10 +93,8 @@ class Response(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        errors = '[' + ', '.join(str(error) for error in self.errors) + ']'
-        successes = '[' + ', '.join(str(success) for success in self.successes) + ']'
-
-        return "Response:{errors:%s, successes:%s}" %  (errors, successes)
+        return "Response:{errors:%s, successes:%s}" %  \
+               (Format.collection(self.errors), Format.collection(self.successes))
 
 
 # --------------------------------------------------------------------------------------------------------------------
