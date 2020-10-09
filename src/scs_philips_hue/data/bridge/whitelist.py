@@ -11,7 +11,7 @@ example:
 from collections import OrderedDict
 
 from scs_core.data.json import JSONable
-# from scs_core.data.json import JSONify
+from scs_core.data.str import Str
 
 from scs_philips_hue.data.client.client_description import ClientDescription
 
@@ -68,9 +68,7 @@ class WhitelistGroup(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        entries = '[' + ', '.join(str(entry) for entry in self.entries) + ']'
-
-        return "WhitelistGroup:{entries:%s}" %  entries
+        return "WhitelistGroup:{entries:%s}" % Str.collection(self.entries)
 
 
 # --------------------------------------------------------------------------------------------------------------------

@@ -12,6 +12,8 @@ import os
 from collections import OrderedDict
 
 from scs_core.data.json import MultiPersistentJSONable
+from scs_core.data.str import Str
+
 from scs_core.sys.filesystem import Filesystem
 
 from scs_philips_hue.data.light.chroma import ChromaPoint
@@ -132,6 +134,4 @@ class ChromaPath(MultiPersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        points = ', '.join(str(point) for point in self.__points)
-
-        return "ChromaPath:{name:%s, points:[%s]}" % (self.name, points)
+        return "ChromaPath:{name:%s, points:%s}" % (self.name, Str.collection(self.__points))
