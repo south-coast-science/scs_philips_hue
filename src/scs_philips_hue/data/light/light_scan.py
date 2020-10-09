@@ -10,6 +10,7 @@ example:
 from collections import OrderedDict
 
 from scs_core.data.json import JSONable
+from scs_core.data.str import Str
 
 from scs_philips_hue.data.light.light_name import LightName
 
@@ -84,9 +85,7 @@ class LightScan(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        entries = '{' + ', '.join(str(index) + ': ' + str(light) for index, light in self.entries.items()) + '}'
-
-        return "LightScan:{last_scan:%s, entries:%s}" %  (self.last_scan, entries)
+        return "LightScan:{last_scan:%s, entries:%s}" %  (self.last_scan, Str.collection(self.entries))
 
 
 # --------------------------------------------------------------------------------------------------------------------
