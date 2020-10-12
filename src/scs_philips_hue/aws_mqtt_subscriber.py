@@ -41,6 +41,8 @@ import time
 from scs_core.aws.client.client_auth import ClientAuth
 from scs_core.aws.client.mqtt_client import MQTTClient, MQTTSubscriber
 
+from scs_core.client.network import Network
+
 from scs_core.comms.mqtt_conf import MQTTConf
 from scs_core.comms.uds_writer import UDSWriter
 
@@ -135,7 +137,15 @@ if __name__ == '__main__':
         publisher.connect()
 
         while True:
-            time.sleep(1.0)
+            if not Network.is_available():
+                if cmd.verbose:
+                    print("aws_mqtt_subscriber: network loss - reconnecting MQTT client", file=sys.stderr)
+                    sys.stderr.flush()
+
+                publisher.disconnect()          # remove dead connection
+                publisher.connect()             # connect when possible
+
+            time.sleep(20.0)
 
 
     # ----------------------------------------------------------------------------------------------------------------
