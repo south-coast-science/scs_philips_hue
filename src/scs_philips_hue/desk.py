@@ -132,7 +132,7 @@ if __name__ == '__main__':
 
 
         # ------------------------------------------------------------------------------------------------------------
-        # run...
+        # initialise...
 
         # signal handler...
         SignalledExit.construct("desk", cmd.verbose)
@@ -164,8 +164,14 @@ if __name__ == '__main__':
             for index in indices[name]:
                 initial_state[index] = manager.find(index).state        # in case we want to restore these states
 
+
+        # ------------------------------------------------------------------------------------------------------------
+        # run...
+
         # read stdin...
         for line in sys.stdin:
+            sys.stdin.flush()           # remove queue
+
             datum = line.strip()
 
             if datum is None:
