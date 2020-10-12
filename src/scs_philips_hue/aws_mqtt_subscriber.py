@@ -33,15 +33,18 @@ SEE ALSO
 scs_philips_hue/aws_client_auth
 scs_philips_hue/aws_mqtt_subscriber
 scs_philips_hue/domain_conf
+
+BUGS
+If the host is multi-homed and a higher-priority connection is lost, the MQTT connection will
+not be recovered.
 """
 
 import sys
-import time
 
 from scs_core.aws.client.client_auth import ClientAuth
 from scs_core.aws.client.mqtt_client import MQTTClient, MQTTSubscriber
 
-from scs_core.client.network import Network
+from scs_core.client.network import NetworkMonitor
 
 from scs_core.comms.mqtt_conf import MQTTConf
 from scs_core.comms.uds_writer import UDSWriter
@@ -58,6 +61,17 @@ from scs_philips_hue.config.domain_conf import DomainConf
 from scs_philips_hue.handler.aws_mqtt_publisher import AWSMQTTPublisher
 from scs_philips_hue.handler.aws_mqtt_subscription_handler import AWSMQTTSubscriptionHandler
 from scs_philips_hue.handler.mqtt_reporter import MQTTReporter
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+def network_not_available_handler():
+    if cmd.verbose:
+        print("aws_mqtt_subscriber: network loss - reconnecting MQTT client", file=sys.stderr)
+        sys.stderr.flush()
+
+    publisher.disconnect()              # remove dead connection
+    publisher.connect()                 # connect when possible
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -89,7 +103,7 @@ if __name__ == '__main__':
         conf = MQTTConf.load(Host)
 
         if cmd.verbose:
-            print("aws_mqtt_subscriber: conf: %s" % conf, file=sys.stderr)
+            print("aws_mqtt_subscriber: %s" % conf, file=sys.stderr)
 
         # ClientAuth...
         auth = ClientAuth.load(Host)
@@ -126,6 +140,13 @@ if __name__ == '__main__':
         client = MQTTClient(subscriber)
         publisher = AWSMQTTPublisher(conf, auth, client, reporter)
 
+        # monitor...
+        monitor = NetworkMonitor(20.0, network_not_available_handler)
+
+        if cmd.verbose:
+            print("aws_mqtt_subscriber: %s" % monitor, file=sys.stderr)
+            sys.stderr.flush()
+
 
         # ------------------------------------------------------------------------------------------------------------
         # run...
@@ -136,16 +157,9 @@ if __name__ == '__main__':
         # client...
         publisher.connect()
 
-        while True:
-            if not Network.is_available():
-                if cmd.verbose:
-                    print("aws_mqtt_subscriber: network loss - reconnecting MQTT client", file=sys.stderr)
-                    sys.stderr.flush()
-
-                publisher.disconnect()          # remove dead connection
-                publisher.connect()             # connect when possible
-
-            time.sleep(20.0)
+        # monitor...
+        monitor.start()
+        monitor.join()
 
 
     # ----------------------------------------------------------------------------------------------------------------
