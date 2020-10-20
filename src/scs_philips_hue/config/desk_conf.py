@@ -9,16 +9,14 @@ document example:
 {"lamp-names": ["scs-hcl-001", "scs-hcl-002"]}
 """
 
-import os
-
 from collections import OrderedDict
 
-from scs_core.data.json import PersistentJSONable
+from scs_core.data.json import MultiPersistentJSONable
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class DeskConf(PersistentJSONable):
+class DeskConf(MultiPersistentJSONable):
     """
     classdocs
     """
@@ -26,29 +24,31 @@ class DeskConf(PersistentJSONable):
     __FILENAME =        "desk_conf.json"
 
     @classmethod
-    def persistence_location(cls):
-        return cls.hue_dir(), cls.__FILENAME
+    def persistence_location(cls, name):
+        filename = cls.__FILENAME if name is None else '_'.join((name, cls.__FILENAME))
+
+        return cls.hue_dir(), filename
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct_from_jdict(cls, jdict):
+    def construct_from_jdict(cls, jdict, name=None):
         if not jdict:
             return None
 
         lamp_names = jdict.get('lamp-names')
 
-        return cls(lamp_names)
+        return cls(lamp_names, name=name)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, lamp_names):
+    def __init__(self, lamp_names, name=None):
         """
         Constructor
         """
-        super().__init__()
+        super().__init__(name)
 
         self.__lamp_names = lamp_names                  # list of string
 
@@ -89,4 +89,4 @@ class DeskConf(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "DeskConf:{lamp_names:%s}" % self.lamp_names
+        return "DeskConf:{name:%s, lamp_names:%s}" % (self.name, self.lamp_names)

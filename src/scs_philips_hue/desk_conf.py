@@ -58,28 +58,29 @@ if __name__ == '__main__':
     # resources...
 
     # DeskConf...
-    conf = DeskConf.load(Host)
+    conf = DeskConf.load(Host, name=cmd.name)
 
+    print(conf)
 
     # ----------------------------------------------------------------------------------------------------------------
     # run...
 
     if cmd.add_lamp:
         if conf is None:
-            conf = DeskConf([])
+            conf = DeskConf([], name=cmd.name)
 
         conf.add_lamp(cmd.add_lamp)
         conf.save(Host)
 
     if cmd.remove_lamp:
         if conf is None:
-            conf = DeskConf([])
+            conf = DeskConf([], name=cmd.name)
 
         conf.remove_lamp(cmd.remove_lamp)
         conf.save(Host)
 
     if cmd.delete:
-        conf.delete(Host)
+        conf.delete(Host, name=cmd.name)
         conf = None
 
     if conf:

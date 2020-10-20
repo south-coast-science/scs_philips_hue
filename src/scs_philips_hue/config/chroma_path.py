@@ -36,12 +36,13 @@ class ChromaPath(MultiPersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    __DIR =             "hue"
-    __PREFIX =          "chroma_path_"
+    __FILENAME =          "chroma_path.json"
 
     @classmethod
-    def persistence_location(cls, host, name):
-        return os.path.join(host.scs_dir(), cls.__DIR), '.'.join((cls.__PREFIX, name, 'json'))
+    def persistence_location(cls, name):
+        filename = cls.__FILENAME if name is None else '_'.join((name, cls.__FILENAME))
+
+        return cls.hue_dir(), filename
 
 
     @classmethod
@@ -65,19 +66,18 @@ class ChromaPath(MultiPersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct_from_jdict(cls, jdict):
+    def construct_from_jdict(cls, jdict, name=None):
         if not jdict:
             return None
 
-        name = jdict.get('name')
         points = [ChromaPoint.construct_from_jdict(point_jdict) for point_jdict in jdict.get('points')]
 
-        return cls(name, points)
+        return cls(points, name=name)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, name, points):
+    def __init__(self, points, name=None):
         """
         Constructor
         """

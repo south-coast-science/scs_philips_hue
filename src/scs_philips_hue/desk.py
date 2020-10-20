@@ -92,7 +92,7 @@ if __name__ == '__main__':
         # resources...
 
         # DeskConf...
-        conf = DeskConf.load_from_file(cmd.file) if cmd.file else DeskConf.load(Host)
+        conf = DeskConf.load(Host, cmd.name)
 
         if conf is None:
             print("desk: DeskConf not available.", file=sys.stderr)

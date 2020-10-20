@@ -7,8 +7,6 @@ document example:
 {"path-name": "risk", "domain-min": 5, "domain-max": 30, "brightness": 254, "transition-time": 9}
 """
 
-import os
-
 from collections import OrderedDict
 
 from scs_core.data.datum import Datum
