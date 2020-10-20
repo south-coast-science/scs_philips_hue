@@ -24,7 +24,7 @@ class CmdDeskConf(object):
 
         # optional...
         self.__parser.add_option("--name", "-n", type="string", nargs=1, action="store", dest="name",
-                                 help="the name of the configuration")
+                                 help="the name of the desk configuration")
 
         self.__parser.add_option("--add", "-a", type="string", nargs=1, action="store", dest="add_lamp",
                                  help="add the given lamp")

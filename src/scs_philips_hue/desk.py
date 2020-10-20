@@ -19,7 +19,7 @@ command.
 Note: this utility waits forever for a network connection and domain name server.
 
 SYNOPSIS
-desk.py [-e] [-v]
+desk.py [-n NAME] [-e] [-v]
 
 EXAMPLES
 ./osio_mqtt_subscriber.py -c | ./node.py -c | ./chroma.py | ./desk.py -v -e
