@@ -23,12 +23,11 @@ class DeskConf(PersistentJSONable):
     classdocs
     """
 
-    __DIR =             "hue"
     __FILENAME =        "desk_conf.json"
 
     @classmethod
-    def persistence_location(cls, host):
-        return os.path.join(host.scs_dir(), cls.__DIR), cls.__FILENAME
+    def persistence_location(cls):
+        return cls.hue_dir(), cls.__FILENAME
 
 
     # ----------------------------------------------------------------------------------------------------------------
