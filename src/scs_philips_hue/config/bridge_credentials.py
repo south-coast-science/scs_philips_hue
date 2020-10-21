@@ -7,8 +7,6 @@ example document:
 {"bridge-id": "001788fffe795620", "username": "b8bvymOH-ceugK8gBOpjeNeL0OMhXOEBQZosfsTx"}
 """
 
-import os
-
 from collections import OrderedDict
 
 from scs_core.data.json import PersistentJSONable
@@ -21,12 +19,11 @@ class BridgeCredentials(PersistentJSONable):
     classdocs
     """
 
-    __DIR =             "hue"
     __FILENAME =        "bridge_credentials.json"
 
     @classmethod
-    def persistence_location(cls, host):
-        return os.path.join(host.scs_dir(), cls.__DIR), cls.__FILENAME
+    def persistence_location(cls):
+        return cls.hue_dir(), cls.__FILENAME
 
 
     # ----------------------------------------------------------------------------------------------------------------

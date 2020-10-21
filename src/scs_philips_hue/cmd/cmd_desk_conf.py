@@ -19,17 +19,20 @@ class CmdDeskConf(object):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog [{ -a LAMP_NAME | -r LAMP_NAME | -x }] [-v]",
+        self.__parser = optparse.OptionParser(usage="%prog [-n NAME] [{ -a LAMP_NAME | -r LAMP_NAME | -d }] [-v]",
                                               version="%prog 1.0")
 
         # optional...
+        self.__parser.add_option("--name", "-n", type="string", nargs=1, action="store", dest="name",
+                                 help="the name of the desk configuration")
+
         self.__parser.add_option("--add", "-a", type="string", nargs=1, action="store", dest="add_lamp",
                                  help="add the given lamp")
 
         self.__parser.add_option("--remove", "-r", type="string", nargs=1, action="store", dest="remove_lamp",
                                  help="remove the given lamp")
 
-        self.__parser.add_option("--delete", "-x", action="store_true", dest="delete",
+        self.__parser.add_option("--delete", "-d", action="store_true", dest="delete",
                                  help="delete the desk configuration")
 
         self.__parser.add_option("--verbose", "-v", action="store_true", dest="verbose", default=False,
@@ -48,6 +51,11 @@ class CmdDeskConf(object):
 
 
     # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    def name(self):
+        return self.__opts.name
+
 
     @property
     def add_lamp(self):
@@ -76,5 +84,5 @@ class CmdDeskConf(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdDeskConf:{add_lamp:%s, remove_lamp:%s, delete:%s, verbose:%s}" % \
-                    (self.add_lamp, self.remove_lamp, self.delete, self.verbose)
+        return "CmdDeskConf:{name:%s, add_lamp:%s, remove_lamp:%s, delete:%s, verbose:%s}" % \
+                    (self.name, self.add_lamp, self.remove_lamp, self.delete, self.verbose)

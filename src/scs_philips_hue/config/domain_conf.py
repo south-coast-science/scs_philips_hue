@@ -7,8 +7,6 @@ document example:
 {"topic-path": "/orgs/south-coast-science-demo/brighton/loc/1/particulates", "document-node": "val.pm10"}
 """
 
-import os
-
 from collections import OrderedDict
 
 from scs_core.data.json import PersistentJSONable
@@ -21,12 +19,11 @@ class DomainConf(PersistentJSONable):
     classdocs
     """
 
-    __DIR =             "hue"
     __FILENAME =        "domain_conf.json"
 
     @classmethod
-    def persistence_location(cls, host):
-        return os.path.join(host.scs_dir(), cls.__DIR), cls.__FILENAME
+    def persistence_location(cls):
+        return cls.hue_dir(), cls.__FILENAME
 
 
     # ----------------------------------------------------------------------------------------------------------------
