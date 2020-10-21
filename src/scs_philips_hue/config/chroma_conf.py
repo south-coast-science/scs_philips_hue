@@ -7,8 +7,6 @@ document example:
 {"path-name": "risk", "domain-min": 5, "domain-max": 30, "brightness": 254, "transition-time": 9}
 """
 
-import os
-
 from collections import OrderedDict
 
 from scs_core.data.datum import Datum
@@ -27,12 +25,11 @@ class ChromaConf(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    __DIR =             "hue"
     __FILENAME =        "chroma_conf.json"
 
     @classmethod
-    def persistence_location(cls, host):
-        return os.path.join(host.scs_dir(), cls.__DIR), cls.__FILENAME
+    def persistence_location(cls):
+        return cls.hue_dir(), cls.__FILENAME
 
 
     # ----------------------------------------------------------------------------------------------------------------

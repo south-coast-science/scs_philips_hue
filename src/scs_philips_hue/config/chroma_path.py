@@ -11,7 +11,7 @@ import os
 
 from collections import OrderedDict
 
-from scs_core.data.json import MultiPersistentJSONable
+from scs_core.data.json import JSONReport
 from scs_core.data.str import Str
 
 from scs_core.sys.filesystem import Filesystem
@@ -19,9 +19,11 @@ from scs_core.sys.filesystem import Filesystem
 from scs_philips_hue.data.light.chroma import ChromaPoint
 
 
+# TODO this should be a JSONReport (or JSONArchive)
+
 # --------------------------------------------------------------------------------------------------------------------
 
-class ChromaPath(MultiPersistentJSONable):
+class ChromaPath(JSONReport):
     """
     classdocs
     """
@@ -35,14 +37,6 @@ class ChromaPath(MultiPersistentJSONable):
 
 
     # ----------------------------------------------------------------------------------------------------------------
-
-    __DIR =             "hue"
-    __PREFIX =          "chroma_path_"
-
-    @classmethod
-    def persistence_location(cls, host, name):
-        return os.path.join(host.scs_dir(), cls.__DIR), '.'.join((cls.__PREFIX, name, 'json'))
-
 
     @classmethod
     def defaults(cls):
@@ -59,13 +53,13 @@ class ChromaPath(MultiPersistentJSONable):
         if not os.path.exists(file):
             raise FileNotFoundError(name)
 
-        return cls.load_from_file(file)
+        return cls.load(file)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct_from_jdict(cls, jdict):
+    def construct_from_jdict(cls, jdict, name=None):
         if not jdict:
             return None
 
@@ -81,8 +75,7 @@ class ChromaPath(MultiPersistentJSONable):
         """
         Constructor
         """
-        super().__init__(name)
-
+        self.__name = name                          # string
         self.__points = points                      # array of ChromaPoint
 
 
@@ -125,6 +118,11 @@ class ChromaPath(MultiPersistentJSONable):
 
 
     # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    def name(self):
+        return self.__name
+
 
     @property
     def points(self):

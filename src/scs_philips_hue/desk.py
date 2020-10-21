@@ -19,7 +19,7 @@ command.
 Note: this utility waits forever for a network connection and domain name server.
 
 SYNOPSIS
-desk.py [-e] [-v]
+desk.py [-n NAME] [-e] [-v]
 
 EXAMPLES
 ./osio_mqtt_subscriber.py -c | ./node.py -c | ./chroma.py | ./desk.py -v -e
@@ -92,7 +92,7 @@ if __name__ == '__main__':
         # resources...
 
         # DeskConf...
-        conf = DeskConf.load_from_file(cmd.file) if cmd.file else DeskConf.load(Host)
+        conf = DeskConf.load(Host, cmd.name)
 
         if conf is None:
             print("desk: DeskConf not available.", file=sys.stderr)
