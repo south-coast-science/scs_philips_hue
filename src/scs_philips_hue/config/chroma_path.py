@@ -11,7 +11,7 @@ import os
 
 from collections import OrderedDict
 
-from scs_core.data.json import MultiPersistentJSONable
+from scs_core.data.json import JSONReport
 from scs_core.data.str import Str
 
 from scs_core.sys.filesystem import Filesystem
@@ -19,9 +19,11 @@ from scs_core.sys.filesystem import Filesystem
 from scs_philips_hue.data.light.chroma import ChromaPoint
 
 
+# TODO this should be a JSONReport (or JSONArchive)
+
 # --------------------------------------------------------------------------------------------------------------------
 
-class ChromaPath(MultiPersistentJSONable):
+class ChromaPath(JSONReport):
     """
     classdocs
     """
@@ -35,15 +37,6 @@ class ChromaPath(MultiPersistentJSONable):
 
 
     # ----------------------------------------------------------------------------------------------------------------
-
-    __FILENAME =          "chroma_path.json"
-
-    @classmethod
-    def persistence_location(cls, name):
-        filename = cls.__FILENAME if name is None else '_'.join((name, cls.__FILENAME))
-
-        return cls.hue_dir(), filename
-
 
     @classmethod
     def defaults(cls):
@@ -60,7 +53,7 @@ class ChromaPath(MultiPersistentJSONable):
         if not os.path.exists(file):
             raise FileNotFoundError(name)
 
-        return cls.load_from_file(file)
+        return cls.load(file)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -70,19 +63,19 @@ class ChromaPath(MultiPersistentJSONable):
         if not jdict:
             return None
 
+        name = jdict.get('name')
         points = [ChromaPoint.construct_from_jdict(point_jdict) for point_jdict in jdict.get('points')]
 
-        return cls(points, name=name)
+        return cls(name, points)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, points, name=None):
+    def __init__(self, name, points):
         """
         Constructor
         """
-        super().__init__(name)
-
+        self.__name = name                          # string
         self.__points = points                      # array of ChromaPoint
 
 
@@ -125,6 +118,11 @@ class ChromaPath(MultiPersistentJSONable):
 
 
     # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    def name(self):
+        return self.__name
+
 
     @property
     def points(self):
