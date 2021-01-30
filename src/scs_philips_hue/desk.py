@@ -39,6 +39,8 @@ import json
 import sys
 import time
 
+from termios import tcflush, TCIOFLUSH
+
 from scs_core.client.network import Network
 
 from scs_core.sys.signalled_exit import SignalledExit
@@ -170,7 +172,7 @@ if __name__ == '__main__':
 
         # read stdin...
         for line in sys.stdin:
-            sys.stdin.flush()           # remove queue
+            tcflush(sys.stdin, TCIOFLUSH)           # flush stdin
 
             datum = line.strip()
 
