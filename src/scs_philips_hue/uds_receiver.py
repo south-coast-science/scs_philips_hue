@@ -26,6 +26,8 @@ import sys
 from scs_core.comms.uds_reader import UDSReader
 from scs_core.sys.signalled_exit import SignalledExit
 
+from scs_host.comms.domain_socket import DomainSocket
+
 from scs_philips_hue.cmd.cmd_uds import CmdUDS
 
 
@@ -49,7 +51,7 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # resources...
 
-    uds = UDSReader(cmd.path)
+    uds = UDSReader(DomainSocket, cmd.path)
 
     if cmd.verbose:
         print("uds_receiver: %s" % uds, file=sys.stderr)
