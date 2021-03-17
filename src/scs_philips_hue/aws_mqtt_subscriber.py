@@ -52,6 +52,7 @@ from scs_core.comms.uds_writer import UDSWriter
 from scs_core.sys.filesystem import Filesystem
 from scs_core.sys.signalled_exit import SignalledExit
 
+from scs_host.comms.domain_socket import DomainSocket
 from scs_host.sys.host import Host
 
 from scs_philips_hue.cmd.cmd_mqtt_subscriber import CmdMQTTSubscriber
@@ -130,7 +131,7 @@ if __name__ == '__main__':
             topic_path = cmd.topic_path
 
         # writer...
-        sub_comms = UDSWriter(cmd.uds_sub)
+        sub_comms = UDSWriter(DomainSocket, cmd.uds_sub)
 
         # subscriber...
         handler = AWSMQTTSubscriptionHandler(reporter, sub_comms, cmd.echo)
