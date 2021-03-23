@@ -19,8 +19,6 @@ from scs_core.sys.filesystem import Filesystem
 from scs_philips_hue.data.light.chroma import ChromaPoint
 
 
-# TODO this should be a JSONReport (or JSONArchive)
-
 # --------------------------------------------------------------------------------------------------------------------
 
 class ChromaPath(JSONReport):
@@ -59,7 +57,7 @@ class ChromaPath(JSONReport):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct_from_jdict(cls, jdict, name=None):
+    def construct_from_jdict(cls, jdict, default=True):
         if not jdict:
             return None
 
