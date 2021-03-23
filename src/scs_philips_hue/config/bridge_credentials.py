@@ -29,9 +29,9 @@ class BridgeCredentials(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct_from_jdict(cls, jdict):
+    def construct_from_jdict(cls, jdict, default=True):
         if not jdict:
-            return BridgeCredentials(None, None)
+            return None if default is None else BridgeCredentials(None, None)
 
         bridge_id = jdict.get('bridge-id')
         username = jdict.get('username')

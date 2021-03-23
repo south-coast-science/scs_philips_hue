@@ -33,7 +33,7 @@ class DeskConf(MultiPersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct_from_jdict(cls, jdict, name=None):
+    def construct_from_jdict(cls, jdict, name=None, default=True):
         if not jdict:
             return None
 
