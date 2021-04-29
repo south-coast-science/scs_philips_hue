@@ -37,9 +37,8 @@ scs_philips_hue/desk_conf
 
 import json
 import sys
+import termios
 import time
-
-from termios import tcflush, TCIOFLUSH
 
 from scs_core.client.network import Network
 
@@ -172,8 +171,10 @@ if __name__ == '__main__':
 
         # read stdin...
         for line in sys.stdin:
-            sys.stdin.flush()
-            # tcflush(sys.stdin, TCIOFLUSH)           # flush stdin
+            try:
+                termios.tcflush(sys.stdin, termios.TCIOFLUSH)           # flush stdin
+            except termios.error:
+                pass
 
             datum = line.strip()
 
