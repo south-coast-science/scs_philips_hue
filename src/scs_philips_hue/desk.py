@@ -172,7 +172,8 @@ if __name__ == '__main__':
 
         # read stdin...
         for line in sys.stdin:
-            tcflush(sys.stdin, TCIOFLUSH)           # flush stdin
+            sys.stdin.flush()
+            # tcflush(sys.stdin, TCIOFLUSH)           # flush stdin
 
             datum = line.strip()
 
