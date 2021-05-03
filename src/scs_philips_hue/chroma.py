@@ -110,7 +110,7 @@ if __name__ == '__main__':
                 continue
 
             if cmd.verbose:
-                print("chroma: %s" % datum, file=sys.stderr)
+                print("chroma: domain value: %s" % datum, file=sys.stderr)
                 sys.stderr.flush()
 
             # interpolate...
