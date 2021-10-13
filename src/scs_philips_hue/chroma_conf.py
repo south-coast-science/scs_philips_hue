@@ -100,4 +100,4 @@ if __name__ == '__main__':
         conf.save(Host)
 
     if conf:
-        print(JSONify.dumps(conf))
+        print(JSONify.dumps(conf, indent=cmd.indent))

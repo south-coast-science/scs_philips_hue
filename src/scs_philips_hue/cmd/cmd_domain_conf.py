@@ -19,8 +19,8 @@ class CmdDomainConf(object):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog [{ [-t TOPIC_PATH] [-n DOCUMENT_NODE] | -x }] [-v]",
-                                              version="%prog 1.0")
+        self.__parser = optparse.OptionParser(usage="%prog [{ [-t TOPIC_PATH] [-n DOCUMENT_NODE] | -x }] "
+                                                    "[-i INDENT] [-v]", version="%prog 1.0")
 
         # optional...
         self.__parser.add_option("--topic", "-t", type="string", nargs=1, action="store", dest="topic_path",
@@ -31,6 +31,10 @@ class CmdDomainConf(object):
 
         self.__parser.add_option("--delete", "-x", action="store_true", dest="delete",
                                  help="delete the Chroma configuration")
+
+        # output...
+        self.__parser.add_option("--indent", "-i", type="int", nargs=1, action="store", dest="indent",
+                                 help="pretty-print the output with INDENT")
 
         self.__parser.add_option("--verbose", "-v", action="store_true", dest="verbose", default=False,
                                  help="report narrative to stderr")
@@ -76,6 +80,11 @@ class CmdDomainConf(object):
 
 
     @property
+    def indent(self):
+        return self.__opts.indent
+
+
+    @property
     def verbose(self):
         return self.__opts.verbose
 
@@ -87,5 +96,5 @@ class CmdDomainConf(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdDomainConf:{topic_path:%s, document_node:%s, delete:%s, verbose:%s}" % \
-                    (self.topic_path, self.document_node, self.delete, self.verbose)
+        return "CmdDomainConf:{topic_path:%s, document_node:%s, delete:%s, indent:%s, verbose:%s}" % \
+                    (self.topic_path, self.document_node, self.delete, self.indent, self.verbose)

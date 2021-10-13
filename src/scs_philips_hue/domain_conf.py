@@ -88,4 +88,4 @@ if __name__ == '__main__':
         conf = None
 
     if conf:
-        print(JSONify.dumps(conf))
+        print(JSONify.dumps(conf, indent=cmd.indent))
