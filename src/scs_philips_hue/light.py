@@ -143,7 +143,7 @@ if __name__ == '__main__':
                     break
 
             for entry in scan.entries:
-                print(JSONify.dumps(entry))
+                print(JSONify.dumps(entry, indent=cmd.indent))
 
         # search...
         if cmd.search:
@@ -160,7 +160,7 @@ if __name__ == '__main__':
                     break
 
             for entry in scan.entries:
-                print(JSONify.dumps(entry))
+                print(JSONify.dumps(entry, indent=cmd.indent))
 
         # delete...
         if cmd.delete:
@@ -181,7 +181,7 @@ if __name__ == '__main__':
             lights = manager.find_all()
 
             for light in lights:
-                print(JSONify.dumps(light))
+                print(JSONify.dumps(light, indent=cmd.indent))
 
 
     # ----------------------------------------------------------------------------------------------------------------

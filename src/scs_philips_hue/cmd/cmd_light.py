@@ -17,7 +17,7 @@ class CmdLight(object):
         Constructor
         """
         self.__parser = optparse.OptionParser(usage="%prog { -a SERIAL_NUMBER | -s | -l | -d INDEX | -n INDEX NAME } "
-                                                    "[-v]", version="%prog 1.0")
+                                                    "[-i INDENT] [-v]", version="%prog 1.0")
 
         # optional...
         self.__parser.add_option("--add", "-a", type="string", nargs=1, action="store", dest="add",
@@ -34,6 +34,10 @@ class CmdLight(object):
 
         self.__parser.add_option("--name", "-n", type="string", nargs=2, action="store", dest="index_name",
                                  help="set the name of the light with INDEX to NAME")
+
+        # output...
+        self.__parser.add_option("--indent", "-i", type="int", nargs=1, action="store", dest="indent",
+                                 help="pretty-print the output with INDENT")
 
         self.__parser.add_option("--verbose", "-v", action="store_true", dest="verbose", default=False,
                                  help="report narrative to stderr")
@@ -95,6 +99,11 @@ class CmdLight(object):
 
 
     @property
+    def indent(self):
+        return self.__opts.indent
+
+
+    @property
     def verbose(self):
         return self.__opts.verbose
 
@@ -106,5 +115,5 @@ class CmdLight(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdLight:{add:%s, search:%s, list:%s, delete:%s, name:%s, verbose:%s}" %  \
-               (self.add, self.search, self.list, self.delete, self.name, self.verbose)
+        return "CmdLight:{add:%s, search:%s, list:%s, delete:%s, name:%s, indent:%s, verbose:%s}" %  \
+               (self.add, self.search, self.list, self.delete, self.name, self.indent, self.verbose)

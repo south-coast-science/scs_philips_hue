@@ -21,7 +21,7 @@ class CmdBridge(object):
         Constructor
         """
         self.__parser = optparse.OptionParser(usage="%prog [-n NAME] [-p PORTAL_SERVICES] [-c CHECK_UPDATE] "
-                                                    "[-u DO_UPDATE] [-z CHANNEL] [-v]", version="%prog 1.0")
+                                                    "[-u DO_UPDATE] [-z CHANNEL] [-i INDENT] [-v]", version="%prog 1.0")
 
         # optional...
         self.__parser.add_option("--name", "-n", type="string", nargs=1, action="store", dest="name",
@@ -38,6 +38,10 @@ class CmdBridge(object):
 
         self.__parser.add_option("--zigbee", "-z", type="string", nargs=1, action="store", dest="zigbee_channel",
                                  help="set zigbee channel (11, 15, 20 or 25)")
+
+        # output...
+        self.__parser.add_option("--indent", "-i", type="int", nargs=1, action="store", dest="indent",
+                                 help="pretty-print the output with INDENT")
 
         self.__parser.add_option("--verbose", "-v", action="store_true", dest="verbose", default=False,
                                  help="report narrative to stderr")
@@ -99,6 +103,11 @@ class CmdBridge(object):
 
 
     @property
+    def indent(self):
+        return self.__opts.indent
+
+
+    @property
     def verbose(self):
         return self.__opts.verbose
 
@@ -111,6 +120,6 @@ class CmdBridge(object):
 
     def __str__(self, *args, **kwargs):
         return "CmdBridge:{name:%s, portal_services:%s, check_update:%s, do_update:%s, zigbee_channel:%s, " \
-               "verbose:%s}" %  \
+               "indent:%s, verbose:%s}" %  \
                (self.name, self.portal_services, self.check_update, self.do_update, self.zigbee_channel,
-                self.verbose)
+                self.indent, self.verbose)
