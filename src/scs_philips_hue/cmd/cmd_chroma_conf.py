@@ -24,7 +24,7 @@ class CmdChromaConf(object):
         path_names = ' | '.join(ChromaPath.defaults())
 
         self.__parser = optparse.OptionParser(usage="%prog [-p PATH_NAME] [-l DOMAIN_MIN] [-u DOMAIN_MAX] "
-                                                    "[-b BRIGHTNESS] [-t TRANSITION] [-v]",
+                                                    "[-b BRIGHTNESS] [-t TRANSITION] [-i INDENT] [-v]",
                                               version="%prog 1.0")
 
         # optional...
@@ -42,6 +42,10 @@ class CmdChromaConf(object):
 
         self.__parser.add_option("--trans", "-t", type="float", nargs=1, action="store", dest="transition_time",
                                  help="set the lamp transition time (seconds)")
+
+        # output...
+        self.__parser.add_option("--indent", "-i", type="int", nargs=1, action="store", dest="indent",
+                                 help="pretty-print the output with INDENT")
 
         self.__parser.add_option("--verbose", "-v", action="store_true", dest="verbose", default=False,
                                  help="report narrative to stderr")
@@ -102,6 +106,11 @@ class CmdChromaConf(object):
 
 
     @property
+    def indent(self):
+        return self.__opts.indent
+
+
+    @property
     def verbose(self):
         return self.__opts.verbose
 
@@ -114,6 +123,6 @@ class CmdChromaConf(object):
 
     def __str__(self, *args, **kwargs):
         return "CmdChromaConf:{path_name:%s, domain_min:%s, domain_max:%s, " \
-               "brightness:%s, transition_time:%s, verbose:%s}" % \
+               "brightness:%s, transition_time:%s, indent:%s, verbose:%s}" % \
                     (self.path_name, self.domain_min, self.domain_max,
-                     self.brightness, self.transition_time, self.verbose)
+                     self.brightness, self.transition_time, self.indent, self.verbose)

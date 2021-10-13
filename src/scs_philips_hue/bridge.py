@@ -167,7 +167,7 @@ if __name__ == '__main__':
                 print("bridge: %s" % response, file=sys.stderr)
 
         config = manager.find()
-        print(JSONify.dumps(config))
+        print(JSONify.dumps(config, indent=cmd.indent))
 
 
     # ----------------------------------------------------------------------------------------------------------------
