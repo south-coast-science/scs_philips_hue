@@ -59,7 +59,7 @@ class IPDiscovery(object):
 
 
     def find_first(self):
-        for ip_address in self.__host.scan_accessible_subnets(timeout=self.__BRIDGE_DEFAULT_TIMEOUT):
+        for ip_address in self.__host.scan_accessible_subnets():
             if self.__is_bridge(ip_address):
                 return IPHost(ip_address)
 
@@ -69,7 +69,7 @@ class IPDiscovery(object):
     def find_all(self):
         bridges = []
 
-        for ip_address in self.__host.scan_accessible_subnets(timeout=self.__BRIDGE_DEFAULT_TIMEOUT):
+        for ip_address in self.__host.scan_accessible_subnets():
             if self.__is_bridge(ip_address):
                 bridges.append(IPHost(ip_address))
 
