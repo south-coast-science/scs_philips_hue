@@ -39,6 +39,7 @@ from scs_core.data.json import JSONify
 
 from scs_host.sys.host import Host
 from scs_core.sys.http_exception import HTTPException
+from scs_core.sys.logging import Logging
 
 from scs_philips_hue.cmd.cmd_user import CmdUser
 
@@ -66,8 +67,10 @@ if __name__ == '__main__':
         cmd.print_help(sys.stderr)
         exit(2)
 
-    if cmd.verbose:
-        print("user: %s" % cmd, file=sys.stderr)
+    Logging.config('user', verbose=cmd.verbose)
+    logger = Logging.getLogger()
+
+    logger.info(cmd)
 
     try:
 
@@ -78,25 +81,22 @@ if __name__ == '__main__':
         credentials = BridgeCredentials.load(Host)
 
         if credentials.bridge_id is None:
-            print("user: no stored credentials", file=sys.stderr)
+            logger.error("no stored credentials.")
             exit(1)
 
-        if cmd.verbose:
-            print("user: %s" % credentials, file=sys.stderr)
+        logger.info(credentials)
 
         # bridge...
-        if cmd.verbose:
-            print("user: looking for bridge...", file=sys.stderr)
+        logger.info("looking for bridge...")
 
         discovery = Discovery(Host)
         bridge = discovery.find(credentials)
 
         if bridge is None:
-            print("user: no bridge matching the stored credentials", file=sys.stderr)
+            print("no bridge matching the stored credentials")
             exit(1)
 
-        if cmd.verbose:
-            print("user: %s" % bridge, file=sys.stderr)
+        logger.info(bridge)
 
         sys.stderr.flush()
 
@@ -109,14 +109,11 @@ if __name__ == '__main__':
 
         users = manager.find_all()
 
-        if cmd.delete:
+        if cmd.remove:
             for user in users:
-                if user.description.user == cmd.delete:
+                if user.description.user == cmd.remove:
                     response = manager.delete(application_key, user.username)
-
-                    if cmd.verbose:
-                        print("user: %s" % response, file=sys.stderr)
-                        sys.stderr.flush()
+                    logger.info(response)
 
         else:
             for user in users:
@@ -127,8 +124,7 @@ if __name__ == '__main__':
     # end...
 
     except (ConnectionError, HTTPException) as ex:
-        print("user: %s: %s" % (ex.__class__.__name__, ex), file=sys.stderr)
+        logger.error("%s: %s" % (ex.__class__.__name__, ex))
 
     except KeyboardInterrupt:
-        if cmd.verbose:
-            print("user: KeyboardInterrupt", file=sys.stderr)
+        print(file=sys.stderr)

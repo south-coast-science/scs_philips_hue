@@ -36,6 +36,7 @@ import sys
 
 from scs_core.aws.client.client_auth import ClientAuth
 from scs_core.data.json import JSONify
+from scs_core.sys.logging import Logging
 
 from scs_host.sys.host import Host
 
@@ -55,9 +56,10 @@ if __name__ == '__main__':
         cmd.print_help(sys.stderr)
         exit(2)
 
-    if cmd.verbose:
-        print("aws_client_auth: %s" % cmd, file=sys.stderr)
-        sys.stderr.flush()
+    Logging.config('aws_client_auth', verbose=cmd.verbose)
+    logger = Logging.getLogger()
+
+    logger.info(cmd)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -72,8 +74,7 @@ if __name__ == '__main__':
 
     if cmd.set():
         if auth is None and not cmd.is_complete():
-            print("aws_client_auth: No configuration is stored - you must therefore set all fields.", file=sys.stderr)
-            cmd.print_help(sys.stderr)
+            logger.error("No configuration is stored - you must therefore set all fields.")
             exit(2)
 
         endpoint = cmd.endpoint if cmd.endpoint else auth.endpoint

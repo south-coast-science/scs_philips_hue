@@ -22,16 +22,17 @@ with a progression though the chroma space.
 Note that - currently - there is no command line utility to edit chroma paths, and only default paths can be used.
 
 SYNOPSIS
-chroma_conf.py [-p PATH_NAME] [-l DOMAIN_MIN] [-u DOMAIN_MAX] [-b BRIGHTNESS] [-t TRANSITION] [-v]
+chroma_conf.py [-n NAME [-p PATH_NAME] [-l DOMAIN_MIN] [-u DOMAIN_MAX] [-b BRIGHTNESS] [-t TRANSITION]] [-i INDENT] [-v]
 
 EXAMPLES
-./chroma_conf.py -p risk-level -l 5 -u 30 -b 254 -t 9
+./chroma_conf.py -v -n NO2 -p risk-level -l 0 -u 50 -b 254 -t 9 -i4
 
 FILES
-~/SCS/hue/chroma_conf.json
+~/SCS/hue/chroma_conf_set.json
 
 DOCUMENT EXAMPLE
-{"path-name": "risk-level", "domain-min": 5, "domain-max": 30, "brightness": 254, "transition-time": 9}
+{"NO2": {"path-name": "risk-level", "domain-min": 0.0, "domain-max": 50.0, "brightness": 254, "transition-time": 9},
+"PM10": {"path-name": "risk-level", "domain-min": 0.0, "domain-max": 100.0, "brightness": 254, "transition-time": 9}}
 
 SEE ALSO
 scs_philips_hue/chroma
@@ -44,11 +45,12 @@ https://developers.meethue.com/documentation/core-concepts
 import sys
 
 from scs_core.data.json import JSONify
+from scs_core.sys.logging import Logging
 
 from scs_host.sys.host import Host
 
 from scs_philips_hue.cmd.cmd_chroma_conf import CmdChromaConf
-from scs_philips_hue.config.chroma_conf import ChromaConf
+from scs_philips_hue.config.chroma_conf import ChromaConfSet
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -64,40 +66,42 @@ if __name__ == '__main__':
         cmd.print_help(sys.stderr)
         exit(2)
 
-    if cmd.verbose:
-        print("chroma_conf: %s" % cmd, file=sys.stderr)
-        sys.stderr.flush()
+    Logging.config('chroma_conf', verbose=cmd.verbose)
+    logger = Logging.getLogger()
+
+    logger.info(cmd)
 
 
     # ----------------------------------------------------------------------------------------------------------------
     # resources...
 
     # ChromaConf...
-    conf = ChromaConf.load(Host)
+    chromas = ChromaConfSet.load(Host, skeleton=True)
 
 
     # ----------------------------------------------------------------------------------------------------------------
     # run...
 
     if cmd.set():
-        if conf is None:
+        chroma = chromas.conf(cmd.name)
+
+        if chroma is None:
             if not cmd.is_complete():
-                print("chroma_conf: no configuration is stored - you must therefore set all fields.", file=sys.stderr)
-                cmd.print_help(sys.stderr)
+                logger.error("no configuration is stored - you must therefore set all fields.")
                 exit(2)
 
-            conf = ChromaConf(cmd.path_name, cmd.domain_min, cmd.domain_max, cmd.brightness, cmd.transition_time)
+            chromas.add(cmd.name, cmd.path_name, cmd.domain_min, cmd.domain_max, cmd.brightness, cmd.transition_time)
 
         else:
-            path_name = conf.path_name if cmd.path_name is None else cmd.path_name
-            domain_min = conf.domain_min if cmd.domain_min is None else cmd.domain_min
-            domain_max = conf.domain_max if cmd.domain_max is None else cmd.domain_max
-            brightness = conf.brightness if cmd.brightness is None else cmd.brightness
-            transition_time = conf.transition_time if cmd.transition_time is None else cmd.transition_time
+            path_name = chroma.path_name if cmd.path_name is None else cmd.path_name
+            domain_min = chroma.domain_min if cmd.domain_min is None else cmd.domain_min
+            domain_max = chroma.domain_max if cmd.domain_max is None else cmd.domain_max
+            brightness = chroma.brightness if cmd.brightness is None else cmd.brightness
+            transition_time = chroma.transition_time if cmd.transition_time is None else cmd.transition_time
 
-            conf = ChromaConf(path_name, domain_min, domain_max, brightness, transition_time)
+            chromas.add(cmd.name, path_name, domain_min, domain_max, brightness, transition_time)
 
-        conf.save(Host)
+        chromas.save(Host)
 
-    if conf:
-        print(JSONify.dumps(conf, indent=cmd.indent))
+    if chromas:
+        print(JSONify.dumps(chromas, indent=cmd.indent))

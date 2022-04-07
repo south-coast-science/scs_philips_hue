@@ -11,20 +11,25 @@ import os
 
 from collections import OrderedDict
 
-from scs_core.data.json import JSONReport
+from scs_core.data.json import JSONCatalogueEntry
 from scs_core.data.str import Str
-
-from scs_core.sys.filesystem import Filesystem
 
 from scs_philips_hue.data.light.chroma import ChromaPoint
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class ChromaPath(JSONReport):
+class ChromaPath(JSONCatalogueEntry):
     """
     classdocs
     """
+
+    __CATALOGUE_NAME = 'paths'
+
+    @classmethod
+    def catalogue_location(cls):
+        return os.path.join(os.path.dirname(os.path.realpath(__file__)), cls.__CATALOGUE_NAME)
+
 
     CANONICAL_CHROMAS = {
         'R': ChromaPoint.red(),
@@ -32,27 +37,6 @@ class ChromaPath(JSONReport):
         'B': ChromaPoint.blue(),
         'W': ChromaPoint.white_3000k()
     }
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    @classmethod
-    def defaults(cls):
-        archive = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'paths')
-        paths = Filesystem.ls(archive)
-
-        return [path.name.split('.')[0] for path in paths]
-
-
-    @classmethod
-    def load_default(cls, name):
-        file = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'paths', '.'.join((name, 'json')))
-
-        if not os.path.exists(file):
-            raise FileNotFoundError(name)
-
-        return cls.load(file)
-
 
     # ----------------------------------------------------------------------------------------------------------------
 

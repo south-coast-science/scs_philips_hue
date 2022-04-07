@@ -38,7 +38,9 @@ from scs_core.client.network import Network
 from scs_core.client.resource_unavailable_exception import ResourceUnavailableException
 
 from scs_core.data.json import JSONify
+
 from scs_core.sys.http_exception import HTTPException
+from scs_core.sys.logging import Logging
 
 from scs_host.comms.stdio import StdIO
 from scs_host.sys.host import Host
@@ -69,18 +71,17 @@ if __name__ == '__main__':
 
     cmd = CmdSimple()
 
-    if cmd.verbose:
-        print("join: %s" % cmd, file=sys.stderr)
+    Logging.config('join', verbose=cmd.verbose)
+    logger = Logging.getLogger()
+
+    logger.info(cmd)
 
     try:
         # ------------------------------------------------------------------------------------------------------------
         # check...
 
         if not Network.is_available():
-            if cmd.verbose:
-                print("join: waiting for network", file=sys.stderr)
-                sys.stderr.flush()
-
+            logger.info("waiting for network")
             Network.wait()
 
 
@@ -92,7 +93,7 @@ if __name__ == '__main__':
         bridges = discovery.find_all()
 
         if len(bridges) == 0:
-            print("join: no bridge found", file=sys.stderr)
+            logger.error("no bridge found.")
             exit(0)
 
         elif len(bridges) == 1:
@@ -100,13 +101,12 @@ if __name__ == '__main__':
 
         else:
             for i in range(len(bridges)):
-                print("%d: %s" % ((i + 1), bridges[i]))
+                logger.error("%d: %s" % ((i + 1), bridges[i]))
 
             index = StdIO.prompt("Bridge (1 - %d) ?: " % len(bridges))
             bridge = bridges[int(index) - 1]
 
-        if cmd.verbose:
-            print("join: %s" % bridge, file=sys.stderr)
+        logger.info(bridge)
 
         # manager...
         bridge_manager = BridgeManager(bridge.ip_address, None)
@@ -115,8 +115,7 @@ if __name__ == '__main__':
         client = ClientDescription(ClientDescription.APP, Host.name())
         device = DeviceDescription(client)
 
-        if cmd.verbose:
-            print("join: %s" % device, file=sys.stderr)
+        logger.info(device)
 
         sys.stderr.flush()
 
@@ -130,12 +129,12 @@ if __name__ == '__main__':
         try:
             response = bridge_manager.register(device)
         except TimeoutError:
-            print("join: bridge not found", file=sys.stderr)
+            logger.error("bridge not found.")
             exit(1)
 
         if response.has_errors():
             for error in response.errors:
-                print("join: error: %s" % error.description, file=sys.stderr)
+                logger.error("error: %s" % error.description)
             exit(1)
 
         # get credentials...
@@ -156,7 +155,6 @@ if __name__ == '__main__':
         for user in users:
             if user.description.user == Host.name() and user.username != credentials.username:
                 response = user_manager.delete(application_key, user.username)
-                # print("response: %s" % response)
 
         # report...
         bridge_manager = BridgeManager(bridge.ip_address, credentials.username)
@@ -169,12 +167,11 @@ if __name__ == '__main__':
     # end...
 
     except (ConnectionError, HTTPException) as ex:
-        print("join: %s: %s" % (ex.__class__.__name__, ex), file=sys.stderr)
+        logger.error("%s: %s" % (ex.__class__.__name__, ex))
 
     except ResourceUnavailableException as ex:
-        print("join: %s" % repr(ex), file=sys.stderr)
+        logger.error(repr(ex))
 
     except KeyboardInterrupt:
-        if cmd.verbose:
-            print("join: KeyboardInterrupt", file=sys.stderr)
+        print(file=sys.stderr)
 

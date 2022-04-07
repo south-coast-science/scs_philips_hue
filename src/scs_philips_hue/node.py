@@ -19,14 +19,13 @@ SYNOPSIS
 node.py {-c | -t TOPIC_PATH } [-i] [-v]
 
 EXAMPLES
-./osio_mqtt_subscriber.py -c | ./node.py -c | ./chroma.py | ./desk.py -v -e
+./aws_mqtt_subscriber.py -vc | ./node.py -vc | ./chroma.py -v | ./desk.py -ve
 
 FILES
 ~/SCS/hue/domain_conf.json
 
 SEE ALSO
 scs_philips_hue/aws_mqtt_subscriber
-scs_philips_hue/osio_mqtt_subscriber
 scs_philips_hue/domain_conf
 """
 
@@ -35,12 +34,13 @@ import sys
 from scs_core.data.json import JSONify
 from scs_core.data.path_dict import PathDict
 
+from scs_core.sys.logging import Logging
 from scs_core.sys.signalled_exit import SignalledExit
 
 from scs_host.sys.host import Host
 
 from scs_philips_hue.cmd.cmd_node import CmdNode
-from scs_philips_hue.config.domain_conf import DomainConf
+from scs_philips_hue.config.domain_conf import DomainConf, DomainConfSet
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -56,10 +56,10 @@ if __name__ == '__main__':
         cmd.print_help(sys.stderr)
         exit(2)
 
-    if cmd.verbose:
-        print("node: %s" % cmd, file=sys.stderr)
-        sys.stderr.flush()
+    Logging.config('node', verbose=cmd.verbose)
+    logger = Logging.getLogger()
 
+    logger.info(cmd)
 
     try:
         # ------------------------------------------------------------------------------------------------------------
@@ -67,17 +67,15 @@ if __name__ == '__main__':
 
         # DomainConf...
         if cmd.use_domain_conf:
-            domain = DomainConf.load(Host)
-            topic_path = '.'.join((domain.topic_path, domain.document_node))
+            domains = DomainConfSet.load(Host)
 
-            if domain is None:
-                print("node: Domain not available.", file=sys.stderr)
+            if domains is None:
+                logger.error("DomainConfSet not available.")
                 exit(1)
 
-            if cmd.verbose:
-                print("node: %s" % domain, file=sys.stderr)
         else:
-            topic_path = cmd.topic_path
+            domains = DomainConfSet({cmd.topic_path[0]: DomainConf(cmd.topic_path[1], cmd.topic_path[2])})
+            logger.info(domains)
 
 
         # ------------------------------------------------------------------------------------------------------------
@@ -94,19 +92,10 @@ if __name__ == '__main__':
             if datum is None:
                 continue
 
-            if cmd.ignore and not datum.has_path(topic_path):
-                continue
-
-            try:
-                node = datum.node(topic_path)
-
-            except KeyError as ex:
-                print("node: KeyError: %s datum:%s" % (ex, datum), file=sys.stderr)
-                sys.stderr.flush()
-                continue
-
-            print(JSONify.dumps(node))
-            sys.stdout.flush()
+            for name, domain in domains.confs.items():
+                if datum.has_sub_path(domain.topic_path):
+                    print(JSONify.dumps({name: datum.node(domain.node_path)}))
+                    sys.stdout.flush()
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -116,5 +105,4 @@ if __name__ == '__main__':
         pass
 
     finally:
-        if cmd.verbose:
-            print("node: finishing", file=sys.stderr)
+        logger.info("finishing")

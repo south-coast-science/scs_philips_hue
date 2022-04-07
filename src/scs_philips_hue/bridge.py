@@ -36,7 +36,9 @@ from scs_core.client.network import Network
 from scs_core.client.resource_unavailable_exception import ResourceUnavailableException
 
 from scs_core.data.json import JSONify
+
 from scs_core.sys.http_exception import HTTPException
+from scs_core.sys.logging import Logging
 
 from scs_host.sys.host import Host
 
@@ -57,6 +59,7 @@ from scs_philips_hue.manager.bridge_manager import BridgeManager
 if __name__ == '__main__':
 
     bridge = None
+    response = None
 
     # ----------------------------------------------------------------------------------------------------------------
     # cmd...
@@ -67,19 +70,17 @@ if __name__ == '__main__':
         cmd.print_help(sys.stderr)
         exit(2)
 
-    if cmd.verbose:
-        print("bridge: %s" % cmd, file=sys.stderr)
-        sys.stderr.flush()
+    Logging.config('bridge', verbose=cmd.verbose)
+    logger = Logging.getLogger()
+
+    logger.info(cmd)
 
     try:
         # ------------------------------------------------------------------------------------------------------------
         # check...
 
         if not Network.is_available():
-            if cmd.verbose:
-                print("bridge: waiting for network.", file=sys.stderr)
-                sys.stderr.flush()
-
+            logger.info("waiting for network.")
             Network.wait()
 
 
@@ -90,25 +91,22 @@ if __name__ == '__main__':
         credentials = BridgeCredentials.load(Host)
 
         if credentials.bridge_id is None:
-            print("bridge: no stored credentials")
+            logger.error("no stored credentials")
             exit(1)
 
-        if cmd.verbose:
-            print("bridge: %s" % credentials, file=sys.stderr)
+        logger.info(credentials)
 
         # bridge...
-        if cmd.verbose:
-            print("bridge: looking for bridge...", file=sys.stderr)
+        logger.info("looking for bridge...")
 
         discovery = Discovery(Host)
         bridge = discovery.find(credentials)
 
         if bridge is None:
-            print("bridge: no bridge matching the stored credentials")
+            logger.error("no bridge matching the stored credentials")
             exit(1)
 
-        if cmd.verbose:
-            print("bridge: %s" % bridge, file=sys.stderr)
+        logger.info(bridge)
 
         sys.stderr.flush()
 
@@ -127,44 +125,32 @@ if __name__ == '__main__':
             config = BridgeConfig(name=cmd.name)
             response = manager.set_config(config)
 
-            if cmd.verbose:
-                print("bridge: %s" % response, file=sys.stderr)
-
         # portal services...
         if cmd.portal_services:
             config = BridgeConfig(portal_services=cmd.portal_services)
             response = manager.set_config(config)
-
-            if cmd.verbose:
-                print("bridge: %s" % response, file=sys.stderr)
 
         # check for update...
         if cmd.check_update:
             config = BridgeConfig(sw_update=SWUpdate(check_for_update=cmd.check_update))
             response = manager.set_config(config)
 
-            if cmd.verbose:
-                print("bridge: %s" % response, file=sys.stderr)
-
         # do update...
         if cmd.do_update:
             if config.sw_update.update_state != SWUpdate.UPDATE_AVAILABLE:
-                print("bridge: no software update available")
+                logger.error("no software update available.")
                 exit(1)
 
             config = BridgeConfig(sw_update=SWUpdate(update_state=SWUpdate.UPDATE_PERFORM))
             response = manager.set_config(config)
-
-            if cmd.verbose:
-                print("bridge: %s" % response, file=sys.stderr)
 
         # zigbee...
         if cmd.zigbee_channel:
             config = BridgeConfig(zigbee_channel=cmd.zigbee_channel)
             response = manager.set_config(config)
 
-            if cmd.verbose:
-                print("bridge: %s" % response, file=sys.stderr)
+        if response:
+            logger.info(response)
 
         config = manager.find()
         print(JSONify.dumps(config, indent=cmd.indent))
@@ -174,14 +160,13 @@ if __name__ == '__main__':
     # end...
 
     except (ConnectionError, HTTPException) as ex:
-        print("bridge: %s: %s" % (ex.__class__.__name__, ex), file=sys.stderr)
+        logger.error("%s: %s" % (ex.__class__.__name__, ex))
 
     except ResourceUnavailableException as ex:
-        print("bridge: %s" % repr(ex), file=sys.stderr)
+        logger.error(repr(ex))
 
     except KeyboardInterrupt:
-        if cmd.verbose:
-            print("bridge: KeyboardInterrupt", file=sys.stderr)
+        print(file=sys.stderr)
 
     except TimeoutError:
-        print("bridge: Timeout", file=sys.stderr)
+        logger.error("Timeout")

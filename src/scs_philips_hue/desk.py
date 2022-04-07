@@ -22,7 +22,7 @@ SYNOPSIS
 desk.py [-n NAME] [-e] [-v]
 
 EXAMPLES
-./osio_mqtt_subscriber.py -c | ./node.py -c | ./chroma.py | ./desk.py -v -e
+./aws_mqtt_subscriber.py -vc | ./node.py -vc | ./chroma.py -v | ./desk.py -ve
 
 FILES
 ~/SCS/hue/desk_conf.json
@@ -42,6 +42,7 @@ import time
 
 from scs_core.client.network import Network
 
+from scs_core.sys.logging import Logging
 from scs_core.sys.signalled_exit import SignalledExit
 
 from scs_host.sys.host import Host
@@ -49,7 +50,7 @@ from scs_host.sys.host import Host
 from scs_philips_hue.cmd.cmd_desk import CmdDesk
 
 from scs_philips_hue.config.bridge_credentials import BridgeCredentials
-from scs_philips_hue.config.desk_conf import DeskConf
+from scs_philips_hue.config.desk_conf import DeskConfSet
 
 from scs_philips_hue.data.light.light_state import LightState
 
@@ -74,18 +75,17 @@ if __name__ == '__main__':
 
     cmd = CmdDesk()
 
-    if cmd.verbose:
-        print("desk: %s" % cmd, file=sys.stderr)
+    Logging.config('desk', verbose=cmd.verbose)
+    logger = Logging.getLogger()
+
+    logger.info(cmd)
 
     try:
         # ------------------------------------------------------------------------------------------------------------
         # check...
 
         if not Network.is_available():
-            if cmd.verbose:
-                print("desk: waiting for network.", file=sys.stderr)
-                sys.stderr.flush()
-
+            logger.info("waiting for network")
             Network.wait()
 
 
@@ -93,38 +93,34 @@ if __name__ == '__main__':
         # resources...
 
         # DeskConf...
-        conf = DeskConf.load(Host, cmd.name)
+        desk_confs = DeskConfSet.load(Host, cmd.name)
 
-        if conf is None:
-            print("desk: DeskConf not available.", file=sys.stderr)
+        if desk_confs is None:
+            logger.error("DeskConfSet not available.")
             exit(1)
 
-        if cmd.verbose:
-            print("desk: %s" % conf, file=sys.stderr)
+        logger.info(desk_confs)
 
         # credentials...
         credentials = BridgeCredentials.load(Host)
 
         if credentials.bridge_id is None:
-            print("desk: BridgeCredentials not available")
+            logger.error("BridgeCredentials not available")
             exit(1)
 
-        if cmd.verbose:
-            print("desk: %s" % credentials, file=sys.stderr)
+        logger.info(credentials)
 
         # bridge...
-        if cmd.verbose:
-            print("desk: looking for bridge...", file=sys.stderr)
+        logger.info("looking for bridge...")
 
         discovery = Discovery(Host)
         bridge = discovery.find(credentials)
 
         if bridge is None:
-            print("desk: no bridge matching the stored credentials")
+            logger.error("no bridge matching the stored credentials")
             exit(1)
 
-        if cmd.verbose:
-            print("desk: %s" % bridge, file=sys.stderr)
+        logger.info(bridge)
 
         sys.stderr.flush()
 
@@ -148,22 +144,23 @@ if __name__ == '__main__':
 
             except OSError:
                 if time.time() > timeout:
-                    print("desk: bridge could not be found", file=sys.stderr)
+                    logger.error("bridge could not be found")
                     exit(1)
 
                 time.sleep(1)
                 continue
 
         # indices...
-        for name in conf.lamp_names:
-            indices[name] = manager.find_indices_for_name(name)
+        for desk_conf in desk_confs.confs.values():
+            for name in desk_conf.lamp_names:
+                indices[name] = manager.find_indices_for_name(name)
 
-            if len(indices[name]) == 0:
-                print("desk: warning: no light found for name: %s" % name, file=sys.stderr)
+                if len(indices[name]) == 0:
+                    logger.error("warning: no light found for name: %s" % name)
 
-            # save initial states...
-            for index in indices[name]:
-                initial_state[index] = manager.find(index).state        # in case we want to restore these states
+                # save initial states...
+                for index in indices[name]:
+                    initial_state[index] = manager.find(index).state        # in case we want to restore these states
 
 
         # ------------------------------------------------------------------------------------------------------------
@@ -176,54 +173,54 @@ if __name__ == '__main__':
             except termios.error:
                 pass
 
-            datum = line.strip()
-
-            if datum is None:
+            if line is None:
                 break
 
             if cmd.echo:
-                print(datum)
+                print(line.strip())
                 sys.stdout.flush()
 
             try:
-                jdict = json.loads(datum)
+                datum = json.loads(line)
             except ValueError:
                 continue
 
-            state = LightState.construct_from_jdict(jdict)
+            for name, desk_conf in desk_confs.confs.items():
+                if name not in datum:
+                    continue
 
-            for name in conf.lamp_names:
-                for index in indices[name]:
+                state = LightState.construct_from_jdict(datum[name])
 
-                    try:
-                        response = manager.set_state(index, state)
+                for lamp_name in desk_conf.lamp_names:
+                    for index in indices[lamp_name]:
 
-                        if cmd.verbose:
-                            print("desk: %s" % response, file=sys.stderr)
+                        try:
+                            response = manager.set_state(index, state)
+                            logger.info(response)
+
+                        except ConnectionResetError as ex:
+                            logger.error("%s: %s" % (ex.__class__.__name__, ex))
                             sys.stderr.flush()
 
-                    except ConnectionResetError as ex:
-                        print("desk: %s: %s" % (ex.__class__.__name__, ex), file=sys.stderr)
-                        sys.stderr.flush()
+                break
 
 
     # ----------------------------------------------------------------------------------------------------------------
     # end...
 
     except TimeoutError:
-        print("desk: Timeout", file=sys.stderr)
+        logger.error("Timeout")
 
-    except (KeyboardInterrupt, SystemExit):
+    except SystemExit:
         pass
 
+    except KeyboardInterrupt:
+        print(file=sys.stderr)
+
     finally:
-        if cmd.verbose:
-            print("desk: finishing", file=sys.stderr)
+        logger.info("finishing")
 
         if manager is not None:
             for index, state in initial_state.items():
                 response = manager.set_state(index, LightState.white())     # restore to white
-
-                if cmd.verbose:
-                    print("desk: %s" % response, file=sys.stderr)
-                    sys.stderr.flush()
+                logger.info(response)

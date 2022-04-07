@@ -30,12 +30,12 @@ print(path)
 print("-")
 
 print("defaults...")
-defaults = ChromaPath.defaults()
+defaults = ChromaPath.list()
 for default in defaults:
     print(default)
 print("-")
 
 print("risk...")
-risk = ChromaPath.load_default('risk')
+risk = ChromaPath.retrieve('risk_level')
 print(risk)
 print("-")

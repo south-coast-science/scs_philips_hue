@@ -4,28 +4,29 @@ Created on 16 Mar 2018
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 document example:
-{"path-name": "risk", "domain-min": 5, "domain-max": 30, "brightness": 254, "transition-time": 9}
+{"NO2": {"path-name": "risk-level", "domain-min": 0.0, "domain-max": 50.0, "brightness": 254, "transition-time": 9},
+"PM10": {"path-name": "risk-level", "domain-min": 0.0, "domain-max": 100.0, "brightness": 254, "transition-time": 9}}
 """
 
 from collections import OrderedDict
 
 from scs_core.data.datum import Datum
-from scs_core.data.json import PersistentJSONable
+from scs_core.data.json import JSONable
 
 from scs_philips_hue.config.chroma_path import ChromaPath
+from scs_philips_hue.config.conf_set import ConfSet
+
 from scs_philips_hue.data.light.chroma import ChromaMapping
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class ChromaConf(PersistentJSONable):
+class ChromaConfSet(ConfSet):
     """
     classdocs
     """
 
-    # ----------------------------------------------------------------------------------------------------------------
-
-    __FILENAME =        "chroma_conf.json"
+    __FILENAME =        "chroma_conf_set.json"
 
     @classmethod
     def persistence_location(cls):
@@ -36,6 +37,43 @@ class ChromaConf(PersistentJSONable):
 
     @classmethod
     def construct_from_jdict(cls, jdict, skeleton=False):
+        if not jdict:
+            return cls({}) if skeleton else None
+
+        confs = {}
+
+        for name, conf_jdict in jdict.items():
+            confs[name] = ChromaConf.construct_from_jdict(conf_jdict)
+
+        return cls(confs)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __init__(self, confs):
+        """
+        Constructor
+        """
+        super().__init__(confs)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def add(self, name, path_name, domain_min, domain_max, brightness, transition_time):
+        self._confs[name] = ChromaConf(path_name, domain_min, domain_max, brightness, transition_time)
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+class ChromaConf(JSONable):
+    """
+    classdocs
+    """
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
+    def construct_from_jdict(cls, jdict):
         if not jdict:
             return None
 
@@ -56,8 +94,6 @@ class ChromaConf(PersistentJSONable):
         """
         Constructor
         """
-        super().__init__()
-
         self.__path_name = path_name                                # string
 
         self.__domain_min = domain_min                              # float
@@ -70,7 +106,7 @@ class ChromaConf(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def path(self):
-        return ChromaPath.load_default(self.path_name)
+        return ChromaPath.retrieve(self.path_name)
 
 
     def mapping(self, path):

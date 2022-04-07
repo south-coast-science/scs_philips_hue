@@ -50,6 +50,7 @@ from scs_core.comms.mqtt_conf import MQTTConf
 from scs_core.comms.uds_writer import UDSWriter
 
 from scs_core.sys.filesystem import Filesystem
+from scs_core.sys.logging import Logging
 from scs_core.sys.signalled_exit import SignalledExit
 
 from scs_host.comms.domain_socket import DomainSocket
@@ -57,7 +58,7 @@ from scs_host.sys.host import Host
 
 from scs_philips_hue.cmd.cmd_mqtt_subscriber import CmdMQTTSubscriber
 
-from scs_philips_hue.config.domain_conf import DomainConf
+from scs_philips_hue.config.domain_conf import DomainConfSet
 
 from scs_philips_hue.handler.aws_mqtt_publisher import AWSMQTTPublisher
 from scs_philips_hue.handler.aws_mqtt_subscription_handler import AWSMQTTSubscriptionHandler
@@ -67,9 +68,7 @@ from scs_philips_hue.handler.mqtt_reporter import MQTTReporter
 # --------------------------------------------------------------------------------------------------------------------
 
 def network_not_available_handler():
-    if cmd.verbose:
-        print("aws_mqtt_subscriber: network loss - reconnecting MQTT client", file=sys.stderr)
-        sys.stderr.flush()
+    logger.info("network loss - reconnecting MQTT client")
 
     publisher.disconnect()              # remove dead connection
     publisher.connect()                 # connect when possible
@@ -80,6 +79,7 @@ def network_not_available_handler():
 if __name__ == '__main__':
 
     conf = None
+    domains = None
     reporter = None
     publisher = None
     sub_comms = None
@@ -93,8 +93,10 @@ if __name__ == '__main__':
         cmd.print_help(sys.stderr)
         exit(2)
 
-    if cmd.verbose:
-        print("aws_mqtt_subscriber: %s" % cmd, file=sys.stderr)
+    Logging.config('aws_mqtt_subscriber', verbose=cmd.verbose)
+    logger = Logging.getLogger()
+
+    logger.info(cmd)
 
     try:
         # ------------------------------------------------------------------------------------------------------------
@@ -102,15 +104,13 @@ if __name__ == '__main__':
 
         # MQTTConf
         conf = MQTTConf.load(Host)
-
-        if cmd.verbose:
-            print("aws_mqtt_subscriber: %s" % conf, file=sys.stderr)
+        logger.info(conf)
 
         # ClientAuth...
         auth = ClientAuth.load(Host)
 
         if auth is None:
-            print("aws_mqtt_subscriber: ClientAuth not available.", file=sys.stderr)
+            logger.error("ClientAuth not available.")
             exit(1)
 
         # reporter...
@@ -118,15 +118,14 @@ if __name__ == '__main__':
 
         # DomainConf...
         if cmd.use_domain_conf:
-            domain = DomainConf.load(Host)
-            topic_path = domain.topic_path
+            domains = DomainConfSet.load(Host)
 
-            if domain is None:
-                print("aws_mqtt_subscriber: Domain not available.", file=sys.stderr)
+            if domains is None:
+                logger.error("DomainConfSet not available.")
                 exit(1)
 
-            if cmd.verbose:
-                print("aws_mqtt_subscriber: %s" % domain, file=sys.stderr)
+            logger.info(domains)
+
         else:
             topic_path = cmd.topic_path
 
@@ -135,18 +134,21 @@ if __name__ == '__main__':
 
         # subscriber...
         handler = AWSMQTTSubscriptionHandler(reporter, sub_comms, cmd.echo)
-        subscriber = MQTTSubscriber(topic_path, handler.handle)
+
+        subscribers = []
+        if cmd.use_domain_conf:
+            for domain in domains.confs.values():
+                subscribers.append(MQTTSubscriber(domain.topic_path, handler.handle))
+        else:
+            subscribers.append(MQTTSubscriber(cmd.topic_path, handler.handle))
 
         # client...
-        client = MQTTClient(subscriber)
+        client = MQTTClient(*subscribers)
         publisher = AWSMQTTPublisher(conf, auth, client, reporter)
 
         # monitor...
         monitor = NetworkMonitor(20.0, network_not_available_handler)
-
-        if cmd.verbose:
-            print("aws_mqtt_subscriber: %s" % monitor, file=sys.stderr)
-            sys.stderr.flush()
+        logger.info(monitor)
 
 
         # ------------------------------------------------------------------------------------------------------------
@@ -167,14 +169,13 @@ if __name__ == '__main__':
     # end...
 
     except ConnectionError as ex:
-        print("aws_mqtt_subscriber: %s" % ex, file=sys.stderr)
+        logger.error(ex)
 
     except (KeyboardInterrupt, SystemExit):
         pass
 
     finally:
-        if cmd.verbose:
-            print("aws_mqtt_subscriber: finishing", file=sys.stderr)
+        logger.info("finishing")
 
         if publisher:
             publisher.disconnect()
