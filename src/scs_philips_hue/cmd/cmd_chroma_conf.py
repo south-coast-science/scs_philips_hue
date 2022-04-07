@@ -63,6 +63,9 @@ class CmdChromaConf(object):
         if self.set() and self.name is None:
             return False
 
+        if not self.set() and self.name is not None:
+            return False
+
         if self.path_name is not None and self.path_name not in ChromaPath.list():
             return False
 
