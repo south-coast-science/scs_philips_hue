@@ -49,10 +49,17 @@ class CmdDomainConf(object):
         if self.add is not None and self.remove:
             return False
 
-        if (self.add is not None or self.remove) and self.name is None:
+        if self.set() and self.name is None:
+            return False
+
+        if not self.set() and self.name is not None:
             return False
 
         return True
+
+
+    def set(self):
+        return self.add is not None or self.remove
 
 
     # ----------------------------------------------------------------------------------------------------------------

@@ -55,6 +55,9 @@ class CmdDeskConf(object):
         if self.set() and self.name is None:
             return False
 
+        if not self.set() and self.name is not None:
+            return False
+
         return True
 
 
