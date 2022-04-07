@@ -6,7 +6,7 @@ Created on 16 Mar 2018
 Lamp names form an ordered set. The most-recently added lamp is at the end of the list.
 
 document example:
-{"NO2": {"lamp-names": {"lamp-names": ["1600-1"]}}}
+{"NO2": ["big-bulb-1"], "PM10": ["scs-hcl-001"]}
 """
 
 from scs_core.data.json import JSONable
