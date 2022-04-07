@@ -6,61 +6,94 @@ Created on 16 Mar 2018
 Lamp names form an ordered set. The most-recently added lamp is at the end of the list.
 
 document example:
-{"lamp-names": ["scs-hcl-001", "scs-hcl-002"]}
+{"NO2": {"lamp-names": {"lamp-names": ["1600-1"]}}}
 """
 
-from collections import OrderedDict
+from scs_core.data.json import JSONable
 
-from scs_core.data.json import MultiPersistentJSONable
+from scs_philips_hue.config.conf_set import ConfSet
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class DeskConf(MultiPersistentJSONable):
+class DeskConfSet(ConfSet):
     """
     classdocs
     """
 
-    __FILENAME =        "desk_conf.json"
+    __FILENAME =        "desk_conf_set.json"
 
     @classmethod
-    def persistence_location(cls, name):
-        filename = cls.__FILENAME if name is None else '_'.join((name, cls.__FILENAME))
-
-        return cls.hue_dir(), filename
+    def persistence_location(cls):
+        return cls.hue_dir(), cls.__FILENAME
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct_from_jdict(cls, jdict, name=None, skeleton=False):
+    def construct_from_jdict(cls, jdict, skeleton=False):
         if not jdict:
-            return None
+            return cls({}) if skeleton else None
 
-        lamp_names = jdict.get('lamp-names')
+        confs = {}
 
-        return cls(lamp_names, name=name)
+        for name, conf_jdict in jdict.items():
+            confs[name] = DeskConf.construct_from_jdict(conf_jdict)
+
+        return cls(confs)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, lamp_names, name=None):
+    def __init__(self, confs):
         """
         Constructor
         """
-        super().__init__(name)
+        super().__init__(confs)
 
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def add(self, name, lamp_names):
+        self._confs[name] = DeskConf(lamp_names)
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+class DeskConf(JSONable):
+    """
+    classdocs
+    """
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
+    def construct_from_jdict(cls, jdict):
+        if not jdict:
+            return None
+
+        lamp_names = [lamp_name for lamp_name in jdict]
+
+        return cls(lamp_names)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __init__(self, lamp_names):
+        """
+        Constructor
+        """
         self.__lamp_names = lamp_names                  # list of string
+
+
+    def __len__(self):
+        return len(self.lamp_names)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def as_json(self):
-        jdict = OrderedDict()
-
-        jdict['lamp-names'] = self.lamp_names
-
-        return jdict
+        return self.lamp_names
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -89,4 +122,4 @@ class DeskConf(MultiPersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "DeskConf:{name:%s, lamp_names:%s}" % (self.name, self.lamp_names)
+        return "DeskConf:{lamp_names:%s}" % self.lamp_names

@@ -19,13 +19,14 @@ class CmdDeskConf(object):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog [-n NAME] [{ -a LAMP_NAME | -r LAMP_NAME | -d }] "
+        self.__parser = optparse.OptionParser(usage="%prog [-n NAME { -a LAMP_NAME | -r LAMP_NAME | -d }] "
                                                     "[-i INDENT] [-v]", version="%prog 1.0")
 
-        # optional...
+        # configuration...
         self.__parser.add_option("--name", "-n", type="string", nargs=1, action="store", dest="name",
                                  help="the name of the desk configuration")
 
+        # functions...
         self.__parser.add_option("--add", "-a", type="string", nargs=1, action="store", dest="add_lamp",
                                  help="add the given lamp")
 
@@ -51,7 +52,14 @@ class CmdDeskConf(object):
         if self.add_lamp is not None and self.remove_lamp is not None:
             return False
 
+        if self.set() and self.name is None:
+            return False
+
         return True
+
+
+    def set(self):
+        return self.add_lamp is not None or self.remove_lamp is not None
 
 
     # ----------------------------------------------------------------------------------------------------------------

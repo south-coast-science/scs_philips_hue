@@ -44,7 +44,9 @@ from scs_core.client.network import Network
 from scs_core.client.resource_unavailable_exception import ResourceUnavailableException
 
 from scs_core.data.json import JSONify
+
 from scs_core.sys.http_exception import HTTPException
+from scs_core.sys.logging import Logging
 
 from scs_host.sys.host import Host
 
@@ -65,6 +67,8 @@ if __name__ == '__main__':
 
     bridge = None
     manager = None
+    response = None
+
     initial_state = {}
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -76,18 +80,17 @@ if __name__ == '__main__':
         cmd.print_help(sys.stderr)
         exit(2)
 
-    if cmd.verbose:
-        print("light: %s" % cmd, file=sys.stderr)
+    Logging.config('light', verbose=cmd.verbose)
+    logger = Logging.getLogger()
+
+    logger.info(cmd)
 
     try:
         # ------------------------------------------------------------------------------------------------------------
         # check...
 
         if not Network.is_available():
-            if cmd.verbose:
-                print("light: waiting for network", file=sys.stderr)
-                sys.stderr.flush()
-
+            logger.info("waiting for network")
             Network.wait()
 
 
@@ -98,25 +101,22 @@ if __name__ == '__main__':
         credentials = BridgeCredentials.load(Host)
 
         if credentials.bridge_id is None:
-            print("light: BridgeCredentials not available", file=sys.stderr)
+            logger.error("BridgeCredentials not available.")
             exit(1)
 
-        if cmd.verbose:
-            print("light: %s" % credentials, file=sys.stderr)
+        logger.info(credentials)
 
         # bridge...
-        if cmd.verbose:
-            print("light: looking for bridge...", file=sys.stderr)
+        logger.info("looking for bridge...")
 
         discovery = Discovery(Host)
         bridge = discovery.find(credentials)
 
         if bridge is None:
-            print("light: no bridge matching the stored credentials", file=sys.stderr)
+            logger.error("no bridge matching the stored credentials.")
             exit(1)
 
-        if cmd.verbose:
-            print("light: %s" % bridge, file=sys.stderr)
+        logger.info(bridge)
 
         sys.stderr.flush()
 
@@ -132,9 +132,6 @@ if __name__ == '__main__':
             device = LightDevice(cmd.add)
             response = manager.search(device)
 
-            if cmd.verbose:
-                print("light: %s" % response, file=sys.stderr)
-
             while True:
                 time.sleep(2.0)
                 scan = manager.find_new()
@@ -148,9 +145,6 @@ if __name__ == '__main__':
         # search...
         if cmd.search:
             response = manager.search()
-
-            if cmd.verbose:
-                print("light: %s" % response, file=sys.stderr)
 
             while True:
                 time.sleep(2.0)
@@ -166,15 +160,12 @@ if __name__ == '__main__':
         if cmd.delete:
             response = manager.delete(cmd.delete)
 
-            if cmd.verbose:
-                print("light: %s" % response, file=sys.stderr)
-
         # name...
         if cmd.name:
             response = manager.rename(cmd.name[0], cmd.name[1])
 
-            if cmd.verbose:
-                print("light: %s" % response, file=sys.stderr)
+        if response:
+            logger.info(response)
 
         # result...
         if cmd.name or cmd.delete or cmd.list:
@@ -188,14 +179,13 @@ if __name__ == '__main__':
     # end...
 
     except (ConnectionError, HTTPException) as ex:
-        print("light: %s: %s" % (ex.__class__.__name__, ex), file=sys.stderr)
+        logger.error("%s: %s" % (ex.__class__.__name__, ex))
 
     except ResourceUnavailableException as ex:
-        print("light: %s" % repr(ex), file=sys.stderr)
+        logger.error(repr(ex))
 
     except KeyboardInterrupt:
-        if cmd.verbose:
-            print("light: KeyboardInterrupt", file=sys.stderr)
+        print(file=sys.stderr)
 
     except TimeoutError:
-        print("light: Timeout", file=sys.stderr)
+        logger.error("Timeout")
