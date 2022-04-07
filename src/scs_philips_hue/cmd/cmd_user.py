@@ -16,11 +16,11 @@ class CmdUser(object):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog {-d USER | -l }  [-v]", version="%prog 1.0")
+        self.__parser = optparse.OptionParser(usage="%prog {-r USER | -l }  [-v]", version="%prog 1.0")
 
         # optional...
-        self.__parser.add_option("--delete", "-d", type="string", nargs=1, action="store", dest="delete",
-                                 help="delete user")
+        self.__parser.add_option("--remove", "-r", type="string", nargs=1, action="store", dest="remove",
+                                 help="remove the user from the bridge")
 
         self.__parser.add_option("--list", "-l", action="store_true", dest="list",
                                  help="list all users")
@@ -34,10 +34,10 @@ class CmdUser(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def is_valid(self):
-        if self.delete is None and not self.list:
+        if self.remove is None and not self.list:
             return False
 
-        if self.delete is not None and self.list:
+        if self.remove is not None and self.list:
             return False
 
         return True
@@ -46,8 +46,8 @@ class CmdUser(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
-    def delete(self):
-        return self.__opts.delete
+    def remove(self):
+        return self.__opts.remove
 
 
     @property
@@ -67,4 +67,4 @@ class CmdUser(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdUser:{delete:%s, list:%s, verbose:%s}" % (self.delete, self.list, self.verbose)
+        return "CmdUser:{remove:%s, list:%s, verbose:%s}" % (self.remove, self.list, self.verbose)

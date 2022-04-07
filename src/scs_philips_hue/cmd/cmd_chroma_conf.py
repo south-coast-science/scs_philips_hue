@@ -21,13 +21,17 @@ class CmdChromaConf(object):
         """
         Constructor
         """
-        path_names = ' | '.join(ChromaPath.defaults())
+        path_names = ' | '.join(ChromaPath.list())
 
-        self.__parser = optparse.OptionParser(usage="%prog [-p PATH_NAME] [-l DOMAIN_MIN] [-u DOMAIN_MAX] "
-                                                    "[-b BRIGHTNESS] [-t TRANSITION] [-i INDENT] [-v]",
+        self.__parser = optparse.OptionParser(usage="%prog [-n NAME [-p PATH_NAME] [-l DOMAIN_MIN] [-u DOMAIN_MAX] "
+                                                    "[-b BRIGHTNESS] [-t TRANSITION]] [-i INDENT] [-v]",
                                               version="%prog 1.0")
 
-        # optional...
+        # configuration...
+        self.__parser.add_option("--name", "-n", type="string", nargs=1, action="store", dest="name",
+                                 help="the name of the chroma configuration")
+
+        # fields...
         self.__parser.add_option("--path", "-p", type="string", nargs=1, action="store", dest="path_name",
                                  help="name of chroma path { %s }" % path_names)
 
@@ -56,7 +60,10 @@ class CmdChromaConf(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def is_valid(self):
-        if self.path_name is not None and self.path_name not in ChromaPath.defaults():
+        if self.set() and self.name is None:
+            return False
+
+        if self.path_name is not None and self.path_name not in ChromaPath.list():
             return False
 
         if self.brightness is not None and (self.brightness < 0 or self.brightness > 254):
@@ -79,6 +86,11 @@ class CmdChromaConf(object):
 
 
     # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    def name(self):
+        return self.__opts.name
+
 
     @property
     def path_name(self):
@@ -122,7 +134,7 @@ class CmdChromaConf(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdChromaConf:{path_name:%s, domain_min:%s, domain_max:%s, " \
+        return "CmdChromaConf:{name:%s, path_name:%s, domain_min:%s, domain_max:%s, " \
                "brightness:%s, transition_time:%s, indent:%s, verbose:%s}" % \
-                    (self.path_name, self.domain_min, self.domain_max,
+                    (self.name, self.path_name, self.domain_min, self.domain_max,
                      self.brightness, self.transition_time, self.indent, self.verbose)

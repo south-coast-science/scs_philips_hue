@@ -4,22 +4,25 @@ Created on 16 Mar 2018
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 document example:
-{"topic-path": "/orgs/south-coast-science-demo/brighton/loc/1/particulates", "document-node": "val.pm10"}
+[{"topic-path": "south-coast-science-demo/brighton/loc/1/particulates", "document-node": "exg.val.pm10"},
+{"topic-path": "south-coast-science-demo/brighton/loc/1/particulates", "document-node": "exg.val.pm2p5"}]
 """
 
 from collections import OrderedDict
 
-from scs_core.data.json import PersistentJSONable
+from scs_core.data.json import JSONable
+
+from scs_philips_hue.config.conf_set import ConfSet
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class DomainConf(PersistentJSONable):
+class DomainConfSet(ConfSet):
     """
     classdocs
     """
 
-    __FILENAME =        "domain_conf.json"
+    __FILENAME =        "domain_conf_set.json"
 
     @classmethod
     def persistence_location(cls):
@@ -30,6 +33,43 @@ class DomainConf(PersistentJSONable):
 
     @classmethod
     def construct_from_jdict(cls, jdict, skeleton=False):
+        if not jdict:
+            return cls({}) if skeleton else None
+
+        confs = {}
+
+        for name, conf_jdict in jdict.items():
+            confs[name] = DomainConf.construct_from_jdict(conf_jdict)
+
+        return cls(confs)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __init__(self, confs):
+        """
+        Constructor
+        """
+        super().__init__(confs)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def add(self, name, topic_path, document_node):
+        self._confs[name] = DomainConf(topic_path, document_node)
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+class DomainConf(JSONable):
+    """
+    classdocs
+    """
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
+    def construct_from_jdict(cls, jdict):
         if not jdict:
             return None
 
@@ -45,10 +85,24 @@ class DomainConf(PersistentJSONable):
         """
         Constructor
         """
-        super().__init__()
-
         self.__topic_path = topic_path                          # string
         self.__document_node = document_node                    # string
+
+
+    def __lt__(self, other):
+        if self.topic_path < other.topic_path:
+            return True
+
+        if self.topic_path > other.topic_path:
+            return False
+
+        if self.document_node < other.document_node:
+            return True
+
+        if self.document_node > other.document_node:
+            return False
+
+        return False
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -63,6 +117,11 @@ class DomainConf(PersistentJSONable):
 
 
     # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    def node_path(self):
+        return '.'.join((self.topic_path, self.document_node))
+
 
     @property
     def topic_path(self):

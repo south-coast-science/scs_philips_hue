@@ -12,35 +12,35 @@ The domain_conf utility is used to specify an environmental data messaging topic
 documents delivered on that messaging topic. Together, these two parameters yield a scalar value that can be
 accepted by a mapping utility such as chroma.
 
-The domain_conf.json document managed by the domain_conf utility is used by the aws_mqtt_subscriber,
-osio_mqtt_subscriber, and node utilities.
+The domain_conf.json document managed by the domain_conf utility is used by the aws_mqtt_subscriber and node utilities.
 
 SYNOPSIS
-domain_conf.py [{ [-t TOPIC_PATH] [-n DOCUMENT_NODE] | -x }] [-v]
+domain_conf.py [-n NAME { -a TOPIC_PATH DOMAIN_NODE | -r }] [-i INDENT] [-v]
 
 EXAMPLES
-./domain_conf.py -t /orgs/south-coast-science-demo/brighton/loc/1/particulates -n val.pm10
+./domain_conf.py -n PM10 -a /orgs/south-coast-science-demo/brighton/loc/1/particulates val.pm10
 
 FILES
-~/SCS/hue/domain_conf.json
+~/SCS/hue/domain_conf_set.json
 
 DOCUMENT EXAMPLE
-{"topic-path": "/orgs/south-coast-science-demo/brighton/loc/1/particulates", "document-node": "val.pm10"}
+{"NO2": {"topic-path": "south-coast-science-demo/brighton/loc/1/gases", "document-node": "exg.val.NO2.cnc"},
+"PM10": {"topic-path": "south-coast-science-demo/brighton/loc/1/particulates", "document-node": "exg.val.pm10"}}
 
 SEE ALSO
 scs_philips_hue/aws_mqtt_subscriber
-scs_philips_hue/osio_mqtt_subscriber
 scs_philips_hue/node
 """
 
 import sys
 
 from scs_core.data.json import JSONify
+from scs_core.sys.logging import Logging
 
 from scs_host.sys.host import Host
 
 from scs_philips_hue.cmd.cmd_domain_conf import CmdDomainConf
-from scs_philips_hue.config.domain_conf import DomainConf
+from scs_philips_hue.config.domain_conf import DomainConfSet
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -56,36 +56,29 @@ if __name__ == '__main__':
         cmd.print_help(sys.stderr)
         exit(2)
 
-    if cmd.verbose:
-        print("domain_conf: %s" % cmd, file=sys.stderr)
-        sys.stderr.flush()
+    Logging.config('domain_conf', verbose=cmd.verbose)
+    logger = Logging.getLogger()
+
+    logger.info(cmd)
 
 
     # ----------------------------------------------------------------------------------------------------------------
     # resources...
 
     # ChromaConf...
-    conf = DomainConf.load(Host)
+    domains = DomainConfSet.load(Host, skeleton=True)
 
 
     # ----------------------------------------------------------------------------------------------------------------
     # run...
 
-    if cmd.set():
-        if conf is None and not cmd.is_complete():
-            print("domain_conf: no configuration is stored - you must therefore set all fields.", file=sys.stderr)
-            cmd.print_help(sys.stderr)
-            exit(2)
+    if cmd.add:
+        domains.add(cmd.name, cmd.add[0], cmd.add[1])
+        domains.save(Host)
 
-        topic_path = conf.topic_path if cmd.topic_path is None else cmd.topic_path
-        document_node = conf.document_node if cmd.document_node is None else cmd.document_node
+    if cmd.remove:
+        domains.remove(cmd.name)
+        domains.save(Host)
 
-        conf = DomainConf(topic_path, document_node)
-        conf.save(Host)
-
-    if cmd.delete:
-        conf.delete(Host)
-        conf = None
-
-    if conf:
-        print(JSONify.dumps(conf, indent=cmd.indent))
+    if domains:
+        print(JSONify.dumps(domains, indent=cmd.indent))

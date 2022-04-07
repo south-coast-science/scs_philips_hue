@@ -24,6 +24,8 @@ scs_analysis/socket_receiver
 import sys
 
 from scs_core.comms.uds_reader import UDSReader
+
+from scs_core.sys.logging import Logging
 from scs_core.sys.signalled_exit import SignalledExit
 
 from scs_host.comms.domain_socket import DomainSocket
@@ -44,18 +46,17 @@ if __name__ == '__main__':
         cmd.print_help(sys.stderr)
         exit(2)
 
-    if cmd.verbose:
-        print("uds_receiver: %s" % cmd, file=sys.stderr)
+    Logging.config('uds_receiver', verbose=cmd.verbose)
+    logger = Logging.getLogger()
+
+    logger.info(cmd)
 
 
     # ----------------------------------------------------------------------------------------------------------------
     # resources...
 
     uds = UDSReader(DomainSocket, cmd.path)
-
-    if cmd.verbose:
-        print("uds_receiver: %s" % uds, file=sys.stderr)
-        sys.stderr.flush()
+    logger.info(uds)
 
     try:
         # ------------------------------------------------------------------------------------------------------------
@@ -78,7 +79,5 @@ if __name__ == '__main__':
         pass
 
     finally:
-        if cmd.verbose:
-            print("uds_receiver: finishing", file=sys.stderr)
-
+        logger.info("finishing")
         uds.close()

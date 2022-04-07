@@ -19,18 +19,19 @@ class CmdDomainConf(object):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog [{ [-t TOPIC_PATH] [-n DOCUMENT_NODE] | -x }] "
+        self.__parser = optparse.OptionParser(usage="%prog [-n NAME { -a TOPIC_PATH DOMAIN_NODE | -r }] "
                                                     "[-i INDENT] [-v]", version="%prog 1.0")
 
-        # optional...
-        self.__parser.add_option("--topic", "-t", type="string", nargs=1, action="store", dest="topic_path",
-                                 help="set the topic path")
+        # configuration...
+        self.__parser.add_option("--name", "-n", type="string", nargs=1, action="store", dest="name",
+                                 help="the name of the desk configuration")
 
-        self.__parser.add_option("--node", "-n", type="string", nargs=1, action="store", dest="document_node",
-                                 help="set the document node")
+        # functions...
+        self.__parser.add_option("--add", "-a", type="string", nargs=2, action="store", dest="add",
+                                 help="add the domain configuration")
 
-        self.__parser.add_option("--delete", "-x", action="store_true", dest="delete",
-                                 help="delete the Chroma configuration")
+        self.__parser.add_option("--remove", "-r", action="store_true", dest="remove", default=False,
+                                 help="remove the domain configuration")
 
         # output...
         self.__parser.add_option("--indent", "-i", type="int", nargs=1, action="store", dest="indent",
@@ -45,38 +46,30 @@ class CmdDomainConf(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def is_valid(self):
-        if self.set() and self.delete is not None:
+        if self.add is not None and self.remove:
+            return False
+
+        if (self.add is not None or self.remove) and self.name is None:
             return False
 
         return True
-
-
-    def is_complete(self):
-        if self.topic_path is None or self.document_node is None:
-            return False
-
-        return True
-
-
-    def set(self):
-        return self.topic_path is not None or self.document_node is not None
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
-    def topic_path(self):
-        return self.__opts.topic_path
+    def name(self):
+        return self.__opts.name
 
 
     @property
-    def document_node(self):
-        return self.__opts.document_node
+    def add(self):
+        return self.__opts.add
 
 
     @property
-    def delete(self):
-        return self.__opts.delete
+    def remove(self):
+        return self.__opts.remove
 
 
     @property
@@ -96,5 +89,5 @@ class CmdDomainConf(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdDomainConf:{topic_path:%s, document_node:%s, delete:%s, indent:%s, verbose:%s}" % \
-                    (self.topic_path, self.document_node, self.delete, self.indent, self.verbose)
+        return "CmdDomainConf:{name:%s, add:%s, remove:%s, indent:%s, verbose:%s}" % \
+                    (self.name, self.add, self.remove, self.indent, self.verbose)

@@ -16,19 +16,17 @@ class CmdNode(object):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog { -c | -t TOPIC_PATH } [-i] [-v]", version="%prog 1.0")
+        self.__parser = optparse.OptionParser(usage="%prog { -c | -t NAME TOPIC_PATH DOMAIN_NODE } [-i] [-v]",
+                                              version="%prog 1.0")
 
         # compulsory...
         self.__parser.add_option("--conf", "-c", action="store_true", dest="use_domain_conf", default=False,
                                  help="get topic.node from the domain conf")
 
-        self.__parser.add_option("--topic", "-t", type="string", nargs=1, action="store", dest="topic_path",
-                                 help="use the given topic.node")
+        self.__parser.add_option("--topic", "-t", type="string", nargs=3, action="store", dest="topic_path",
+                                 help="use the given name, topic and node")
 
         # optional...
-        self.__parser.add_option("--ignore", "-i", action="store_true", dest="ignore", default=False,
-                                 help="ignore data where node is missing")
-
         self.__parser.add_option("--verbose", "-v", action="store_true", dest="verbose", default=False,
                                  help="report narrative to stderr")
 
@@ -60,11 +58,6 @@ class CmdNode(object):
 
 
     @property
-    def ignore(self):
-        return self.__opts.ignore
-
-
-    @property
     def verbose(self):
         return self.__opts.verbose
 
@@ -76,5 +69,5 @@ class CmdNode(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdNode:{use_domain_conf:%s, topic_path:%s, ignore:%s, verbose:%s}" %  \
-               (self.use_domain_conf, self.topic_path, self.ignore, self.verbose)
+        return "CmdNode:{use_domain_conf:%s, topic_path:%s, verbose:%s}" %  \
+               (self.use_domain_conf, self.topic_path, self.verbose)

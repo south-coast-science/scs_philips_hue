@@ -11,7 +11,7 @@ DESCRIPTION
 The desk_conf utility is used to specify which lamps should be driven by the desk utility.
 
 SYNOPSIS
-desk_conf.py [-n NAME] [{ -a LAMP_NAME | -r LAMP_NAME | -d }] [-v]
+Usage: desk_conf.py [-n NAME { -a LAMP_NAME | -r LAMP_NAME | -d }] [-i INDENT] [-v]
 
 EXAMPLES
 ./desk_conf.py -a scs-hcl-001
@@ -20,7 +20,7 @@ FILES
 ~/SCS/hue/desk_conf.json
 
 DOCUMENT EXAMPLE
-{"lamp-names": ["scs-hcl-001", "scs-hcl-002"]}
+{"NO2": {"lamp-names": {"lamp-names": ["1600-1"]}}}
 
 SEE ALSO
 scs_philips_hue/desk
@@ -29,16 +29,19 @@ scs_philips_hue/desk
 import sys
 
 from scs_core.data.json import JSONify
+from scs_core.sys.logging import Logging
 
 from scs_host.sys.host import Host
 
 from scs_philips_hue.cmd.cmd_desk_conf import CmdDeskConf
-from scs_philips_hue.config.desk_conf import DeskConf
+from scs_philips_hue.config.desk_conf import DeskConf, DeskConfSet
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
+
+    desk = None
 
     # ----------------------------------------------------------------------------------------------------------------
     # cmd...
@@ -49,37 +52,46 @@ if __name__ == '__main__':
         cmd.print_help(sys.stderr)
         exit(2)
 
-    if cmd.verbose:
-        print("desk_conf: %s" % cmd, file=sys.stderr)
-        sys.stderr.flush()
+    Logging.config('desk_conf', verbose=cmd.verbose)
+    logger = Logging.getLogger()
+
+    logger.info(cmd)
 
 
     # ----------------------------------------------------------------------------------------------------------------
     # resources...
 
     # DeskConf...
-    conf = DeskConf.load(Host, name=cmd.name)
+    desks = DeskConfSet.load(Host, skeleton=True)
+
 
     # ----------------------------------------------------------------------------------------------------------------
     # run...
 
-    if cmd.add_lamp:
-        if conf is None:
-            conf = DeskConf([], name=cmd.name)
+    if cmd.set():
+        desk = desks.conf(cmd.name)
 
-        conf.add_lamp(cmd.add_lamp)
-        conf.save(Host)
+    if cmd.add_lamp:
+        if desk is None:
+            desk = DeskConf([])
+
+        desk.add_lamp(cmd.add_lamp)
+
+        desks.add(cmd.name, desk)
+        desks.save(Host)
 
     if cmd.remove_lamp:
-        if conf is None:
-            conf = DeskConf([], name=cmd.name)
+        if desk is not None:
+            desk.remove_lamp(cmd.remove_lamp)
 
-        conf.remove_lamp(cmd.remove_lamp)
-        conf.save(Host)
+            if len(desk) == 0:
+                desks.remove(cmd.name)
+
+            desks.save(Host)
 
     if cmd.delete:
-        conf.delete(Host, name=cmd.name)
-        conf = None
+        desks.remove(cmd.name)
+        desks.save(Host)
 
-    if conf:
-        print(JSONify.dumps(conf, indent=cmd.indent))
+    if desks:
+        print(JSONify.dumps(desks, indent=cmd.indent))
