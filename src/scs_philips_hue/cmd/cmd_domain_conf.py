@@ -24,7 +24,7 @@ class CmdDomainConf(object):
 
         # configuration...
         self.__parser.add_option("--name", "-n", type="string", nargs=1, action="store", dest="name",
-                                 help="the name of the desk configuration")
+                                 help="the name of the domain configuration")
 
         # functions...
         self.__parser.add_option("--add", "-a", type="string", nargs=2, action="store", dest="add",
