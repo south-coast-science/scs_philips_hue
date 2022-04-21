@@ -59,6 +59,7 @@ from scs_philips_hue.discovery.discovery import Discovery
 from scs_philips_hue.manager.light_manager import LightManager
 
 
+# TODO: scs_core.client.resource_unavailable_exception.ResourceUnavailableException - find the bridge again
 # --------------------------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
