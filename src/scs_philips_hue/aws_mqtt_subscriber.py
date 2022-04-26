@@ -69,6 +69,8 @@ from scs_philips_hue.handler.mqtt_reporter import MQTTReporter
 # --------------------------------------------------------------------------------------------------------------------
 
 def network_not_available_handler():
+    # noinspection PyShadowingNames
+    logger = Logging.getLogger()
     logger.info("network loss - reconnecting MQTT client")
 
     publisher.disconnect()              # remove dead connection
