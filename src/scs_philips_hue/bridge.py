@@ -10,6 +10,8 @@ source repo: scs_philips_hue
 DESCRIPTION
 The bridge utility is used to interrogate and update the Philips Hue Bridge device.
 
+If a bridge address has been stored, this is used to find the bridge. Otherwise a UPnP or IP scan is attempted.
+
 SYNOPSIS
 bridge.py [-n NAME] [-p PORTAL_SERVICES] [-c CHECK_UPDATE] [-u DO_UPDATE] [-z CHANNEL] [-v]
 
@@ -23,6 +25,7 @@ DOCUMENT EXAMPLE
 {"bridge-id": "001788fffe795620", "username": "TIYoqrnwkvyODu8xE9zvRxjIJSRSde0qUzUqqIr7"}
 
 SEE ALSO
+scs_philips_hue/bridge_address
 scs_philips_hue/join
 scs_philips_hue/user
 
