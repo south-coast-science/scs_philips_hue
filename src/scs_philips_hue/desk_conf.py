@@ -20,7 +20,7 @@ FILES
 ~/SCS/hue/desk_conf.json
 
 DOCUMENT EXAMPLE
-{"NO2": {"lamp-names": {"lamp-names": ["1600-1"]}}}
+{"NO2": ["big-bulb-1"], "PM10": ["scs-hcl-001"]}
 
 SEE ALSO
 scs_philips_hue/desk

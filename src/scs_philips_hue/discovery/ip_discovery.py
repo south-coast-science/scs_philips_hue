@@ -5,6 +5,7 @@ Created on 4 Mar 2020
 """
 
 from scs_core.client.resource_unavailable_exception import ResourceUnavailableException
+from scs_core.sys.logging import Logging
 
 from scs_philips_hue.client.client_exception import ClientException
 from scs_philips_hue.client.rest_client import RESTClient
@@ -15,7 +16,6 @@ from scs_philips_hue.manager.bridge_manager import BridgeManager
 
 
 # TODO: https://github.com/flyte/upnpclient
-
 # --------------------------------------------------------------------------------------------------------------------
 
 class IPDiscovery(object):
@@ -32,6 +32,7 @@ class IPDiscovery(object):
         Constructor
         """
         self.__host = host
+        self.__logger = Logging.getLogger()
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -60,6 +61,8 @@ class IPDiscovery(object):
 
     def find_first(self):
         for ip_address in self.__host.scan_accessible_subnets():
+            self.__logger.info("checking %s" % ip_address)
+
             if self.__is_bridge(ip_address):
                 return IPHost(ip_address)
 
