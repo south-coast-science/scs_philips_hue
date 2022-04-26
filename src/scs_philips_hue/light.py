@@ -52,6 +52,7 @@ from scs_host.sys.host import Host
 
 from scs_philips_hue.cmd.cmd_light import CmdLight
 
+from scs_philips_hue.config.bridge_address import BridgeAddress
 from scs_philips_hue.config.bridge_credentials import BridgeCredentials
 
 from scs_philips_hue.discovery.discovery import Discovery
@@ -65,6 +66,7 @@ from scs_philips_hue.manager.light_manager import LightManager
 
 if __name__ == '__main__':
 
+    address = None
     bridge = None
     manager = None
     response = None
@@ -106,22 +108,29 @@ if __name__ == '__main__':
 
         logger.info(credentials)
 
-        # bridge...
-        logger.info("looking for bridge...")
+        # address...
+        address = BridgeAddress.load(Host)
 
-        discovery = Discovery(Host)
-        bridge = discovery.find(credentials)
+        if address:
+            logger.info(address)
+            ip_address = address.ipv4.dot_decimal()
 
-        if bridge is None:
-            logger.error("no bridge matching the stored credentials.")
-            exit(1)
+        else:
+            # bridge...
+            logger.info("looking for bridge...")
 
-        logger.info(bridge)
+            discovery = Discovery(Host)
+            bridge = discovery.find(credentials)
 
-        sys.stderr.flush()
+            if bridge is None:
+                logger.error("no bridge matching the stored credentials.")
+                exit(1)
+
+            logger.info(bridge)
+            ip_address = bridge.ip_address
 
         # manager...
-        manager = LightManager(bridge.ip_address, credentials.username)
+        manager = LightManager(ip_address, credentials.username)
 
 
         # ------------------------------------------------------------------------------------------------------------
