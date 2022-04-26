@@ -38,6 +38,7 @@ BUGS
 If the host is multi-homed and a higher-priority connection is lost, the MQTT connection will
 not be recovered.
 """
+
 import logging
 import sys
 
@@ -93,7 +94,7 @@ if __name__ == '__main__':
         cmd.print_help(sys.stderr)
         exit(2)
 
-    Logging.config('aws_mqtt_subscriber', level=logging.DEBUG)       # , verbose=cmd.verbose
+    Logging.config('aws_mqtt_subscriber', level=logging.DEBUG)       # , level=logging.DEBUG  , verbose=cmd.verbose
     logger = Logging.getLogger()
 
     logger.info(cmd)
@@ -103,7 +104,7 @@ if __name__ == '__main__':
         # resources...
 
         # MQTTConf
-        conf = MQTTConf.load(Host)
+        conf = MQTTConf.load(Host, skeleton=True)
         logger.info(conf)
 
         # ClientAuth...
