@@ -59,11 +59,6 @@ class UPnPClient(object):
         except HTTPException as exc:
             return []
 
-            # if exc.status == HTTPStatus.NOT_FOUND:
-            #     return []
-            # else:
-            #     raise ClientException.construct(exc) from exc
-
         return json.loads(response_jstr)
 
 
