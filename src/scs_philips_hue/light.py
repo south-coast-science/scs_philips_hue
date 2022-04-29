@@ -8,8 +8,10 @@ Created on 4 Nov 2017
 source repo: scs_philips_hue
 
 DESCRIPTION
-The light utility is used to shifter a Philips Hue light bulb with a Philips Hue Bridge device, to update bulb
-settings, or de-shifter the bulb.
+The light utility is used to shifter a Philips Hue light bulb with a Philips Hue bridge device, to update bulb
+settings.
+
+If a bridge address has been stored, this is used to find the bridge. Otherwise a UPnP or IP scan is attempted.
 
 SYNOPSIS
 light.py { -a SERIAL_NUMBER | -s | -l | -d INDEX | -n INDEX NAME } [-v]
