@@ -8,21 +8,23 @@ Created on 2 Apr 2018
 source repo: scs_analysis
 
 DESCRIPTION
-The bridge_address utility is used to
+If the Philips Hue bridge has a known, fixed IP address and / or an IP scan is impractical, the bridge_address utility
+may be used to record its IPv4 address. (The address can usually be found with a ZeroConf browser.)
 
 SYNOPSIS
-bridge_address.py [{ [-e ENDPOINT] [-a API_KEY] | -d }] [-v]
+bridge_address.py [{-s DOT_DECIMAL | -d }] [-v]
 
 EXAMPLES
-bridge_address.py -e aws.southcoastscience.com -a de92c5ff-b47a-4cc4-a04c-62d684d64a1f
+./bridge_address.py -s 192.168.2.29
 
 FILES
 ~/SCS/aws/bridge_address.json
 
 DOCUMENT EXAMPLE
-{"endpoint": "aws.southcoastscience.com", "api-key": "de92c5ff-b47a-4cc4-a04c-62d684d64a1f"}
+{"ipv4": "192.168.2.29"}
 
 SEE ALSO
+scs_philips_hue/bridge
 """
 
 import sys

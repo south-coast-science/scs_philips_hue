@@ -4,6 +4,7 @@ Created on 26 Apr 2022
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 document example:
+{"ipv4": "192.168.2.29"}
 """
 
 from collections import OrderedDict
