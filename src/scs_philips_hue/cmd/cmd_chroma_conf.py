@@ -4,7 +4,7 @@ Created on 16 Mar 2018
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 document example:
-{"path-name": "risk", "domain-min": 5, "domain-max": 30, "brightness": 254, "transition-time": 9}
+{"NO2": {"path-name": "risk_level", "domain-min": 0.0, "domain-max": 50.0, "brightness": 254, "transition-time": 9}}
 """
 
 import optparse
@@ -23,7 +23,7 @@ class CmdChromaConf(object):
         """
         path_names = ' | '.join(ChromaPath.list())
 
-        self.__parser = optparse.OptionParser(usage="%prog [-n NAME {[-p PATH_NAME] [-l DOMAIN_MIN] [-u DOMAIN_MAX] "
+        self.__parser = optparse.OptionParser(usage="%prog [-n NAME { [-p PATH_NAME] [-l DOMAIN_MIN] [-u DOMAIN_MAX] "
                                                     "[-b BRIGHTNESS] [-t TRANSITION] | -r }] [-i INDENT] [-v]",
                                               version="%prog 1.0")
 
