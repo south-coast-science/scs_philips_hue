@@ -14,9 +14,7 @@ import json
 from scs_core.client.http_client import HTTPClient
 
 from scs_core.sys.http_exception import HTTPException
-from scs_core.sys.http_status import HTTPStatus
-
-from scs_philips_hue.client.client_exception import ClientException
+from scs_core.sys.logging import Logging
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -39,6 +37,7 @@ class UPnPClient(object):
         Constructor
         """
         self.__http_client = HTTPClient()
+        self.__logger = Logging.getLogger()
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -57,6 +56,7 @@ class UPnPClient(object):
         try:
             response_jstr = self.__http_client.get(self.__PATH, {}, self.__headers)
         except HTTPException as exc:
+            self.__logger.info(exc)
             return []
 
         return json.loads(response_jstr)
