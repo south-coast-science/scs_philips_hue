@@ -103,5 +103,10 @@ if __name__ == '__main__':
 
         chromas.save(Host)
 
+    if cmd.remove:
+        chromas.remove(cmd.name)
+        chromas.save(Host)
+
+
     if chromas:
         print(JSONify.dumps(chromas, indent=cmd.indent))
