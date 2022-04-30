@@ -22,7 +22,8 @@ with a progression though the chroma space.
 Note that - currently - there is no command line utility to edit chroma paths, and only default paths can be used.
 
 SYNOPSIS
-chroma_conf.py [-n NAME [-p PATH_NAME] [-l DOMAIN_MIN] [-u DOMAIN_MAX] [-b BRIGHTNESS] [-t TRANSITION]] [-i INDENT] [-v]
+chroma_conf.py [-n NAME { [-p PATH_NAME] [-l DOMAIN_MIN] [-u DOMAIN_MAX] [-b BRIGHTNESS] [-t TRANSITION] | -r }]
+[-i INDENT] [-v]
 
 EXAMPLES
 ./chroma_conf.py -v -n NO2 -p risk-level -l 0 -u 50 -b 254 -t 9 -i4
@@ -102,6 +103,11 @@ if __name__ == '__main__':
             chromas.add(cmd.name, path_name, domain_min, domain_max, brightness, transition_time)
 
         chromas.save(Host)
+
+    if cmd.remove:
+        chromas.remove(cmd.name)
+        chromas.save(Host)
+
 
     if chromas:
         print(JSONify.dumps(chromas, indent=cmd.indent))

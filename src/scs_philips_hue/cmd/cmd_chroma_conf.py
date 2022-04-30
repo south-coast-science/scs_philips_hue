@@ -4,7 +4,7 @@ Created on 16 Mar 2018
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 document example:
-{"path-name": "risk", "domain-min": 5, "domain-max": 30, "brightness": 254, "transition-time": 9}
+{"NO2": {"path-name": "risk_level", "domain-min": 0.0, "domain-max": 50.0, "brightness": 254, "transition-time": 9}}
 """
 
 import optparse
@@ -23,8 +23,8 @@ class CmdChromaConf(object):
         """
         path_names = ' | '.join(ChromaPath.list())
 
-        self.__parser = optparse.OptionParser(usage="%prog [-n NAME [-p PATH_NAME] [-l DOMAIN_MIN] [-u DOMAIN_MAX] "
-                                                    "[-b BRIGHTNESS] [-t TRANSITION]] [-i INDENT] [-v]",
+        self.__parser = optparse.OptionParser(usage="%prog [-n NAME { [-p PATH_NAME] [-l DOMAIN_MIN] [-u DOMAIN_MAX] "
+                                                    "[-b BRIGHTNESS] [-t TRANSITION] | -r }] [-i INDENT] [-v]",
                                               version="%prog 1.0")
 
         # configuration...
@@ -47,6 +47,10 @@ class CmdChromaConf(object):
         self.__parser.add_option("--trans", "-t", type="float", nargs=1, action="store", dest="transition_time",
                                  help="set the lamp transition time (seconds)")
 
+        # functions...
+        self.__parser.add_option("--remove", "-r", action="store_true", dest="remove", default=False,
+                                 help="remove the given configuration")
+
         # output...
         self.__parser.add_option("--indent", "-i", type="int", nargs=1, action="store", dest="indent",
                                  help="pretty-print the output with INDENT")
@@ -63,7 +67,7 @@ class CmdChromaConf(object):
         if self.set() and self.name is None:
             return False
 
-        if not self.set() and self.name is not None:
+        if self.set() and self.remove:
             return False
 
         if self.path_name is not None and self.path_name not in ChromaPath.list():
@@ -121,6 +125,11 @@ class CmdChromaConf(object):
 
 
     @property
+    def remove(self):
+        return self.__opts.remove
+
+
+    @property
     def indent(self):
         return self.__opts.indent
 
@@ -138,6 +147,6 @@ class CmdChromaConf(object):
 
     def __str__(self, *args, **kwargs):
         return "CmdChromaConf:{name:%s, path_name:%s, domain_min:%s, domain_max:%s, " \
-               "brightness:%s, transition_time:%s, indent:%s, verbose:%s}" % \
+               "brightness:%s, transition_time:%s, remove:%s, indent:%s, verbose:%s}" % \
                     (self.name, self.path_name, self.domain_min, self.domain_max,
-                     self.brightness, self.transition_time, self.indent, self.verbose)
+                     self.brightness, self.transition_time, self.remove, self.indent, self.verbose)
