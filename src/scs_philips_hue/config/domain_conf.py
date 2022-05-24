@@ -59,6 +59,14 @@ class DomainConfSet(ConfSet):
         self._confs[name] = DomainConf(topic_path, document_node)
 
 
+    def topic_paths(self):
+        topic_path_set = set()
+        for topic in self._confs.topic_path:
+            topic_path_set.add(topic)
+
+        return topic_path_set
+
+
 # --------------------------------------------------------------------------------------------------------------------
 
 class DomainConf(JSONable):

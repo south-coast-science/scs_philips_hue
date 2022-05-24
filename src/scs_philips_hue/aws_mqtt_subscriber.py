@@ -140,8 +140,8 @@ if __name__ == '__main__':
 
         subscribers = []
         if cmd.use_domain_conf:
-            for domain in domains.confs.values():
-                subscribers.append(MQTTSubscriber(domain.topic_path, handler.handle))
+            for topic_path in domains.topic_paths():
+                subscribers.append(MQTTSubscriber(topic_path, handler.handle))
         else:
             subscribers.append(MQTTSubscriber(cmd.topic_path, handler.handle))
 
