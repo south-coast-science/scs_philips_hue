@@ -60,7 +60,7 @@ class DomainConfSet(ConfSet):
 
 
     def topic_paths(self):
-        topic_path_set = set([conf.topic_path for conf in self._confs.values()])
+        topic_path_set = set((conf.topic_path for conf in self._confs.values()))
 
         return topic_path_set
 
