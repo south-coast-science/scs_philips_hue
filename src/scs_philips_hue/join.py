@@ -90,7 +90,7 @@ if __name__ == '__main__':
 
         # bridge...
         discovery = Discovery(Host)
-        bridges = discovery.find_all()
+        bridges = list(discovery.find_all())
 
         if len(bridges) == 0:
             logger.error("no bridge found.")
