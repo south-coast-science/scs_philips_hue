@@ -72,4 +72,4 @@ class UPnPClient(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "UPnPClient:{http_client:%s}" % self.__http_client
+        return "UPnPClient:{}"
