@@ -211,7 +211,7 @@ if __name__ == '__main__':
                             logger.info(response)
 
                         except ConnectionResetError as ex:
-                            logger.error("%s: %s" % (ex.__class__.__name__, ex))
+                            logger.error(repr(ex))
                             sys.stderr.flush()
 
                 break
