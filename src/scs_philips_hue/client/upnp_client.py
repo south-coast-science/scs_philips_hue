@@ -57,7 +57,7 @@ class UPnPClient(object):
             response_jstr = self.__http_client.get(self.__PATH, {}, self.__headers)
         except HTTPException as exc:
             self.__logger.info(exc)
-            return ()
+            return list()
 
         return json.loads(response_jstr)
 

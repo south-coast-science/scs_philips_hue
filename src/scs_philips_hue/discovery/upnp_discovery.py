@@ -47,7 +47,7 @@ class UPnPDiscovery(object):
             self.__upnp_client.close()
 
         # response...
-        return (BridgeSummary.construct_from_jdict(jdict) for jdict in response_jdict)
+        return list(BridgeSummary.construct_from_jdict(jdict) for jdict in response_jdict)
 
 
     # ----------------------------------------------------------------------------------------------------------------
