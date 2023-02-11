@@ -220,14 +220,14 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # end...
 
+    except KeyboardInterrupt:
+        print(file=sys.stderr)
+
     except TimeoutError:
         logger.error("Timeout")
 
     except SystemExit:
         pass
-
-    except KeyboardInterrupt:
-        print(file=sys.stderr)
 
     finally:
         logger.info("finishing")
