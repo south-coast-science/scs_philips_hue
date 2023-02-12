@@ -133,11 +133,11 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # end...
 
-    except SystemExit:
-        pass
-
     except KeyboardInterrupt:
         print(file=sys.stderr)
+
+    except SystemExit:
+        pass
 
     finally:
         logger.info("finishing")

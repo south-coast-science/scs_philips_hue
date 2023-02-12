@@ -35,6 +35,8 @@ scs_philips_hue/desk
 
 import sys
 
+from scs_core.client.resource_unavailable_exception import ResourceUnavailableException
+
 from scs_core.data.json import JSONify
 
 from scs_host.sys.host import Host
@@ -123,8 +125,9 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # end...
 
-    except (ConnectionError, HTTPException) as ex:
-        logger.error(repr(ex))
-
     except KeyboardInterrupt:
         print(file=sys.stderr)
+
+    except (ConnectionError, HTTPException, ResourceUnavailableException) as ex:
+        logger.error(repr(ex))
+        exit(1)
