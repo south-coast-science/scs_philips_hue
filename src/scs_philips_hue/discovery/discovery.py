@@ -70,10 +70,10 @@ class Discovery(object):
             bridge = scanner.find_first()
 
             if bridge:
-                return list(bridge, )
+                return tuple(bridge, )
 
             if timeout_time and time.time() > timeout_time:
-                return list()
+                return tuple()
 
             time.sleep(self.__RETRY_DELAY)
 
