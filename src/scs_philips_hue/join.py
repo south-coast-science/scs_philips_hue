@@ -103,7 +103,7 @@ if __name__ == '__main__':
             for i in range(len(bridges)):
                 logger.error("%d: %s" % ((i + 1), bridges[i]))
 
-            index = StdIO.prompt("Bridge (1 - %d) ?: " % len(bridges))
+            index = StdIO.prompt("Bridge (1 - %d) ?" % len(bridges))
             bridge = bridges[int(index) - 1]
 
         logger.info(bridge)
