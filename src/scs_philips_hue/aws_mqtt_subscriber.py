@@ -41,11 +41,12 @@ not be recovered.
 
 import logging
 import sys
+import time
 
 from scs_core.aws.client.client_auth import ClientAuth
 from scs_core.aws.client.mqtt_client import MQTTClient, MQTTSubscriber
 
-from scs_core.client.network import NetworkMonitor
+# from scs_core.client.network import NetworkMonitor
 
 from scs_core.comms.mqtt_conf import MQTTConf
 from scs_core.comms.uds_writer import UDSWriter
@@ -61,7 +62,6 @@ from scs_philips_hue.cmd.cmd_mqtt_subscriber import CmdMQTTSubscriber
 
 from scs_philips_hue.config.domain_conf import DomainConfSet
 
-from scs_philips_hue.handler.aws_mqtt_publisher import AWSMQTTPublisher
 from scs_philips_hue.handler.aws_mqtt_subscription_handler import AWSMQTTSubscriptionHandler
 from scs_philips_hue.handler.mqtt_reporter import MQTTReporter
 
@@ -83,6 +83,7 @@ if __name__ == '__main__':
 
     conf = None
     domains = None
+    client = None
     reporter = None
     publisher = None
     sub_comms = None
@@ -147,11 +148,10 @@ if __name__ == '__main__':
 
         # client...
         client = MQTTClient(*subscribers)
-        publisher = AWSMQTTPublisher(conf, auth, client, reporter)
 
         # monitor...
-        monitor = NetworkMonitor(20.0, network_not_available_handler)
-        logger.info(monitor)
+        # monitor = NetworkMonitor(20.0, network_not_available_handler)
+        # logger.info(monitor)
 
 
         # ------------------------------------------------------------------------------------------------------------
@@ -161,11 +161,14 @@ if __name__ == '__main__':
         SignalledExit.construct("aws_mqtt_subscriber", cmd.verbose)
 
         # client...
-        publisher.connect()
+        client.connect(auth, True)
 
         # monitor...
-        monitor.start()
-        monitor.join()
+        # monitor.start()
+        # monitor.join()
+
+        while True:
+            time.sleep(10)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -180,8 +183,8 @@ if __name__ == '__main__':
     finally:
         logger.info("finishing")
 
-        if publisher:
-            publisher.disconnect()
+        if client:
+            client.disconnect()
 
         if sub_comms:
             sub_comms.close()
