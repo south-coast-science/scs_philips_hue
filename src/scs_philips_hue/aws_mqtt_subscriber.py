@@ -45,7 +45,7 @@ import sys
 from scs_core.aws.client.client_auth import ClientAuth
 from scs_core.aws.client.mqtt_client import MQTTClient, MQTTSubscriber
 
-from scs_core.client.network import NetworkMonitor
+# from scs_core.client.network import NetworkMonitor
 
 from scs_core.comms.mqtt_conf import MQTTConf
 from scs_core.comms.uds_writer import UDSWriter
@@ -150,8 +150,8 @@ if __name__ == '__main__':
         publisher = AWSMQTTPublisher(conf, auth, client, reporter)
 
         # monitor...
-        monitor = NetworkMonitor(20.0, network_not_available_handler)
-        logger.info(monitor)
+        # monitor = NetworkMonitor(20.0, network_not_available_handler)
+        # logger.info(monitor)
 
 
         # ------------------------------------------------------------------------------------------------------------
@@ -164,8 +164,8 @@ if __name__ == '__main__':
         publisher.connect()
 
         # monitor...
-        monitor.start()
-        monitor.join()
+        # monitor.start()
+        # monitor.join()
 
 
     # ----------------------------------------------------------------------------------------------------------------
