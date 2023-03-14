@@ -41,6 +41,7 @@ not be recovered.
 
 import logging
 import sys
+import time
 
 from scs_core.aws.client.client_auth import ClientAuth
 from scs_core.aws.client.mqtt_client import MQTTClient, MQTTSubscriber
@@ -166,6 +167,9 @@ if __name__ == '__main__':
         # monitor...
         # monitor.start()
         # monitor.join()
+
+        while True:
+            time.sleep(10)
 
 
     # ----------------------------------------------------------------------------------------------------------------
