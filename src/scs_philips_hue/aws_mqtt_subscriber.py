@@ -62,7 +62,6 @@ from scs_philips_hue.cmd.cmd_mqtt_subscriber import CmdMQTTSubscriber
 
 from scs_philips_hue.config.domain_conf import DomainConfSet
 
-# from scs_philips_hue.handler.aws_mqtt_publisher import AWSMQTTPublisher
 from scs_philips_hue.handler.aws_mqtt_subscription_handler import AWSMQTTSubscriptionHandler
 from scs_philips_hue.handler.mqtt_reporter import MQTTReporter
 
@@ -84,6 +83,7 @@ if __name__ == '__main__':
 
     conf = None
     domains = None
+    client = None
     reporter = None
     publisher = None
     sub_comms = None
@@ -148,7 +148,6 @@ if __name__ == '__main__':
 
         # client...
         client = MQTTClient(*subscribers)
-        # publisher = AWSMQTTPublisher(conf, auth, client, reporter)
 
         # monitor...
         # monitor = NetworkMonitor(20.0, network_not_available_handler)
@@ -184,8 +183,8 @@ if __name__ == '__main__':
     finally:
         logger.info("finishing")
 
-        # if publisher:
-        #     publisher.disconnect()
+        if client:
+            client.disconnect()
 
         if sub_comms:
             sub_comms.close()
