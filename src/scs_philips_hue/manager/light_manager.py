@@ -4,6 +4,8 @@ Created on 30 Oct 2017
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
+# import sys
+
 from scs_philips_hue.data.bridge.response import Response
 
 from scs_philips_hue.data.light.light import Light
@@ -99,6 +101,8 @@ class LightManager(Manager):
 
         # response...
         lights = []
+
+        # print("jdict: %s" % jdict, file=sys.stderr)
 
         # TODO: handle error case
 
