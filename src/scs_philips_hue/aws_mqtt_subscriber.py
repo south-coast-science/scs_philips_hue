@@ -117,7 +117,7 @@ if __name__ == '__main__':
             exit(1)
 
         # reporter...
-        reporter = MQTTReporter(cmd.verbose)        # TODO: remove
+        reporter = MQTTReporter(cmd.verbose)
 
         # DomainConf...
         if cmd.use_domain_conf:
