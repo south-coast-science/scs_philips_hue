@@ -158,7 +158,7 @@ if __name__ == '__main__':
         client = MQTTClient(*subscribers)
 
         # monitor...
-        monitor = NetworkMonitor(20.0, network_not_available_handler)
+        monitor = NetworkMonitor(10, network_not_available_handler)
         logger.info(monitor)
 
 
