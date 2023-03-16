@@ -39,7 +39,6 @@ If the host is multi-homed and a higher-priority connection is lost, the MQTT co
 not be recovered.
 """
 
-import socket
 import sys
 import time
 
@@ -69,6 +68,8 @@ from scs_philips_hue.handler.mqtt_reporter import MQTTReporter
 # --------------------------------------------------------------------------------------------------------------------
 
 def network_not_available_handler():
+    # noinspection PyShadowingNames
+    logger = Logging.getLogger()
     logger.error("network loss - attempting to reconnect MQTT client")
 
     client.disconnect()                                                 # remove dead connection
@@ -157,7 +158,7 @@ if __name__ == '__main__':
         client = MQTTClient(*subscribers)
 
         # monitor...
-        monitor = NetworkMonitor(20.0, network_not_available_handler)
+        monitor = NetworkMonitor(10, network_not_available_handler)
         logger.info(monitor)
 
 
