@@ -39,7 +39,9 @@ If the host is multi-homed and a higher-priority connection is lost, the MQTT co
 not be recovered.
 """
 
+import socket
 import sys
+import time
 
 from scs_core.aws.client.client_auth import ClientAuth
 from scs_core.aws.client.mqtt_client import MQTTClient, MQTTSubscriber
@@ -67,12 +69,19 @@ from scs_philips_hue.handler.mqtt_reporter import MQTTReporter
 # --------------------------------------------------------------------------------------------------------------------
 
 def network_not_available_handler():
-    # noinspection PyShadowingNames
-    logger = Logging.getLogger()
-    logger.error("network loss - reconnecting MQTT client")
+    logger.error("network loss - attempting to reconnect MQTT client")
 
     client.disconnect()                                                 # remove dead connection
-    client.connect(auth, debug=Logging.degugging_on())                 # connect when possible
+    connect_client()
+
+
+def connect_client():
+    while True:
+        try:
+            client.connect(auth, debug=Logging.degugging_on())          # connect when possible
+            break
+        except OSError:
+            time.sleep(10)
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -159,14 +168,11 @@ if __name__ == '__main__':
         SignalledExit.construct("aws_mqtt_subscriber", cmd.verbose)
 
         # client...
-        client.connect(auth, debug=Logging.degugging_on())
+        connect_client()
 
         # monitor...
         monitor.start()
         monitor.join()
-
-        # while True:
-        #     time.sleep(10)
 
 
     # ----------------------------------------------------------------------------------------------------------------
