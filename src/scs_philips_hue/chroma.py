@@ -112,9 +112,8 @@ if __name__ == '__main__':
 
                 try:
                     value = float(datum[name])
-                except ValueError:
-                    logger.error("ValueError: %s" % datum)
-                    sys.stderr.flush()
+                except (TypeError, ValueError) as ex:
+                    logger.error("%s: %s" % (ex.__class__.__name__, datum))
                     continue
 
                 logger.info("%s: domain value: %s" % (name, value))
