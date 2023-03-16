@@ -40,12 +40,11 @@ not be recovered.
 """
 
 import sys
-import time
 
 from scs_core.aws.client.client_auth import ClientAuth
 from scs_core.aws.client.mqtt_client import MQTTClient, MQTTSubscriber
 
-# from scs_core.client.network import NetworkMonitor
+from scs_core.client.network import NetworkMonitor
 
 from scs_core.comms.mqtt_conf import MQTTConf
 from scs_core.comms.uds_writer import UDSWriter
@@ -72,8 +71,8 @@ def network_not_available_handler():
     logger = Logging.getLogger()
     logger.error("network loss - reconnecting MQTT client")
 
-    # publisher.disconnect()              # remove dead connection
-    # publisher.connect()                 # connect when possible
+    client.disconnect()                                                 # remove dead connection
+    client.connect(auth, debug=Logging.degugging_on())                 # connect when possible
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -149,8 +148,8 @@ if __name__ == '__main__':
         client = MQTTClient(*subscribers)
 
         # monitor...
-        # monitor = NetworkMonitor(20.0, network_not_available_handler)
-        # logger.info(monitor)
+        monitor = NetworkMonitor(20.0, network_not_available_handler)
+        logger.info(monitor)
 
 
         # ------------------------------------------------------------------------------------------------------------
@@ -163,11 +162,11 @@ if __name__ == '__main__':
         client.connect(auth, debug=Logging.degugging_on())
 
         # monitor...
-        # monitor.start()
-        # monitor.join()
+        monitor.start()
+        monitor.join()
 
-        while True:
-            time.sleep(10)
+        # while True:
+        #     time.sleep(10)
 
 
     # ----------------------------------------------------------------------------------------------------------------
