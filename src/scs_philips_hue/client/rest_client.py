@@ -7,8 +7,9 @@ header:
 CURLOPT_HTTPHEADER => array('Accept: application/json'),
 """
 
-from http.client import  IncompleteRead
 import json
+
+from http.client import IncompleteRead
 
 from scs_core.data.json import JSONify
 
@@ -83,7 +84,7 @@ class RESTClient(object):
         try:
             response_jstr = self.__http_client.post(self.__http_path(path), payload_jstr, self.__headers)
 
-        except ConnectionRefusedError:
+        except (ConnectionRefusedError, IncompleteRead):
             return None
 
         except HTTPException as ex:
@@ -105,7 +106,7 @@ class RESTClient(object):
         try:
             response_jstr = self.__http_client.put(self.__http_path(path), payload_jstr, self.__headers)
 
-        except ConnectionRefusedError:
+        except (ConnectionRefusedError, IncompleteRead):
             return None
 
         except HTTPException as ex:
@@ -123,7 +124,7 @@ class RESTClient(object):
         try:
             response_jstr = self.__http_client.delete(self.__http_path(path), self.__headers)
 
-        except ConnectionRefusedError:
+        except (ConnectionRefusedError, IncompleteRead):
             return None
 
         except HTTPException as ex:
