@@ -43,19 +43,12 @@ from scs_core.data.json import JSONify
 from scs_core.sys.http_exception import HTTPException
 from scs_core.sys.logging import Logging
 
-from scs_host.sys.host import Host
-
 from scs_philips_hue.cmd.cmd_bridge import CmdBridge
-
-from scs_philips_hue.config.bridge_address import BridgeAddress
-from scs_philips_hue.config.bridge_credentials import BridgeCredentials
 
 from scs_philips_hue.data.bridge.bridge_config import BridgeConfig
 from scs_philips_hue.data.bridge.sw_update import SWUpdate
 
-from scs_philips_hue.discovery.discovery import Discovery
-
-from scs_philips_hue.manager.bridge_manager import BridgeManager
+from scs_philips_hue.manager.bridge_builder import BridgeBuilder
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -92,42 +85,8 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # resources...
 
-        # credentials...
-        credentials = BridgeCredentials.load(Host)
-
-        if credentials.bridge_id is None:
-            logger.error("no stored credentials")
-            exit(1)
-
-        logger.info(credentials)
-
-        # address...
-        address = BridgeAddress.load(Host)
-
-        if address:
-            logger.info(address)
-            ip_address = address.ipv4.dot_decimal()
-
-        else:
-            # bridge...
-            logger.info("looking for bridge...")
-
-            discovery = Discovery(Host)
-            bridge = discovery.find(credentials)
-
-            if bridge is None:
-                logger.error("no bridge matching the stored credentials.")
-                exit(1)
-
-            if bridge.ip_address is None:
-                logger.error("bridge has no IP address.")
-                exit(1)
-
-            logger.info(bridge)
-            ip_address = bridge.ip_address
-
         # manager...
-        manager = BridgeManager(ip_address, credentials.username)
+        manager = BridgeBuilder.construct_for_name(cmd.bridge_name)
 
 
         # ------------------------------------------------------------------------------------------------------------
@@ -135,11 +94,6 @@ if __name__ == '__main__':
 
         # initial state...
         config = manager.find()
-
-        # name...
-        if cmd.name:
-            config = BridgeConfig(name=cmd.name)
-            response = manager.set_config(config)
 
         # portal services...
         if cmd.portal_services:

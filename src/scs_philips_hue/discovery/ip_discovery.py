@@ -39,44 +39,28 @@ class IPDiscovery(object):
 
     def find(self, credentials):
         # find...
-        host = self.find_first()
+        for bridge in self.find_all():
+            # config...
+            manager = BridgeManager(bridge.ip_address, credentials.username)
 
-        if host is None:
-            return None
+            try:
+                config = manager.find()
+            except ResourceUnavailableException:
+                continue
 
-        # config...
-        manager = BridgeManager(host.ip_address, credentials.username)
-
-        try:
-            config = manager.find()
-        except ResourceUnavailableException:
-            return None
-
-        # check...
-        if config.bridge_id == credentials.bridge_id:
-            return config
-
-        return None
-
-
-    def find_first(self):
-        for ip_address in self.__host.scan_accessible_subnets():
-            self.__logger.info("checking %s" % ip_address)
-
-            if self.__is_bridge(ip_address):
-                return IPHost(ip_address)
+            # check...
+            if config.bridge_id == credentials.bridge_id:
+                return config
 
         return None
 
 
     def find_all(self):
-        bridges = []
-
         for ip_address in self.__host.scan_accessible_subnets():
-            if self.__is_bridge(ip_address):
-                bridges.append(IPHost(ip_address))
+            self.__logger.info("checking %s" % ip_address)
 
-        return bridges
+            if self.__is_bridge(ip_address):
+                yield IPHost(ip_address)
 
 
     # ----------------------------------------------------------------------------------------------------------------

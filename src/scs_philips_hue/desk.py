@@ -62,6 +62,8 @@ from scs_philips_hue.discovery.discovery import Discovery
 from scs_philips_hue.manager.light_manager import LightManager
 
 
+# TODO: auto store last found (named) bridge - special utility for "attempt to find last (named) bridge
+# TODO: support for multiple named bridges
 # TODO: scs_core.client.resource_unavailable_exception.ResourceUnavailableException - find the bridge again
 # --------------------------------------------------------------------------------------------------------------------
 

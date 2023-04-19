@@ -1,12 +1,7 @@
 """
-Created on 26 Apr 2022
+Created on 4 Nov 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
-
-source repo: scs_philips_hue
-
-example document:
-{"org-id": "south-coast-science-test-user", "api-key": "9fdfb841-3433-45b8-b223-3f5a283ceb8e"}
 """
 
 import optparse
@@ -14,19 +9,14 @@ import optparse
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class CmdBridgeAddress(object):
+class CmdJoin(object):
     """unix command line handler"""
 
     def __init__(self):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog { -l | -r BRIDGE_NAME } [-i INDENT] [-v]",
-                                              version="%prog 1.0")
-
-        # functions...
-        self.__parser.add_option("--remove", "-r", type="str", nargs=1, action="store", dest="remove",
-                                 help="remove the named bridge")
+        self.__parser = optparse.OptionParser(usage="%prog [-i INDENT] [-v] BRIDGE_NAME", version="%prog 1.0")
 
         # output...
         self.__parser.add_option("--indent", "-i", type="int", nargs=1, action="store", dest="indent",
@@ -40,10 +30,17 @@ class CmdBridgeAddress(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    @property
-    def remove(self):
-        return self.__opts.remove
+    def is_valid(self):
+        if self.bridge_name is None:
+            return False
 
+        # TODO: if len(self.bridge_name) < BridgeConfig.NAME_MIN_LENGTH or
+        #  len(self.bridge_name) > BridgeConfig.NAME_MAX_LENGTH:
+
+        return True
+
+
+    # ----------------------------------------------------------------------------------------------------------------
 
     @property
     def indent(self):
@@ -55,6 +52,11 @@ class CmdBridgeAddress(object):
         return self.__opts.verbose
 
 
+    @property
+    def bridge_name(self):
+        return self.__args[0] if self.__args else None
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def print_help(self, file):
@@ -62,5 +64,5 @@ class CmdBridgeAddress(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdBridgeAddress:{remove:%s, indent:%s, verbose:%s}" % \
-               (self.remove, self.indent, self.verbose)
+        return "CmdJoin:{bridge_name:%s, indent:%s, verbose:%s}" % \
+            (self.bridge_name, self.indent, self.verbose)

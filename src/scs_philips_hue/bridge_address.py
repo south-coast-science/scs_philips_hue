@@ -21,7 +21,14 @@ FILES
 ~/SCS/aws/bridge_address.json
 
 DOCUMENT EXAMPLE
-{"ipv4": "192.168.2.29"}
+{
+    "hue-br1-001": {
+        "ipv4": "192.168.1.16"
+    },
+    "hue-br1-002": {
+        "ipv4": "192.168.1.8"
+    }
+}
 
 SEE ALSO
 scs_philips_hue/bridge
@@ -31,13 +38,12 @@ import sys
 
 from scs_core.data.json import JSONify
 
-from scs_core.sys.ipv4_address import IPv4Address
 from scs_core.sys.logging import Logging
 
 from scs_host.sys.host import Host
 
 from scs_philips_hue.cmd.cmd_bridge_address import CmdBridgeAddress
-from scs_philips_hue.config.bridge_address import BridgeAddress
+from scs_philips_hue.config.bridge_address import BridgeAddressSet
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -49,16 +55,8 @@ if __name__ == '__main__':
 
     cmd = CmdBridgeAddress()
 
-    if not cmd.is_valid():
-        cmd.print_help(sys.stderr)
-        exit(2)
-
     Logging.config('bridge_address', verbose=cmd.verbose)
     logger = Logging.getLogger()
-
-    if cmd.set_dot_decimal is not None and not IPv4Address.is_valid(cmd.set_dot_decimal):
-        logger.error("the IPv4 address '%s' is not valid." % cmd.set_dot_decimal)
-        exit(2)
 
     logger.info(cmd)
 
@@ -67,19 +65,14 @@ if __name__ == '__main__':
     # resources...
 
     # APIAuth...
-    address = BridgeAddress.load(Host, skeleton=True)
+    address_set = BridgeAddressSet.load(Host, skeleton=True)
 
 
     # ----------------------------------------------------------------------------------------------------------------
     # run...
 
-    if cmd.set_dot_decimal:
-        address = BridgeAddress(IPv4Address.construct(cmd.set_dot_decimal))
-        address.save(Host)
+    if cmd.remove:
+        address_set.delete(cmd.remove)
+        address_set.save(Host)
 
-    if cmd.delete:
-        address.delete(Host)
-        address = None
-
-    if address is not None and address.ipv4 is not None:
-        print(JSONify.dumps(address))
+    print(JSONify.dumps(address_set, indent=cmd.indent))

@@ -8,7 +8,7 @@ Created on 3 Nov 2017
 source repo: scs_philips_hue
 
 DESCRIPTION
-The join utility is used to shifter a controller device - the device hosting this software - with a Philips Hue Bridge.
+The join utility is used to pair a controller device - the device hosting this software - with a Philips Hue Bridge.
 Before running join, the big button on the top of the Philips Hue Bridge must be pressed!
 
 The bridge_credentials.json document created by the join utility is used by the bridge, desk, light, and user utilities.
@@ -23,7 +23,16 @@ FILES
 ~/SCS/hue/bridge_credentials.json
 
 DOCUMENT EXAMPLE
-{"bridge-id": "001788fffe795620", "username": "b8bvymOH-ceugK8gBOpjeNeL0OMhXOEBQZosfsTx"}
+{
+    "hue-br1-001": {
+        "bridge-id": "001788FFFEAF8430",
+        "username": "DN5YzKBncC6n69gjlKZqa6SRqZofXTmhZkrdnqG2"
+    },
+    "hue-br1-002": {
+        "bridge-id": "001788FFFE795620",
+        "username": "suLJJv6OgxG0UjwB9Uz7e1j08Xj36MOfFdxNNUmR"
+    }
+}
 
 SEE ALSO
 scs_philips_hue/bridge
@@ -42,17 +51,19 @@ from scs_core.data.json import JSONify
 from scs_core.sys.http_exception import HTTPException
 from scs_core.sys.logging import Logging
 
-from scs_host.comms.stdio import StdIO
 from scs_host.sys.host import Host
 
-from scs_philips_hue.cmd.cmd_simple import CmdSimple
+from scs_philips_hue.cmd.cmd_join import CmdJoin
 
-from scs_philips_hue.config.bridge_credentials import BridgeCredentials
+from scs_philips_hue.config.bridge_address import BridgeAddress, BridgeAddressSet
+from scs_philips_hue.config.bridge_credentials import BridgeCredentials, BridgeCredentialsSet
+
+from scs_philips_hue.data.bridge.bridge_config import BridgeConfig
 
 from scs_philips_hue.discovery.discovery import Discovery
 
 from scs_philips_hue.manager.bridge_manager import BridgeManager
-from scs_philips_hue.manager.user_manager import UserManager
+# from scs_philips_hue.manager.user_manager import UserManager
 
 from scs_philips_hue.data.client.client_description import ClientDescription
 from scs_philips_hue.data.client.device_description import DeviceDescription
@@ -62,14 +73,18 @@ from scs_philips_hue.data.client.device_description import DeviceDescription
 
 if __name__ == '__main__':
 
-    application_key = ''
+    # application_key = ''
 
     bridge = None
 
     # ----------------------------------------------------------------------------------------------------------------
     # cmd...
 
-    cmd = CmdSimple()
+    cmd = CmdJoin()
+
+    if not cmd.is_valid():
+        cmd.print_help(sys.stderr)
+        exit(2)
 
     Logging.config('join', verbose=cmd.verbose)
     logger = Logging.getLogger()
@@ -88,79 +103,105 @@ if __name__ == '__main__':
         # ----------------------------------------------------------------------------------------------------------------
         # resources...
 
-        # bridge...
+        # BridgeCredentialsSet...
+        credentials_set = BridgeCredentialsSet.load(Host, skeleton=True)
+        logger.info(credentials_set)
+
+        # BridgeAddressSet...
+        address_set = BridgeAddressSet.load(Host, skeleton=True)
+        logger.info(address_set)
+
+        # device...
+        client = ClientDescription(ClientDescription.APP, Host.name())
+
+        device = DeviceDescription(client)
+        logger.info(device)
+
+        # bridges...
         discovery = Discovery(Host)
         bridges = list(discovery.find_all())
 
         if len(bridges) == 0:
             logger.error("no bridge found.")
-            exit(0)
+            exit(1)
 
-        elif len(bridges) == 1:
-            bridge = bridges.pop()
 
-        else:
-            for i in range(len(bridges)):
-                logger.error("%d: %s" % ((i + 1), bridges[i]))
+        # ----------------------------------------------------------------------------------------------------------------
+        # find bridge with button pressed...
 
-            index = StdIO.prompt("Bridge (1 - %d) ?" % len(bridges))
-            bridge = bridges[int(index) - 1]
+        success = None
 
-        logger.info(bridge)
+        for bridge in bridges:
+            logger.info(bridge)
 
-        # manager...
-        bridge_manager = BridgeManager(bridge.ip_address, None)
+            # manager...
+            bridge_manager = BridgeManager(bridge.ip_address, None)
 
-        # device...
-        client = ClientDescription(ClientDescription.APP, Host.name())
-        device = DeviceDescription(client)
+            # register...
+            try:
+                response = bridge_manager.register(device)
+            except TimeoutError:
+                logger.error("no response from bridge.")
+                continue
 
-        logger.info(device)
+            if response.has_errors():
+                for error in response.errors:
+                    logger.error("error: %s" % error.description)
+                continue
 
-        sys.stderr.flush()
+            # get credentials...
+            success = response.successes.pop()
+            break
+
+        if success is None:
+            exit(1)
 
 
         # ----------------------------------------------------------------------------------------------------------------
         # run...
 
-        # join...
-        response = None
-
-        try:
-            response = bridge_manager.register(device)
-        except TimeoutError:
-            logger.error("bridge not found.")
-            exit(1)
-
-        if response.has_errors():
-            for error in response.errors:
-                logger.error("error: %s" % error.description)
-            exit(1)
-
-        # get credentials...
-        success = response.successes.pop()
-
-        # find bridge...
+        # get bridge...
         bridge_manager = BridgeManager(bridge.ip_address, success.value)
         config = bridge_manager.find()
 
-        # save credentials...
-        credentials = BridgeCredentials(config.bridge_id, success.value)
-        credentials.save(Host)
+        print(JSONify.dumps(config, indent=cmd.indent))
 
-        # delete old whitelist entries for this user...
-        user_manager = UserManager(bridge.ip_address, credentials.username)
-        users = user_manager.find_all()
+        # build credentials...
+        credentials = BridgeCredentials(cmd.bridge_name, config.bridge_id, success.value)
+        print("*** credentials: %s" % credentials)
 
-        for user in users:
-            if user.description.user == Host.name() and user.username != credentials.username:
-                response = user_manager.delete(application_key, user.username)
+        # delete old whitelist entries for this user (non-functional API)...
+        # user_manager = UserManager(bridge.ip_address, credentials.username)
+        # users = user_manager.find_all()
+
+        # TODO: is the application_key the user credentials?
+
+        # for user in users:
+        #     if user.description.user == Host.name() and user.username != credentials.username:
+        #         response = user_manager.delete(application_key, user.username)
+
+        # set bridge name...
+        response = bridge_manager.set_config(BridgeConfig(name=cmd.bridge_name))
+        print(JSONify.dumps(response, indent=cmd.indent))
+
+        # save address...
+        address = BridgeAddress.construct(cmd.bridge_name, config.ip_address)
+        address_set.add(address)
+        address_set.save(Host)
+
+        logger.error(address_set)
 
         # report...
         bridge_manager = BridgeManager(bridge.ip_address, credentials.username)
         config = bridge_manager.find()
 
-        print(JSONify.dumps(credentials))
+        # save credentials...
+        credentials_set.add(credentials)
+        credentials_set.save(Host)
+
+        logger.error(credentials_set)
+
+        print(JSONify.dumps(credentials_set, indent=cmd.indent))
 
 
     # ----------------------------------------------------------------------------------------------------------------

@@ -20,13 +20,10 @@ class CmdBridge(object):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog [-n NAME] [-p PORTAL_SERVICES] [-c CHECK_UPDATE] "
-                                                    "[-u DO_UPDATE] [-z CHANNEL] [-i INDENT] [-v]", version="%prog 1.0")
+        self.__parser = optparse.OptionParser(usage="%prog [-p PORTAL_SERVICES] [-c CHECK_UPDATE] [-u DO_UPDATE] "
+                                                    "[-z CHANNEL] [-i INDENT] [-v] BRIDGE_NAME", version="%prog 1.0")
 
-        # optional...
-        self.__parser.add_option("--name", "-n", type="string", nargs=1, action="store", dest="name",
-                                 help="set the name of the bridge to NAME (between 4 and 16 chars)")
-
+        # functions...
         self.__parser.add_option("--portal", "-p", type="int", nargs=1, action="store", dest="portal_services",
                                  help="enable portal services (1 or 0)")
 
@@ -52,9 +49,8 @@ class CmdBridge(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def is_valid(self):
-        if self.name is not None:
-            if len(self.name) < BridgeConfig.NAME_MIN_LENGTH or len(self.name) > BridgeConfig.NAME_MAX_LENGTH:
-                return False
+        if self.bridge_name is None:
+            return False
 
         if self.__opts.check_update is not None:
             if self.__opts.check_update != 0 and self.__opts.check_update != 1:
@@ -72,15 +68,10 @@ class CmdBridge(object):
 
 
     def set(self):
-        return self.name is not None or self.__opts.update is not None
+        return self.__opts.update is not None
 
 
     # ----------------------------------------------------------------------------------------------------------------
-
-    @property
-    def name(self):
-        return self.__opts.name
-
 
     @property
     def portal_services(self):
@@ -112,6 +103,11 @@ class CmdBridge(object):
         return self.__opts.verbose
 
 
+    @property
+    def bridge_name(self):
+        return self.__args[0] if self.__args else None
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def print_help(self, file):
@@ -119,7 +115,7 @@ class CmdBridge(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdBridge:{name:%s, portal_services:%s, check_update:%s, do_update:%s, zigbee_channel:%s, " \
+        return "CmdBridge:{bridge_name:%s, portal_services:%s, check_update:%s, do_update:%s, zigbee_channel:%s, " \
                "indent:%s, verbose:%s}" %  \
-               (self.name, self.portal_services, self.check_update, self.do_update, self.zigbee_channel,
+               (self.bridge_name, self.portal_services, self.check_update, self.do_update, self.zigbee_channel,
                 self.indent, self.verbose)
