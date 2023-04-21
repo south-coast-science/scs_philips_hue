@@ -16,7 +16,8 @@ class CmdUser(object):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog { -l | -r USER } [-v] BRIDGE_NAME", version="%prog 1.0")
+        self.__parser = optparse.OptionParser(usage="%prog { -l | -r USER } [-i INDENT] [-v] BRIDGE_NAME",
+                                              version="%prog 1.0")
 
         # functions...
         self.__parser.add_option("--list", "-l", action="store_true", dest="list",

@@ -16,7 +16,7 @@ class CmdMQTTSubscriber(object):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog {-c | -t TOPIC_PATH } [-s UDS_SUB] [-v]",
+        self.__parser = optparse.OptionParser(usage="%prog { -c | -t TOPIC_PATH } [-s UDS_SUB] [-v]",
                                               version="%prog 1.0")
 
         # compulsory...

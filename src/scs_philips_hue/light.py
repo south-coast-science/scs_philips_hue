@@ -18,10 +18,11 @@ light.py { -c | -l BRIDGE_NAME | -s BRIDGE_NAME | -a BRIDGE_NAME SERIAL_NUMBER |
 -r BRIDGE_NAME INDEX } [-i INDENT] [-v]
 
 EXAMPLES
-./light.py -vi4 -a hue-br1-001 DB03E4
+./light.py -vi4 -n hue-br1-001 1 "r&d"
 
 FILES
-~/SCS/hue/bridge_credentials.json
+~/SCS/hue/bridge_address_set.json
+~/SCS/hue/bridge_credentials_set.json
 
 DOCUMENT EXAMPLE - OUTPUT
 {"5": {"state": {"on": false, "bri": 0, "hue": 0, "sat": 0, "effect": "none", "transitiontime": null, "xy": [0.0, 0.0],
