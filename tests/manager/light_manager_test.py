@@ -12,7 +12,7 @@ from scs_core.data.json import JSONify
 
 from scs_host.sys.host import Host
 
-from scs_philips_hue.config.bridge_credentials import BridgeCredentials
+from scs_philips_hue.config.bridge_credentials import BridgeCredentialsSet
 
 from scs_philips_hue.data.light.light_state import LightState
 
@@ -23,7 +23,10 @@ from scs_philips_hue.manager.light_manager import LightManager
 
 # --------------------------------------------------------------------------------------------------------------------
 
-credentials = BridgeCredentials.load(Host)
+credentials_set = BridgeCredentialsSet.load(Host)
+print(credentials_set)
+
+credentials = credentials_set.credentials('hue-br1-001')
 print(credentials)
 
 print("-")
@@ -50,7 +53,7 @@ for entry in lights:
 
 print("-")
 
-index = manager.find_index_for_uid("00:17:88:01:03:54:25:66-0b")
+index = manager.find_index_for_uid("00:17:88:01:0b:b1:f5:1c-0b")
 print("index: %s" % index)
 
 print("-")

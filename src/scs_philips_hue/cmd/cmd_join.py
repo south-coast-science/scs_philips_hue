@@ -1,5 +1,5 @@
 """
-Created on 3 Nov 2017
+Created on 4 Nov 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
@@ -9,21 +9,14 @@ import optparse
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class CmdUser(object):
+class CmdJoin(object):
     """unix command line handler"""
 
     def __init__(self):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog { -l | -r USER } [-v] BRIDGE_NAME", version="%prog 1.0")
-
-        # functions...
-        self.__parser.add_option("--list", "-l", action="store_true", dest="list",
-                                 help="list all users")
-
-        self.__parser.add_option("--remove", "-r", type="string", nargs=1, action="store", dest="remove",
-                                 help="remove the user from the bridge")
+        self.__parser = optparse.OptionParser(usage="%prog [-i INDENT] [-v] BRIDGE_NAME", version="%prog 1.0")
 
         # output...
         self.__parser.add_option("--indent", "-i", type="int", nargs=1, action="store", dest="indent",
@@ -41,26 +34,13 @@ class CmdUser(object):
         if self.bridge_name is None:
             return False
 
-        if self.remove is None and not self.list:
-            return False
-
-        if self.remove is not None and self.list:
-            return False
+        # TODO: if len(self.bridge_name) < BridgeConfig.NAME_MIN_LENGTH or
+        #  len(self.bridge_name) > BridgeConfig.NAME_MAX_LENGTH:
 
         return True
 
 
     # ----------------------------------------------------------------------------------------------------------------
-
-    @property
-    def list(self):
-        return self.__opts.list
-
-
-    @property
-    def remove(self):
-        return self.__opts.remove
-
 
     @property
     def indent(self):
@@ -84,5 +64,5 @@ class CmdUser(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdUser:{bridge_name:%s, list:%s, remove:%s, indent:%s, verbose:%s}" % \
-            (self.bridge_name, self.list, self.remove, self.indent, self.verbose)
+        return "CmdJoin:{bridge_name:%s, indent:%s, verbose:%s}" % \
+            (self.bridge_name, self.indent, self.verbose)

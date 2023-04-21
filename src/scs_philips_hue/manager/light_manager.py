@@ -4,12 +4,10 @@ Created on 30 Oct 2017
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-# import sys
+from collections import OrderedDict
 
 from scs_philips_hue.data.bridge.response import Response
-
-from scs_philips_hue.data.light.light import Light
-from scs_philips_hue.data.light.light import LightListEntry
+from scs_philips_hue.data.light.light import Light, LightListEntry
 from scs_philips_hue.data.light.light_name import LightName
 from scs_philips_hue.data.light.light_scan import LightScan
 
@@ -22,6 +20,16 @@ class LightManager(Manager):
     """
     classdocs
     """
+
+    @classmethod
+    def construct_all(cls, bridge_managers):
+        light_managers = OrderedDict()
+
+        for bridge_name, bridge_manager in bridge_managers.items():
+            light_managers[bridge_name] = cls(bridge_manager.host, bridge_manager.username)
+
+        return light_managers
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -101,8 +109,6 @@ class LightManager(Manager):
 
         # response...
         lights = []
-
-        # print("jdict: %s" % jdict, file=sys.stderr)
 
         # TODO: handle error case
 

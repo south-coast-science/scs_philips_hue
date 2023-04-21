@@ -15,7 +15,7 @@ app#user-name. When a delete command is performed, only the user-name component 
 the user.
 
 SYNOPSIS
-user.py {-d USER | -l }  [-v]
+user.py { -l | -r USER } [-v] BRIDGE_NAME
 
 EXAMPLES
 ./user.py -d bruno.local
@@ -39,16 +39,16 @@ from scs_core.client.resource_unavailable_exception import ResourceUnavailableEx
 
 from scs_core.data.json import JSONify
 
-from scs_host.sys.host import Host
 from scs_core.sys.http_exception import HTTPException
 from scs_core.sys.logging import Logging
 
+from scs_host.sys.host import Host
+
 from scs_philips_hue.cmd.cmd_user import CmdUser
 
-from scs_philips_hue.config.bridge_credentials import BridgeCredentials
+from scs_philips_hue.config.bridge_credentials import BridgeCredentialsSet
 
-from scs_philips_hue.discovery.discovery import Discovery
-
+from scs_philips_hue.manager.bridge_builder import BridgeBuilder
 from scs_philips_hue.manager.user_manager import UserManager
 
 
@@ -79,28 +79,21 @@ if __name__ == '__main__':
         # -------------------------------------------------------------------------------------------------------------
         # resource...
 
+
         # credentials...
-        credentials = BridgeCredentials.load(Host)
+        credentials_set = BridgeCredentialsSet.load(Host, skeleton=True)
 
-        if credentials.bridge_id is None:
-            logger.error("no stored credentials.")
+        try:
+            credentials = credentials_set.credentials(cmd.bridge_name)
+            logger.info(credentials)
+
+        except KeyError:
+            logger.error("no stored credentials for bridge '%s'." % cmd.bridge_name)
             exit(1)
 
-        logger.info(credentials)
-
-        # bridge...
-        logger.info("looking for bridge...")
-
-        discovery = Discovery(Host)
-        bridge = discovery.find(credentials)
-
-        if bridge is None:
-            print("no bridge matching the stored credentials")
-            exit(1)
-
-        logger.info(bridge)
-
-        sys.stderr.flush()
+        # manager...
+        bridge_manager = BridgeBuilder(Host).construct_for_credentials(credentials)
+        bridge = bridge_manager.find()
 
         # manager...
         manager = UserManager(bridge.ip_address, credentials.username)
@@ -114,12 +107,11 @@ if __name__ == '__main__':
         if cmd.remove:
             for user in users:
                 if user.description.user == cmd.remove:
-                    response = manager.delete(application_key, user.username)
+                    response = manager.delete(user.username)
                     logger.info(response)
 
         else:
-            for user in users:
-                print(JSONify.dumps(user))
+            print(JSONify.dumps(users, indent=cmd.indent))
 
 
     # ----------------------------------------------------------------------------------------------------------------

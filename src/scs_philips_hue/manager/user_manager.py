@@ -58,8 +58,8 @@ class UserManager(Manager):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def delete(self, application_key, username):
-        request_path = '/api/' + application_key + '/config/whitelist/' + username
+    def delete(self, username):
+        request_path = '/config/whitelist/' + username
 
         # request...
         self._rest_client.connect(self._host, self._username)
@@ -68,6 +68,8 @@ class UserManager(Manager):
             jdict = self._rest_client.delete(request_path)
         finally:
             self._rest_client.close()
+
+        print("jdict: %s" % jdict)
 
         # response...
         response = Response.construct_from_jdict(jdict)

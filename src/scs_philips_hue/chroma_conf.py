@@ -22,7 +22,7 @@ with a progression though the chroma space.
 Note that - currently - there is no command line utility to edit chroma paths, and only default paths can be used.
 
 SYNOPSIS
-chroma_conf.py [-n NAME { [-p PATH_NAME] [-l DOMAIN_MIN] [-u DOMAIN_MAX] [-b BRIGHTNESS] [-t TRANSITION] | -r }]
+chroma_conf.py [-c CHANNEL { [-p PATH_NAME] [-l DOMAIN_MIN] [-u DOMAIN_MAX] [-b BRIGHTNESS] [-t TRANSITION] | -r }]
 [-i INDENT] [-v]
 
 EXAMPLES
@@ -32,8 +32,15 @@ FILES
 ~/SCS/hue/chroma_conf_set.json
 
 DOCUMENT EXAMPLE
-{"NO2": {"path-name": "risk-level", "domain-min": 0.0, "domain-max": 50.0, "brightness": 254, "transition-time": 9},
-"PM10": {"path-name": "risk-level", "domain-min": 0.0, "domain-max": 100.0, "brightness": 254, "transition-time": 9}}
+{
+    "preston_circus": {
+        "path-name": "risk_level",
+        "domain-min": 0.0,
+        "domain-max": 50.0,
+        "brightness": 254,
+        "transition-time": 9
+    }
+}
 
 SEE ALSO
 scs_philips_hue/chroma
@@ -84,14 +91,14 @@ if __name__ == '__main__':
     # run...
 
     if cmd.set():
-        chroma = chromas.conf(cmd.name)
+        chroma = chromas.conf(cmd.channel)
 
         if chroma is None:
             if not cmd.is_complete():
                 logger.error("no configuration is stored - you must therefore set all fields.")
                 exit(2)
 
-            chromas.add(cmd.name, cmd.path_name, cmd.domain_min, cmd.domain_max, cmd.brightness, cmd.transition_time)
+            chromas.add(cmd.channel, cmd.path_name, cmd.domain_min, cmd.domain_max, cmd.brightness, cmd.transition_time)
 
         else:
             path_name = chroma.path_name if cmd.path_name is None else cmd.path_name
@@ -100,12 +107,12 @@ if __name__ == '__main__':
             brightness = chroma.brightness if cmd.brightness is None else cmd.brightness
             transition_time = chroma.transition_time if cmd.transition_time is None else cmd.transition_time
 
-            chromas.add(cmd.name, path_name, domain_min, domain_max, brightness, transition_time)
+            chromas.add(cmd.channel, path_name, domain_min, domain_max, brightness, transition_time)
 
         chromas.save(Host)
 
     if cmd.remove:
-        chromas.remove(cmd.name)
+        chromas.remove(cmd.channel)
         chromas.save(Host)
 
 
