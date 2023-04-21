@@ -42,8 +42,8 @@ class ChromaConfSet(ConfSet):
 
         confs = {}
 
-        for name, conf_jdict in jdict.items():
-            confs[name] = ChromaConf.construct_from_jdict(conf_jdict)
+        for channel, conf_jdict in jdict.items():
+            confs[channel] = ChromaConf.construct_from_jdict(conf_jdict)
 
         return cls(confs)
 
@@ -59,8 +59,8 @@ class ChromaConfSet(ConfSet):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def add(self, name, path_name, domain_min, domain_max, brightness, transition_time):
-        self._confs[name] = ChromaConf(path_name, domain_min, domain_max, brightness, transition_time)
+    def add(self, channel, path_name, domain_min, domain_max, brightness, transition_time):
+        self._confs[channel] = ChromaConf(path_name, domain_min, domain_max, brightness, transition_time)
 
 
 # --------------------------------------------------------------------------------------------------------------------

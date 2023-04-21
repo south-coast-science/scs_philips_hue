@@ -11,7 +11,7 @@ DESCRIPTION
 The desk_conf utility is used to specify which lamps should be driven by the desk utility.
 
 SYNOPSIS
-Usage: desk_conf.py [-n NAME { -a LAMP_NAME | -r LAMP_NAME | -d }] [-i INDENT] [-v]
+Usage: desk_conf.py [-c CHANNEL { -a LAMP_NAME | -r LAMP_NAME | -d }] [-i INDENT] [-v]
 
 EXAMPLES
 ./desk_conf.py -a scs-hcl-001
@@ -20,7 +20,11 @@ FILES
 ~/SCS/hue/desk_conf.json
 
 DOCUMENT EXAMPLE
-{"NO2": ["big-bulb-1"], "PM10": ["scs-hcl-001"]}
+{
+    "preston_circus": [
+        "black"
+    ]
+}
 
 SEE ALSO
 scs_philips_hue/desk
@@ -69,7 +73,7 @@ if __name__ == '__main__':
     # run...
 
     if cmd.set():
-        desk = desks.conf(cmd.name)
+        desk = desks.conf(cmd.channel)
 
     if cmd.add_lamp:
         if desk is None:
@@ -77,7 +81,7 @@ if __name__ == '__main__':
 
         desk.add_lamp(cmd.add_lamp)
 
-        desks.add(cmd.name, desk)
+        desks.add(cmd.channel, desk)
         desks.save(Host)
 
     if cmd.remove_lamp:
@@ -85,12 +89,12 @@ if __name__ == '__main__':
             desk.remove_lamp(cmd.remove_lamp)
 
             if len(desk) == 0:
-                desks.remove(cmd.name)
+                desks.remove(cmd.channel)
 
             desks.save(Host)
 
     if cmd.delete:
-        desks.remove(cmd.name)
+        desks.remove(cmd.channel)
         desks.save(Host)
 
     if desks:

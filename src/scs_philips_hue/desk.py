@@ -40,7 +40,6 @@ scs_philips_hue/desk_conf
 import json
 import sys
 import termios
-import time
 
 from scs_core.client.network import Network
 
@@ -51,31 +50,23 @@ from scs_host.sys.host import Host
 
 from scs_philips_hue.cmd.cmd_desk import CmdDesk
 
-from scs_philips_hue.config.bridge_address import BridgeAddress
-from scs_philips_hue.config.bridge_credentials import BridgeCredentials
+from scs_philips_hue.config.bridge_credentials import BridgeCredentialsSet
 from scs_philips_hue.config.desk_conf import DeskConfSet
 
+from scs_philips_hue.data.light.light_catalogue import LightCatalogue
 from scs_philips_hue.data.light.light_state import LightState
 
-from scs_philips_hue.discovery.discovery import Discovery
-
+from scs_philips_hue.manager.bridge_builder import BridgeBuilder
 from scs_philips_hue.manager.light_manager import LightManager
 
 
-# TODO: auto store last found (named) bridge - special utility for "attempt to find last (named) bridge
-# TODO: support for multiple named bridges
 # TODO: scs_core.client.resource_unavailable_exception.ResourceUnavailableException - find the bridge again
 # --------------------------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
 
-    address = None
-    bridge = None
-    manager = None
-    timeout = False
-
-    indices = {}
-    initial_state = {}
+    light_managers = {}
+    light_catalogue = LightCatalogue({})
 
     # ----------------------------------------------------------------------------------------------------------------
     # cmd...
@@ -100,46 +91,27 @@ if __name__ == '__main__':
         # resources...
 
         # DeskConf...
-        desk_confs = DeskConfSet.load(Host, cmd.name)
+        desk_conf_set = DeskConfSet.load(Host, cmd.name)
 
-        if desk_confs is None:
+        if desk_conf_set is None:
             logger.error("DeskConfSet not available.")
             exit(1)
 
-        logger.info(desk_confs)
+        logger.info(desk_conf_set)
 
-        # credentials...
-        credentials = BridgeCredentials.load(Host)
+        # BridgeCredentials...
+        credentials_set = BridgeCredentialsSet.load(Host, skeleton=True)
 
-        if credentials.bridge_id is None:
-            logger.error("BridgeCredentials not available")
+        if len(credentials_set) < 1:
+            logger.error("BridgeCredentials not available.")
             exit(1)
 
-        logger.info(credentials)
+        # Managers...
+        bridge_managers = BridgeBuilder(Host).construct_all(credentials_set)
+        light_managers = LightManager.construct_all(bridge_managers)
 
-        # address...
-        address = BridgeAddress.load(Host)
-
-        if address:
-            logger.info(address)
-            ip_address = address.ipv4.dot_decimal()
-
-        else:
-            # bridge...
-            logger.info("looking for bridge...")
-
-            discovery = Discovery(Host)
-            bridge = discovery.find(credentials)
-
-            if bridge is None:
-                logger.error("no bridge matching the stored credentials")
-                exit(1)
-
-            logger.info(bridge)
-            ip_address = bridge.ip_address
-
-        # manager...
-        manager = LightManager(ip_address, credentials.username)
+        # LightCatalogue...
+        light_catalogue = LightCatalogue.construct(light_managers)
 
 
         # ------------------------------------------------------------------------------------------------------------
@@ -147,34 +119,6 @@ if __name__ == '__main__':
 
         # signal handler...
         SignalledExit.construct("desk", cmd.verbose)
-
-        # check for bridge availability...
-        timeout = time.time() + 10
-
-        while True:
-            try:
-                manager.find_all()
-                break
-
-            except OSError:
-                if time.time() > timeout:
-                    logger.error("bridge could not be found")
-                    exit(1)
-
-                time.sleep(1)
-                continue
-
-        # indices...
-        for desk_conf in desk_confs.confs.values():
-            for name in desk_conf.lamp_names:
-                indices[name] = manager.find_indices_for_name(name)
-
-                if len(indices[name]) == 0:
-                    logger.error("warning: no light found for name: %s" % name)
-
-                # save initial states...
-                for index in indices[name]:
-                    initial_state[index] = manager.find(index).state        # in case we want to restore these states
 
 
         # ------------------------------------------------------------------------------------------------------------
@@ -199,24 +143,28 @@ if __name__ == '__main__':
             except ValueError:
                 continue
 
-            for name, desk_conf in desk_confs.confs.items():
-                if name not in datum:
-                    continue
+            for channel in datum.keys():
+                if channel not in desk_conf_set:
+                    logger.info("encountered unsupported channel: %s" % channel)
+                    exit(1)
 
-                state = LightState.construct_from_jdict(datum[name])
+                state = LightState.construct_from_jdict(datum[channel])
 
-                for lamp_name in desk_conf.lamp_names:
-                    for index in indices[lamp_name]:
+                for light_name in desk_conf_set.conf(channel).lamp_names:
+                    if light_name not in light_catalogue:
+                        logger.info("encountered unknown light name: %s" % light_name)
+                        exit(1)
 
-                        try:
-                            response = manager.set_state(index, state)
-                            logger.info(response)
+                    light = light_catalogue.light(light_name)
+                    manager = light_managers[light.bridge_name]
 
-                        except ConnectionResetError as ex:
-                            logger.error(repr(ex))
-                            sys.stderr.flush()
+                    try:
+                        response = manager.set_state(light.index, state)
+                        logger.info(response)
 
-                break
+                    except ConnectionResetError as ex:
+                        logger.error(repr(ex))
+                        exit(1)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -234,7 +182,7 @@ if __name__ == '__main__':
     finally:
         logger.info("finishing")
 
-        if manager is not None:
-            for index, state in initial_state.items():
-                response = manager.set_state(index, LightState.white())     # restore to white
-                logger.info(response)
+        for light in light_catalogue.sorted_entries.values():
+            manager = light_managers[light.bridge_name]
+            response = manager.set_state(light.index, LightState.white())
+            logger.info(response)

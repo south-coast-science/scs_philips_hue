@@ -14,7 +14,7 @@ Before running join, the big button on the top of the Philips Hue Bridge must be
 The bridge_credentials.json document created by the join utility is used by the bridge, desk, light, and user utilities.
 
 SYNOPSIS
-join.py [-v]
+join.py [-i INDENT] [-v] BRIDGE_NAME
 
 EXAMPLES
 ./join.py -v
@@ -63,7 +63,7 @@ from scs_philips_hue.data.bridge.bridge_config import BridgeConfig
 from scs_philips_hue.discovery.discovery import Discovery
 
 from scs_philips_hue.manager.bridge_manager import BridgeManager
-# from scs_philips_hue.manager.user_manager import UserManager
+from scs_philips_hue.manager.user_manager import UserManager
 
 from scs_philips_hue.data.client.client_description import ClientDescription
 from scs_philips_hue.data.client.device_description import DeviceDescription
@@ -72,8 +72,6 @@ from scs_philips_hue.data.client.device_description import DeviceDescription
 # --------------------------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
-
-    # application_key = ''
 
     bridge = None
 
@@ -105,10 +103,16 @@ if __name__ == '__main__':
 
         # BridgeCredentialsSet...
         credentials_set = BridgeCredentialsSet.load(Host, skeleton=True)
+        credentials_set.delete(cmd.bridge_name)
+        credentials_set.save(Host)
+
         logger.info(credentials_set)
 
         # BridgeAddressSet...
         address_set = BridgeAddressSet.load(Host, skeleton=True)
+        address_set.delete(cmd.bridge_name)
+        address_set.save(Host)
+
         logger.info(address_set)
 
         # device...
@@ -146,7 +150,7 @@ if __name__ == '__main__':
 
             if response.has_errors():
                 for error in response.errors:
-                    logger.error("error: %s" % error.description)
+                    logger.error("error: %s." % error.description)
                 continue
 
             # get credentials...
@@ -164,44 +168,34 @@ if __name__ == '__main__':
         bridge_manager = BridgeManager(bridge.ip_address, success.value)
         config = bridge_manager.find()
 
-        print(JSONify.dumps(config, indent=cmd.indent))
-
         # build credentials...
         credentials = BridgeCredentials(cmd.bridge_name, config.bridge_id, success.value)
-        print("*** credentials: %s" % credentials)
 
         # delete old whitelist entries for this user (non-functional API)...
-        # user_manager = UserManager(bridge.ip_address, credentials.username)
-        # users = user_manager.find_all()
+        user_manager = UserManager(bridge.ip_address, credentials.username)
+        users = user_manager.find_all()
 
-        # TODO: is the application_key the user credentials?
-
-        # for user in users:
-        #     if user.description.user == Host.name() and user.username != credentials.username:
-        #         response = user_manager.delete(application_key, user.username)
+        for user in users:
+            if user.description.user == Host.name() and user.username != credentials.username:
+                response = user_manager.delete(user.username)
 
         # set bridge name...
         response = bridge_manager.set_config(BridgeConfig(name=cmd.bridge_name))
-        print(JSONify.dumps(response, indent=cmd.indent))
 
         # save address...
         address = BridgeAddress.construct(cmd.bridge_name, config.ip_address)
         address_set.add(address)
         address_set.save(Host)
 
-        logger.error(address_set)
+        # save credentials...
+        credentials_set.add(credentials)
+        credentials_set.save(Host)
 
         # report...
         bridge_manager = BridgeManager(bridge.ip_address, credentials.username)
         config = bridge_manager.find()
 
-        # save credentials...
-        credentials_set.add(credentials)
-        credentials_set.save(Host)
-
-        logger.error(credentials_set)
-
-        print(JSONify.dumps(credentials_set, indent=cmd.indent))
+        print(JSONify.dumps(config, indent=cmd.indent))
 
 
     # ----------------------------------------------------------------------------------------------------------------

@@ -32,27 +32,27 @@ class BridgeCredentials(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct_from_jdict(cls, name, jdict):
+    def construct_from_jdict(cls, bridge_name, jdict):
         if not jdict:
             return None
 
         bridge_id = jdict.get('bridge-id')
         username = jdict.get('username')
 
-        return cls(name, bridge_id, username)
+        return cls(bridge_name, bridge_id, username)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, name, bridge_id, username):
+    def __init__(self, bridge_name, bridge_id, username):
         """
         Constructor
         """
         super().__init__()
 
-        self.__name = name                              # string
-        self.__bridge_id = bridge_id                    # string
-        self.__username = username                      # string
+        self.__bridge_name = bridge_name                        # string
+        self.__bridge_id = bridge_id                            # string
+        self.__username = username                              # string
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -69,8 +69,8 @@ class BridgeCredentials(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
-    def name(self):
-        return self.__name
+    def bridge_name(self):
+        return self.__bridge_name
 
 
     @property
@@ -86,8 +86,8 @@ class BridgeCredentials(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "BridgeCredentials:{name:%s, bridge_id:%s, username:%s}" % \
-            (self.name, self.bridge_id, self.username)
+        return "BridgeCredentials:{bridge_name:%s, bridge_id:%s, username:%s}" % \
+            (self.bridge_name, self.bridge_id, self.username)
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -112,8 +112,8 @@ class BridgeCredentialsSet(PersistentJSONable):
             return cls(OrderedDict()) if skeleton else None
 
         credentials = OrderedDict()
-        for name, credentials_jdict in jdict.items():
-            credentials[name] = BridgeCredentials.construct_from_jdict(name, credentials_jdict)
+        for bridge_name, credentials_jdict in jdict.items():
+            credentials[bridge_name] = BridgeCredentials.construct_from_jdict(bridge_name, credentials_jdict)
 
         return cls(credentials)
 
@@ -126,26 +126,30 @@ class BridgeCredentialsSet(PersistentJSONable):
         """
         super().__init__()
 
-        self.__credentials = credentials                 # dict of name: BridgeCredentials
+        self.__credentials = credentials                 # dict of bridge_name: BridgeCredentials
+
+
+    def __len__(self):
+        return len(self.__credentials)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def add(self, credentials: BridgeCredentials):
-        self.__credentials[credentials.name] = credentials
+        self.__credentials[credentials.bridge_name] = credentials
 
 
-    def delete(self, name):
+    def delete(self, bridge_name):
         try:
-            del self.__credentials[name]
+            del self.__credentials[bridge_name]
             return True
 
         except KeyError:
             return False
 
 
-    def credentials(self, name):
-        return self.__credentials[name]                          # may raise KeyError
+    def credentials(self, bridge_name):
+        return self.__credentials[bridge_name]                          # may raise KeyError
 
 
     # ----------------------------------------------------------------------------------------------------------------

@@ -12,7 +12,7 @@ If the Philips Hue bridge has a known, fixed IP address and / or an IP scan is i
 may be used to record its IPv4 address. (The address can usually be found with a ZeroConf browser.)
 
 SYNOPSIS
-bridge_address.py [{-s DOT_DECIMAL | -d }] [-v]
+bridge_address.py { -l | -r BRIDGE_NAME } [-i INDENT] [-v]
 
 EXAMPLES
 ./bridge_address.py -s 192.168.2.29
@@ -34,10 +34,7 @@ SEE ALSO
 scs_philips_hue/bridge
 """
 
-import sys
-
 from scs_core.data.json import JSONify
-
 from scs_core.sys.logging import Logging
 
 from scs_host.sys.host import Host

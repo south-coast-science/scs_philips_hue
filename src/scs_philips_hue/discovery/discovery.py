@@ -25,7 +25,7 @@ class Discovery(object):
         """
         Constructor
         """
-        self.__host = host
+        self.__host = host                                          # PersistenceManager
         self.__logger = Logging.getLogger()
 
 

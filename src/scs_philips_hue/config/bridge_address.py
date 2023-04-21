@@ -129,6 +129,10 @@ class BridgeAddressSet(PersistentJSONable):
         self.__addresses = addresses                    # dict of name: BridgeAddress
 
 
+    def __len__(self):
+        return len(self.__addresses)
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def add(self, address: BridgeAddress):

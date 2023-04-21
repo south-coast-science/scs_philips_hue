@@ -28,7 +28,20 @@ class Manager(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    @property
+    def host(self):
+        return self._host
+
+
+    @property
+    def username(self):
+        return self._username
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     def __str__(self, *args, **kwargs):
         classname = self.__class__.__name__
 
-        return classname + ":{rest_client:%s, host:%s, username:%s}" % (self._rest_client, self._host, self._username)
+        return classname + ":{rest_client:%s, host:%s, username:%s}" % \
+            (self._rest_client, self._host, self._username)

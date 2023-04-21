@@ -4,6 +4,11 @@ Created on 29 Oct 2017
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
+from scs_core.client.resource_unavailable_exception import ResourceUnavailableException
+
+from scs_philips_hue.client.client_exception import ClientException
+from scs_philips_hue.client.rest_client import RESTClient
+
 from scs_philips_hue.data.bridge.bridge_config import ReportedBridgeConfig
 from scs_philips_hue.data.bridge.response import Response
 
@@ -16,6 +21,32 @@ class BridgeManager(Manager):
     """
     classdocs
     """
+
+    __TIMEOUT = 2           # seconds
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
+    def is_bridge(cls, ip_address):
+        rest_client = RESTClient()
+
+        try:
+            # request...
+            rest_client.connect(ip_address, None, timeout=cls.__TIMEOUT)
+            jdict = rest_client.get('/api')
+
+            if jdict is None:
+                return False
+
+            # response...
+            return Response.construct_from_jdict(jdict) is not None
+
+        except (ClientException, ResourceUnavailableException):
+            return False
+
+        finally:
+            rest_client.close()
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -32,7 +63,7 @@ class BridgeManager(Manager):
         request_path = '/config'
 
         # request...
-        self._rest_client.connect(self._host, self._username)
+        self._rest_client.connect(self._host, self._username, timeout=self.__TIMEOUT)
 
         try:
             jdict = self._rest_client.get(request_path)
@@ -49,7 +80,7 @@ class BridgeManager(Manager):
         request_path = '/config'
 
         # request...
-        self._rest_client.connect(self._host, self._username)
+        self._rest_client.connect(self._host, self._username, timeout=self.__TIMEOUT)
 
         try:
             jdict = self._rest_client.put(request_path, config.as_json())
@@ -66,7 +97,7 @@ class BridgeManager(Manager):
 
     def register(self, device):
         # request...
-        self._rest_client.connect(self._host, None)
+        self._rest_client.connect(self._host, None, timeout=self.__TIMEOUT)
 
         try:
             jdict = self._rest_client.post('', device.as_json())

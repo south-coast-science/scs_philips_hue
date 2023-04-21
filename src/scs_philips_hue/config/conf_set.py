@@ -30,6 +30,10 @@ class ConfSet(PersistentJSONable, ABC):
         self._confs = confs                          # dict of name: *Conf
 
 
+    def __contains__(self, item):
+        return item in self._confs
+
+
     def __len__(self):
         return len(self._confs)
 

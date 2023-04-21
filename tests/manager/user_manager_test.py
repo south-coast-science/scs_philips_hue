@@ -8,7 +8,7 @@ Created on 29 Oct 2017
 
 from scs_host.sys.host import Host
 
-from scs_philips_hue.config.bridge_credentials import BridgeCredentials
+from scs_philips_hue.config.bridge_credentials import BridgeCredentialsSet
 
 from scs_philips_hue.discovery.discovery import Discovery
 
@@ -17,7 +17,10 @@ from scs_philips_hue.manager.user_manager import UserManager
 
 # --------------------------------------------------------------------------------------------------------------------
 
-credentials = BridgeCredentials.load(Host)
+credentials_set = BridgeCredentialsSet.load(Host)
+print(credentials_set)
+
+credentials = credentials_set.credentials('hue-br1-001')
 print(credentials)
 
 print("-")

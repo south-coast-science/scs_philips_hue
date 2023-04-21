@@ -19,12 +19,12 @@ class CmdDomainConf(object):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog [-n NAME { -a TOPIC_PATH DOMAIN_NODE | -r }] "
+        self.__parser = optparse.OptionParser(usage="%prog [-c CHANNEL { -a TOPIC_PATH DOMAIN_NODE | -r }] "
                                                     "[-i INDENT] [-v]", version="%prog 1.0")
 
         # configuration...
-        self.__parser.add_option("--name", "-n", type="string", nargs=1, action="store", dest="name",
-                                 help="the name of the domain configuration")
+        self.__parser.add_option("--channel", "-c", type="string", nargs=1, action="store", dest="channel",
+                                 help="the name of the information channel")
 
         # functions...
         self.__parser.add_option("--add", "-a", type="string", nargs=2, action="store", dest="add",
@@ -49,10 +49,10 @@ class CmdDomainConf(object):
         if self.add is not None and self.remove:
             return False
 
-        if self.set() and self.name is None:
+        if self.set() and self.channel is None:
             return False
 
-        if not self.set() and self.name is not None:
+        if not self.set() and self.channel is not None:
             return False
 
         return True
@@ -65,8 +65,8 @@ class CmdDomainConf(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
-    def name(self):
-        return self.__opts.name
+    def channel(self):
+        return self.__opts.channel
 
 
     @property
@@ -96,5 +96,5 @@ class CmdDomainConf(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdDomainConf:{name:%s, add:%s, remove:%s, indent:%s, verbose:%s}" % \
-                    (self.name, self.add, self.remove, self.indent, self.verbose)
+        return "CmdDomainConf:{channel:%s, add:%s, remove:%s, indent:%s, verbose:%s}" % \
+                    (self.channel, self.add, self.remove, self.indent, self.verbose)

@@ -13,7 +13,7 @@ The bridge utility is used to interrogate and update the Philips Hue Bridge devi
 If a bridge address has been stored, this is used to find the bridge. Otherwise a UPnP or IP scan is attempted.
 
 SYNOPSIS
-bridge.py [-n NAME] [-p PORTAL_SERVICES] [-c CHECK_UPDATE] [-u DO_UPDATE] [-z CHANNEL] [-v]
+bridge.py [-p PORTAL_SERVICES] [-c CHECK_UPDATE] [-u DO_UPDATE] [-z CHANNEL] [-i INDENT] [-v] BRIDGE_NAME
 
 EXAMPLES
 ./bridge.py -n scs-phb-001 -v
@@ -43,7 +43,11 @@ from scs_core.data.json import JSONify
 from scs_core.sys.http_exception import HTTPException
 from scs_core.sys.logging import Logging
 
+from scs_host.sys.host import Host
+
 from scs_philips_hue.cmd.cmd_bridge import CmdBridge
+
+from scs_philips_hue.config.bridge_credentials import BridgeCredentialsSet
 
 from scs_philips_hue.data.bridge.bridge_config import BridgeConfig
 from scs_philips_hue.data.bridge.sw_update import SWUpdate
@@ -55,8 +59,6 @@ from scs_philips_hue.manager.bridge_builder import BridgeBuilder
 
 if __name__ == '__main__':
 
-    address = None
-    bridge = None
     response = None
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -85,8 +87,23 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # resources...
 
+        # BridgeCredentials...
+        credentials_set = BridgeCredentialsSet.load(Host, skeleton=True)
+
+        if len(credentials_set) < 1:
+            logger.error("BridgeCredentials not available.")
+            exit(1)
+
+        try:
+            credentials = credentials_set.credentials(cmd.bridge_name)
+            logger.info(credentials)
+
+        except KeyError:
+            logger.error("no stored credentials for bridge '%s'." % cmd.bridge_name)
+            exit(1)
+
         # manager...
-        manager = BridgeBuilder.construct_for_name(cmd.bridge_name)
+        manager = BridgeBuilder(Host).construct_for_credentials(credentials)
 
 
         # ------------------------------------------------------------------------------------------------------------

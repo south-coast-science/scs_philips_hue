@@ -16,14 +16,18 @@ class CmdUser(object):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog {-r USER | -l }  [-v]", version="%prog 1.0")
+        self.__parser = optparse.OptionParser(usage="%prog { -l | -r USER } [-v] BRIDGE_NAME", version="%prog 1.0")
 
-        # optional...
+        # functions...
+        self.__parser.add_option("--list", "-l", action="store_true", dest="list",
+                                 help="list all users")
+
         self.__parser.add_option("--remove", "-r", type="string", nargs=1, action="store", dest="remove",
                                  help="remove the user from the bridge")
 
-        self.__parser.add_option("--list", "-l", action="store_true", dest="list",
-                                 help="list all users")
+        # output...
+        self.__parser.add_option("--indent", "-i", type="int", nargs=1, action="store", dest="indent",
+                                 help="pretty-print the output with INDENT")
 
         self.__parser.add_option("--verbose", "-v", action="store_true", dest="verbose", default=False,
                                  help="report narrative to stderr")
@@ -34,6 +38,9 @@ class CmdUser(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def is_valid(self):
+        if self.bridge_name is None:
+            return False
+
         if self.remove is None and not self.list:
             return False
 
@@ -46,18 +53,28 @@ class CmdUser(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
-    def remove(self):
-        return self.__opts.remove
-
-
-    @property
     def list(self):
         return self.__opts.list
 
 
     @property
+    def remove(self):
+        return self.__opts.remove
+
+
+    @property
+    def indent(self):
+        return self.__opts.indent
+
+
+    @property
     def verbose(self):
         return self.__opts.verbose
+
+
+    @property
+    def bridge_name(self):
+        return self.__args[0] if self.__args else None
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -67,4 +84,5 @@ class CmdUser(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdUser:{remove:%s, list:%s, verbose:%s}" % (self.remove, self.list, self.verbose)
+        return "CmdUser:{bridge_name:%s, list:%s, remove:%s, indent:%s, verbose:%s}" % \
+            (self.bridge_name, self.list, self.remove, self.indent, self.verbose)

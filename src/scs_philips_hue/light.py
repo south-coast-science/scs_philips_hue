@@ -14,10 +14,11 @@ settings.
 If a bridge address has been stored, this is used to find the bridge. Otherwise a UPnP or IP scan is attempted.
 
 SYNOPSIS
-light.py { -a SERIAL_NUMBER | -s | -l | -d INDEX | -n INDEX NAME } [-v]
+light.py { -c | -l BRIDGE_NAME | -s BRIDGE_NAME | -a BRIDGE_NAME SERIAL_NUMBER | -n BRIDGE_NAME INDEX LIGHT_NAME |
+-r BRIDGE_NAME INDEX } [-i INDENT] [-v]
 
 EXAMPLES
-./light.py -v -a AA8A5F
+./light.py -vi4 -a hue-br1-001 DB03E4
 
 FILES
 ~/SCS/hue/bridge_credentials.json
@@ -29,14 +30,13 @@ DOCUMENT EXAMPLE - OUTPUT
 "manufacturername": "Philips", "uniqueid": "00:17:88:01:03:54:25:66-0b", "swversion": "1.19.0_r19755",
 "swconfigid": "A724919D", "productid": "Philips-LCT015-1-A19ECLv5"}}
 
-
 SEE ALSO
 scs_philips_hue/bridge
 scs_philips_hue/join
 
 BUGS
 The light search function is not always successful if lights have been previously registered on the bridge. If a search
-does not find the light, then the light should be acquired with -a SERIAL_NUMBER.
+does not find the light, then the light should be acquired with -a BRIDGE_NAME SERIAL_NUMBER.
 """
 
 import sys
@@ -54,11 +54,11 @@ from scs_host.sys.host import Host
 
 from scs_philips_hue.cmd.cmd_light import CmdLight
 
-from scs_philips_hue.config.bridge_address import BridgeAddress
-from scs_philips_hue.config.bridge_credentials import BridgeCredentials
+from scs_philips_hue.config.bridge_credentials import BridgeCredentialsSet
 
-from scs_philips_hue.discovery.discovery import Discovery
+from scs_philips_hue.manager.bridge_builder import BridgeBuilder
 
+from scs_philips_hue.data.light.light_catalogue import LightCatalogue
 from scs_philips_hue.data.light.light_device import LightDevice
 
 from scs_philips_hue.manager.light_manager import LightManager
@@ -68,12 +68,7 @@ from scs_philips_hue.manager.light_manager import LightManager
 
 if __name__ == '__main__':
 
-    address = None
-    bridge = None
     manager = None
-    response = None
-
-    initial_state = {}
 
     # ----------------------------------------------------------------------------------------------------------------
     # cmd...
@@ -101,85 +96,81 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # resources...
 
-        # credentials...
-        credentials = BridgeCredentials.load(Host)
+        # BridgeCredentials...
+        credentials_set = BridgeCredentialsSet.load(Host, skeleton=True)
 
-        if credentials.bridge_id is None:
+        if len(credentials_set) < 1:
             logger.error("BridgeCredentials not available.")
             exit(1)
 
-        logger.info(credentials)
+        # Managers...
+        bridge_managers = BridgeBuilder(Host).construct_all(credentials_set)
+        light_managers = LightManager.construct_all(bridge_managers)
 
-        # address...
-        address = BridgeAddress.load(Host)
+        # LightCatalogue...
+        light_catalogue = LightCatalogue.construct(light_managers)
 
-        if address:
-            logger.info(address)
-            ip_address = address.ipv4.dot_decimal()
-
-        else:
-            # bridge...
-            logger.info("looking for bridge...")
-
-            discovery = Discovery(Host)
-            bridge = discovery.find(credentials)
-
-            if bridge is None:
-                logger.error("no bridge matching the stored credentials.")
-                exit(1)
-
-            logger.info(bridge)
-            ip_address = bridge.ip_address
-
-        # manager...
-        manager = LightManager(ip_address, credentials.username)
+        try:
+            if cmd.bridge_name:
+                manager = light_managers[cmd.bridge_name]
+        except KeyError:
+            logger.error("bridge '%s' was not found." % cmd.bridge_name)
+            exit(1)
 
 
         # ------------------------------------------------------------------------------------------------------------
         # run...
 
-        # add...
-        if cmd.add:
-            device = LightDevice(cmd.add)
-            response = manager.search(device)
+        if cmd.name and cmd.light_name in light_catalogue:
+            logger.error("name '%s' is already in use." % cmd.light_name)
+            exit(2)
 
-            while True:
-                time.sleep(2.0)
-                scan = manager.find_new()
 
-                if not scan.is_active():
-                    break
-
-            for entry in scan.entries:
-                print(JSONify.dumps(entry, indent=cmd.indent))
+        # ------------------------------------------------------------------------------------------------------------
+        # run...
 
         # search...
         if cmd.search:
             response = manager.search()
+            logger.info("searching...")
 
             while True:
-                time.sleep(2.0)
+                time.sleep(2)
                 scan = manager.find_new()
-
                 if not scan.is_active():
                     break
 
             for entry in scan.entries:
                 print(JSONify.dumps(entry, indent=cmd.indent))
 
-        # delete...
-        if cmd.delete:
-            response = manager.delete(cmd.delete)
+        # add...
+        if cmd.add:
+            device = LightDevice(cmd.serial_number)
+            response = manager.search(device=device)
+            logger.info("adding...")
+
+            while True:
+                time.sleep(2.0)
+                scan = manager.find_new()
+                if not scan.is_active():
+                    break
+
+            for entry in scan.entries:
+                print(JSONify.dumps(entry, indent=cmd.indent))
 
         # name...
         if cmd.name:
-            response = manager.rename(cmd.name[0], cmd.name[1])
+            response = manager.rename(cmd.index, cmd.light_name)
 
-        if response:
-            logger.info(response)
+        # delete...
+        if cmd.remove:
+            response = manager.delete(cmd.index)
 
         # result...
-        if cmd.name or cmd.delete or cmd.list:
+        if cmd.catalogue:
+            print(JSONify.dumps(light_catalogue, indent=cmd.indent))
+
+        if cmd.name or cmd.remove or cmd.list:
             lights = manager.find_all()
 
             for light in lights:
