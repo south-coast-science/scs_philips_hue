@@ -6,7 +6,11 @@ Created on 16 Mar 2018
 Lamp names form an ordered set. The most-recently added lamp is at the end of the list.
 
 document example:
-{"NO2": ["big-bulb-1"], "PM10": ["scs-hcl-001"]}
+{
+    "preston_circus": [
+        "black"
+    ]
+}
 """
 
 from scs_core.data.json import JSONable
@@ -37,8 +41,8 @@ class DeskConfSet(ConfSet):
 
         confs = {}
 
-        for name, conf_jdict in jdict.items():
-            confs[name] = DeskConf.construct_from_jdict(conf_jdict)
+        for channel, conf_jdict in jdict.items():
+            confs[channel] = DeskConf.construct_from_jdict(conf_jdict)
 
         return cls(confs)
 
@@ -54,8 +58,8 @@ class DeskConfSet(ConfSet):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def add(self, name, lamp_names):
-        self._confs[name] = DeskConf(lamp_names)
+    def add(self, channel, lamp_names):
+        self._confs[channel] = DeskConf(lamp_names)
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -92,12 +96,6 @@ class DeskConf(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
-        return self.lamp_names
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
     def add_lamp(self, lamp_name):
         if lamp_name in self.__lamp_names:
             return
@@ -110,6 +108,12 @@ class DeskConf(JSONable):
             return
 
         self.__lamp_names.remove(lamp_name)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def as_json(self):
+        return self.lamp_names
 
 
     # ----------------------------------------------------------------------------------------------------------------

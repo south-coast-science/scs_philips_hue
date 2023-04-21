@@ -4,7 +4,7 @@ Created on 16 Mar 2018
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 document example:
-{"lamp-names": ["scs-hcl-001", "scs-hcl-002"]}
+{"lamp-channels": ["scs-hcl-001", "scs-hcl-002"]}
 """
 
 import optparse
@@ -19,12 +19,12 @@ class CmdDeskConf(object):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog [-n NAME { -a LAMP_NAME | -r LAMP_NAME | -d }] "
+        self.__parser = optparse.OptionParser(usage="%prog [-c CHANNEL { -a LAMP_NAME | -r LAMP_NAME | -d }] "
                                                     "[-i INDENT] [-v]", version="%prog 1.0")
 
         # configuration...
-        self.__parser.add_option("--name", "-n", type="string", nargs=1, action="store", dest="name",
-                                 help="the name of the desk configuration")
+        self.__parser.add_option("--channel", "-c", type="string", nargs=1, action="store", dest="channel",
+                                 help="the name of the information channel")
 
         # functions...
         self.__parser.add_option("--add", "-a", type="string", nargs=1, action="store", dest="add_lamp",
@@ -52,10 +52,10 @@ class CmdDeskConf(object):
         if self.add_lamp is not None and self.remove_lamp is not None:
             return False
 
-        if self.set() and self.name is None:
+        if self.set() and self.channel is None:
             return False
 
-        if not self.set() and self.name is not None:
+        if not self.set() and self.channel is not None:
             return False
 
         return True
@@ -68,8 +68,8 @@ class CmdDeskConf(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
-    def name(self):
-        return self.__opts.name
+    def channel(self):
+        return self.__opts.channel
 
 
     @property
@@ -104,5 +104,5 @@ class CmdDeskConf(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdDeskConf:{name:%s, add_lamp:%s, remove_lamp:%s, delete:%s, indent:%s, verbose:%s}" % \
-                    (self.name, self.add_lamp, self.remove_lamp, self.delete, self.indent, self.verbose)
+        return "CmdDeskConf:{channel:%s, add_lamp:%s, remove_lamp:%s, delete:%s, indent:%s, verbose:%s}" % \
+                    (self.channel, self.add_lamp, self.remove_lamp, self.delete, self.indent, self.verbose)

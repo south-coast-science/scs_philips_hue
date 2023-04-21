@@ -15,7 +15,7 @@ accepted by a mapping utility such as chroma.
 The domain_conf.json document managed by the domain_conf utility is used by the aws_mqtt_subscriber and node utilities.
 
 SYNOPSIS
-domain_conf.py [-n NAME { -a TOPIC_PATH DOMAIN_NODE | -r }] [-i INDENT] [-v]
+domain_conf.py [-c CHANNEL { -a TOPIC_PATH DOMAIN_NODE | -r }] [-i INDENT] [-v]
 
 EXAMPLES
 ./domain_conf.py -n PM10 -a /orgs/south-coast-science-demo/brighton/loc/1/particulates val.pm10
@@ -73,11 +73,11 @@ if __name__ == '__main__':
     # run...
 
     if cmd.add:
-        domains.add(cmd.name, cmd.add[0], cmd.add[1])
+        domains.add(cmd.channel, cmd.add[0], cmd.add[1])
         domains.save(Host)
 
     if cmd.remove:
-        domains.remove(cmd.name)
+        domains.remove(cmd.channel)
         domains.save(Host)
 
     if domains:

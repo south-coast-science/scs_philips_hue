@@ -4,7 +4,7 @@ Created on 4 Mar 2020
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-import time
+from scs_core.sys.logging import Logging
 
 from scs_philips_hue.discovery.ip_discovery import IPDiscovery
 from scs_philips_hue.discovery.upnp_discovery import UPnPDiscovery
@@ -25,57 +25,42 @@ class Discovery(object):
         """
         Constructor
         """
-        self.__host = host
+        self.__host = host                                          # PersistenceManager
+        self.__logger = Logging.getLogger()
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def find(self, credentials, timeout=None):
-        timeout_time = None if timeout is None else time.time() + timeout
+    def find(self, credentials):
+        # UPnP...
+        self.__logger.info("find by UPnP...")
+        upnp = UPnPDiscovery()
+        bridge = upnp.find(credentials.bridge_id)
 
-        while True:
-            # UPnP...
-            upnp = UPnPDiscovery()
-            bridge = upnp.find(credentials.bridge_id)
+        if bridge:
+            return bridge
 
-            if bridge:
-                return bridge
+        # IP scan...
+        self.__logger.info("find by IP scan...")
+        scanner = IPDiscovery(self.__host)
 
-            # IP scan...
-            scanner = IPDiscovery(self.__host)
-            bridge = scanner.find(credentials)
-
-            if bridge:
-                return bridge
-
-            if timeout_time and time.time() > timeout_time:
-                return None
-
-            time.sleep(self.__RETRY_DELAY)
+        return scanner.find(credentials)
 
 
-    def find_all(self, timeout=None):
-        timeout_time = None if timeout is None else time.time() + timeout
+    def find_all(self):
+        # UPnP...
+        self.__logger.info("find by UPnP...")
+        upnp = UPnPDiscovery()
+        bridges = upnp.find_all()
 
-        while True:
-            # UPnP...
-            upnp = UPnPDiscovery()
-            bridges = upnp.find_all()
+        if bridges:
+            return bridges
 
-            if bridges:
-                return bridges
+        # IP scan...
+        self.__logger.info("find by IP scan...")
+        scanner = IPDiscovery(self.__host)
 
-            # IP scan...
-            scanner = IPDiscovery(self.__host)
-            bridge = scanner.find_first()
-
-            if bridge:
-                return [bridge]
-
-            if timeout_time and time.time() > timeout_time:
-                return []
-
-            time.sleep(self.__RETRY_DELAY)
+        return scanner.find_all()
 
 
     # ----------------------------------------------------------------------------------------------------------------

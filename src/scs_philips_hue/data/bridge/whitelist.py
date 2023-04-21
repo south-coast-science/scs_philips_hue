@@ -27,6 +27,8 @@ class WhitelistGroup(JSONable):
 
     @classmethod
     def construct_from_jdict(cls, jdict):
+        print("jdict: %s" % jdict)
+
         if not jdict:
             return None
 
@@ -112,6 +114,7 @@ class WhitelistEntry(JSONable):
     def as_json(self):
         jdict = OrderedDict()
 
+        jdict['username'] = self.username
         jdict['last use date'] = self.last_use_datetime
         jdict['create date'] = self.create_datetime
 

@@ -21,15 +21,16 @@ class CmdBridgeAddress(object):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog [{-s DOT_DECIMAL | -d }] [-v]",
+        self.__parser = optparse.OptionParser(usage="%prog { -l | -r BRIDGE_NAME } [-i INDENT] [-v]",
                                               version="%prog 1.0")
 
-        # optional...
-        self.__parser.add_option("--set", "-s", type="string", nargs=1, action="store", dest="set_dot_decimal",
-                                 help="set IPv4 address")
+        # functions...
+        self.__parser.add_option("--remove", "-r", type="str", nargs=1, action="store", dest="remove",
+                                 help="remove the named bridge")
 
-        self.__parser.add_option("--delete", "-d", action="store_true", dest="delete", default=False,
-                                 help="delete the configuration")
+        # output...
+        self.__parser.add_option("--indent", "-i", type="int", nargs=1, action="store", dest="indent",
+                                 help="pretty-print the output with INDENT")
 
         self.__parser.add_option("--verbose", "-v", action="store_true", dest="verbose", default=False,
                                  help="report narrative to stderr")
@@ -39,28 +40,19 @@ class CmdBridgeAddress(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def is_valid(self):
-        if self.set_dot_decimal and self.delete:
-            return False
+    @property
+    def remove(self):
+        return self.__opts.remove
 
-        return True
-
-
-    # ----------------------------------------------------------------------------------------------------------------
 
     @property
-    def set_dot_decimal(self):
-        return self.__opts.set_dot_decimal
+    def indent(self):
+        return self.__opts.indent
 
 
     @property
     def verbose(self):
         return self.__opts.verbose
-
-
-    @property
-    def delete(self):
-        return self.__opts.delete
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -70,5 +62,5 @@ class CmdBridgeAddress(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdBridgeAddress:{set_dot_decimal:%s, delete:%s, verbose:%s}" % \
-               (self.set_dot_decimal, self.delete, self.verbose)
+        return "CmdBridgeAddress:{remove:%s, indent:%s, verbose:%s}" % \
+               (self.remove, self.indent, self.verbose)

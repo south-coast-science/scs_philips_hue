@@ -16,24 +16,29 @@ class CmdLight(object):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog { -a SERIAL_NUMBER | -s | -l | -d INDEX | -n INDEX NAME } "
-                                                    "[-i INDENT] [-v]", version="%prog 1.0")
+        self.__parser = optparse.OptionParser(usage="%prog { -c | -l BRIDGE_NAME | -s BRIDGE_NAME | "
+                                                    "-a BRIDGE_NAME SERIAL_NUMBER | -n BRIDGE_NAME INDEX LIGHT_NAME | "
+                                                    "-r BRIDGE_NAME INDEX } [-i INDENT] [-v]",
+                                              version="%prog 1.0")
 
-        # optional...
-        self.__parser.add_option("--add", "-a", type="string", nargs=1, action="store", dest="add",
-                                 help="add the light with SERIAL_NUMBER")
+        # functions...
+        self.__parser.add_option("--catalogue", "-c", action="store_true", dest="catalogue",
+                                 help="catalogue of all light names")
 
-        self.__parser.add_option("--search", "-s", action="store_true", dest="search",
-                                 help="search for new lights")
+        self.__parser.add_option("--list", "-l", type="string", nargs=1, action="store", dest="list",
+                                 help="list lights attached to BRIDGE")
 
-        self.__parser.add_option("--list", "-l", action="store_true", dest="list",
-                                 help="list all lights")
+        self.__parser.add_option("--search", "-s", type="string", nargs=1, action="store", dest="search",
+                                 help="search for new lights using BRIDGE")
 
-        self.__parser.add_option("--delete", "-d", type="string", nargs=1, action="store", dest="delete",
-                                 help="delete the light with INDEX")
+        self.__parser.add_option("--add", "-a", type="string", nargs=2, action="store", dest="add",
+                                 help="add the light with SERIAL_NUMBER to BRIDGE")
 
-        self.__parser.add_option("--name", "-n", type="string", nargs=2, action="store", dest="index_name",
-                                 help="set the name of the light with INDEX to NAME")
+        self.__parser.add_option("--name", "-n", type="string", nargs=3, action="store", dest="name",
+                                 help="set the name of the light with INDEX to NAME on BRIDGE")
+
+        self.__parser.add_option("--remove", "-r", type="string", nargs=2, action="store", dest="remove",
+                                 help="delete the light with INDEX from BRIDGE")
 
         # output...
         self.__parser.add_option("--indent", "-i", type="int", nargs=1, action="store", dest="indent",
@@ -50,22 +55,30 @@ class CmdLight(object):
     def is_valid(self):
         count = 0
 
-        if self.add is not None:
+        if self.catalogue:
             count += 1
 
-        if self.search is not None:
+        if self.list:
             count += 1
 
-        if self.list is not None:
+        if self.search:
             count += 1
 
-        if self.delete is not None:
+        if self.add:
             count += 1
 
-        if self.name is not None:
+        if self.name:
+            count += 1
+
+        if self.remove:
             count += 1
 
         if count != 1:
+            return False
+
+        try:
+            _ = self.index
+        except ValueError:
             return False
 
         return True
@@ -74,13 +87,8 @@ class CmdLight(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
-    def add(self):
-        return self.__opts.add
-
-
-    @property
-    def search(self):
-        return self.__opts.search
+    def catalogue(self):
+        return self.__opts.catalogue
 
 
     @property
@@ -89,14 +97,75 @@ class CmdLight(object):
 
 
     @property
-    def delete(self):
-        return self.__opts.delete
+    def search(self):
+        return self.__opts.search is not None
+
+
+    @property
+    def add(self):
+        return self.__opts.add is not None
 
 
     @property
     def name(self):
-        return self.__opts.index_name
+        return self.__opts.name is not None
 
+
+    @property
+    def remove(self):
+        return self.__opts.remove is not None
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    def bridge_name(self):
+        if self.list:
+            return self.__opts.list
+
+        if self.search:
+            return self.__opts.search
+
+        if self.add:
+            return self.__opts.add[0]
+
+        if self.name:
+            return self.__opts.name[0]
+
+        if self.remove:
+            return self.__opts.remove[0]
+
+        return None
+
+
+    @property
+    def serial_number(self):
+        if self.add:
+            return self.__opts.add[1]
+
+        return None
+
+
+    @property
+    def index(self):
+        if self.name:
+            return int(self.__opts.name[1])
+
+        if self.remove:
+            return int(self.__opts.remove[1])
+
+        return None
+
+
+    @property
+    def light_name(self):
+        if self.name:
+            return self.__opts.name[2]
+
+        return None
+
+
+    # ----------------------------------------------------------------------------------------------------------------
 
     @property
     def indent(self):
@@ -115,5 +184,7 @@ class CmdLight(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdLight:{add:%s, search:%s, list:%s, delete:%s, name:%s, indent:%s, verbose:%s}" %  \
-               (self.add, self.search, self.list, self.delete, self.name, self.indent, self.verbose)
+        return "CmdLight:{catalogue:%s, list:%s, search:%s, add:%s, name:%s, " \
+               "remove:%s, indent:%s, verbose:%s}" %  \
+               (self.__opts.catalogue, self.__opts.list, self.__opts.search, self.__opts.add, self.__opts.name,
+                self.__opts.remove, self.indent, self.verbose)

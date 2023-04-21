@@ -4,7 +4,7 @@ Created on 16 Mar 2018
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 document example:
-{"NO2": {"path-name": "risk_level", "domain-min": 0.0, "domain-max": 50.0, "brightness": 254, "transition-time": 9}}
+{"NO2": {"path-channel": "risk_level", "domain-min": 0.0, "domain-max": 50.0, "brightness": 254, "transition-time": 9}}
 """
 
 import optparse
@@ -23,17 +23,18 @@ class CmdChromaConf(object):
         """
         path_names = ' | '.join(ChromaPath.list())
 
-        self.__parser = optparse.OptionParser(usage="%prog [-n NAME { [-p PATH_NAME] [-l DOMAIN_MIN] [-u DOMAIN_MAX] "
-                                                    "[-b BRIGHTNESS] [-t TRANSITION] | -r }] [-i INDENT] [-v]",
+        self.__parser = optparse.OptionParser(usage="%prog [-c CHANNEL { [-p PATH_NAME] [-l DOMAIN_MIN] "
+                                                    "[-u DOMAIN_MAX] [-b BRIGHTNESS] [-t TRANSITION] | -r }] "
+                                                    "[-i INDENT] [-v]",
                                               version="%prog 1.0")
 
         # configuration...
-        self.__parser.add_option("--name", "-n", type="string", nargs=1, action="store", dest="name",
-                                 help="the name of the chroma configuration")
+        self.__parser.add_option("--channel", "-c", type="string", nargs=1, action="store", dest="channel",
+                                 help="the name of the information channel")
 
         # fields...
         self.__parser.add_option("--path", "-p", type="string", nargs=1, action="store", dest="path_name",
-                                 help="name of chroma path { %s }" % path_names)
+                                 help="channel of chroma path { %s }" % path_names)
 
         self.__parser.add_option("--lower", "-l", type="float", nargs=1, action="store", dest="domain_min",
                                  help="specify the domain lower bound")
@@ -64,7 +65,7 @@ class CmdChromaConf(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def is_valid(self):
-        if self.set() and self.name is None:
+        if self.set() and self.channel is None:
             return False
 
         if self.set() and self.remove:
@@ -95,8 +96,8 @@ class CmdChromaConf(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
-    def name(self):
-        return self.__opts.name
+    def channel(self):
+        return self.__opts.channel
 
 
     @property
@@ -146,7 +147,7 @@ class CmdChromaConf(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdChromaConf:{name:%s, path_name:%s, domain_min:%s, domain_max:%s, " \
+        return "CmdChromaConf:{channel:%s, path_name:%s, domain_min:%s, domain_max:%s, " \
                "brightness:%s, transition_time:%s, remove:%s, indent:%s, verbose:%s}" % \
-                    (self.name, self.path_name, self.domain_min, self.domain_max,
+                    (self.channel, self.path_name, self.domain_min, self.domain_max,
                      self.brightness, self.transition_time, self.remove, self.indent, self.verbose)
