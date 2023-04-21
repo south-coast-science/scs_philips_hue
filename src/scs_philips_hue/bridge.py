@@ -16,10 +16,11 @@ SYNOPSIS
 bridge.py [-p PORTAL_SERVICES] [-c CHECK_UPDATE] [-u DO_UPDATE] [-z CHANNEL] [-i INDENT] [-v] BRIDGE_NAME
 
 EXAMPLES
-./bridge.py -n scs-phb-001 -v
+./bridge.py -vi4 hue-br1-002
 
 FILES
-~/SCS/hue/bridge_credentials.json
+~/SCS/hue/bridge_address_set.json
+~/SCS/hue/bridge_credentials_set.json
 
 DOCUMENT EXAMPLE
 {"bridge-id": "001788fffe795620", "username": "TIYoqrnwkvyODu8xE9zvRxjIJSRSde0qUzUqqIr7"}

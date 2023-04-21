@@ -69,8 +69,6 @@ class UserManager(Manager):
         finally:
             self._rest_client.close()
 
-        print("jdict: %s" % jdict)
-
         # response...
         response = Response.construct_from_jdict(jdict)
 

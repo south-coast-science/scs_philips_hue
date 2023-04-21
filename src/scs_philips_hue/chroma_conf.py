@@ -26,7 +26,7 @@ chroma_conf.py [-c CHANNEL { [-p PATH_NAME] [-l DOMAIN_MIN] [-u DOMAIN_MAX] [-b 
 [-i INDENT] [-v]
 
 EXAMPLES
-./chroma_conf.py -v -n NO2 -p risk-level -l 0 -u 50 -b 254 -t 9 -i4
+./chroma_conf.py -vi4 -c preston-circus-pm10 -p risk_level -l 0 -u 50 -b 254 -t 9
 
 FILES
 ~/SCS/hue/chroma_conf_set.json

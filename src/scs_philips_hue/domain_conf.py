@@ -18,7 +18,7 @@ SYNOPSIS
 domain_conf.py [-c CHANNEL { -a TOPIC_PATH DOMAIN_NODE | -r }] [-i INDENT] [-v]
 
 EXAMPLES
-./domain_conf.py -n PM10 -a /orgs/south-coast-science-demo/brighton/loc/1/particulates val.pm10
+./domain_conf.py -vi4 -c assembly-co2 -a south-coast-science-production/freshfield-environment/loc/1/gases val.CO2.cnc
 
 FILES
 ~/SCS/hue/domain_conf_set.json

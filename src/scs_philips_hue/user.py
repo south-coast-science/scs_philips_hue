@@ -15,17 +15,19 @@ app#user-name. When a delete command is performed, only the user-name component 
 the user.
 
 SYNOPSIS
-user.py { -l | -r USER } [-v] BRIDGE_NAME
+user.py { -l | -r USER } [-i INDENT] [-v] BRIDGE_NAME
 
 EXAMPLES
-./user.py -d bruno.local
+./user.py -vi4 -l hue-br1-001
 
 FILES
-~/SCS/hue/bridge_credentials.json
+~/SCS/hue/bridge_address_set.json
+~/SCS/hue/bridge_credentials_set.json
 
 DOCUMENT EXAMPLE - OUTPUT
-{"last use date": "2017-11-26T10:29:17", "create date": "2017-11-26T10:08:13",
-"description": "scs-hue-connector#scs-rpi-013"}
+[{"username": "JuA71dSBcObSJi255VatGFEQxOFDu6lOzDqCtjtI", "last use date": "2023-04-21T10:21:34",
+"create date": "2023-04-21T08:10:33", "description": "scs-hue-connector#bruno16"}]
+
 
 SEE ALSO
 scs_philips_hue/join
