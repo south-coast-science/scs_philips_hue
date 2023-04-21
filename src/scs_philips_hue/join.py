@@ -20,7 +20,8 @@ EXAMPLES
 ./join.py -v
 
 FILES
-~/SCS/hue/bridge_credentials.json
+~/SCS/hue/bridge_address_set.json
+~/SCS/hue/bridge_credentials_set.json
 
 DOCUMENT EXAMPLE
 {

@@ -14,10 +14,10 @@ SYNOPSIS
 Usage: desk_conf.py [-c CHANNEL { -a LAMP_NAME | -r LAMP_NAME | -d }] [-i INDENT] [-v]
 
 EXAMPLES
-./desk_conf.py -a scs-hcl-001
+./desk_conf.py -vi4 -c assembly-co2 -a assembly
 
 FILES
-~/SCS/hue/desk_conf.json
+~/SCS/hue/desk_conf_set.json
 
 DOCUMENT EXAMPLE
 {

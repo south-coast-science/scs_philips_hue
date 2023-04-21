@@ -18,7 +18,7 @@ class CmdChroma(object):
         """
         self.__parser = optparse.OptionParser(usage="%prog [-v]", version="%prog 1.0")
 
-        # optional...
+        # output...
         self.__parser.add_option("--verbose", "-v", action="store_true", dest="verbose", default=False,
                                  help="report narrative to stderr")
 

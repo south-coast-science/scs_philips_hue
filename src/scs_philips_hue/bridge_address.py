@@ -18,7 +18,8 @@ EXAMPLES
 ./bridge_address.py -s 192.168.2.29
 
 FILES
-~/SCS/aws/bridge_address.json
+~/SCS/hue/bridge_address_set.json
+~/SCS/hue/bridge_credentials_set.json
 
 DOCUMENT EXAMPLE
 {
