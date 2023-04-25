@@ -14,9 +14,8 @@ from http.client import IncompleteRead
 from scs_core.data.json import JSONify
 
 from scs_core.client.http_client import HTTPClient
-
-from scs_core.sys.http_exception import HTTPException
-from scs_core.sys.http_status import HTTPStatus
+from scs_core.client.http_exception import HTTPException
+from scs_core.client.http_status import HTTPStatus
 
 from scs_philips_hue.client.client_exception import ClientException
 

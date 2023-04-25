@@ -12,8 +12,8 @@ https://developers.meethue.com/news/
 import json
 
 from scs_core.client.http_client import HTTPClient
+from scs_core.client.http_exception import HTTPException
 
-from scs_core.sys.http_exception import HTTPException
 from scs_core.sys.logging import Logging
 
 
