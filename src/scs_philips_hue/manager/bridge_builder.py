@@ -33,7 +33,7 @@ class BridgeBuilder(object):
         bridges = OrderedDict()
 
         for bridge_name, credentials in credentials_set.sorted_credentials.items():
-            manager = self.construct_for_credentials(credentials)
+            manager = self.construct_manager_for_credentials(credentials)
 
             if manager is not None:
                 bridges[bridge_name] = manager
@@ -42,6 +42,12 @@ class BridgeBuilder(object):
 
 
     def construct_for_credentials(self, credentials):
+        manager = self.construct_manager_for_credentials(credentials)
+
+        return {} if manager is None else {credentials.bridge_name: manager}
+
+
+    def construct_manager_for_credentials(self, credentials):
         address_set = BridgeAddressSet.load(self.__host, skeleton=True)
 
         self.__logger.info("looking for '%s'..." % credentials.bridge_name)
