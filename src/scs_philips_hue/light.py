@@ -107,10 +107,8 @@ if __name__ == '__main__':
         # Managers...
         builder = BridgeBuilder(Host)
 
-        if cmd.bridge_name:
-            bridge_managers = {cmd.bridge_name: builder.construct_for_credentials(credentials_set[cmd.bridge_name])}
-        else:
-            bridge_managers = builder.construct_all(credentials_set)
+        bridge_managers = builder.construct_for_credentials(credentials_set[cmd.bridge_name]) if cmd.bridge_name \
+            else builder.construct_all(credentials_set)
 
         light_managers = LightManager.construct_all(bridge_managers)
 
