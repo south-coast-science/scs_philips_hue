@@ -104,7 +104,7 @@ if __name__ == '__main__':
             exit(1)
 
         # manager...
-        manager = BridgeBuilder(Host).construct_for_credentials(credentials)
+        manager = BridgeBuilder(Host).construct_manager_for_credentials(credentials)
 
 
         # ------------------------------------------------------------------------------------------------------------
