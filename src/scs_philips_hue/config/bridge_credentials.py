@@ -133,6 +133,10 @@ class BridgeCredentialsSet(PersistentJSONable):
         return len(self.__credentials)
 
 
+    def __getitem__(self, item):
+        return self.__credentials[item]                             # may raise KeyError
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def add(self, credentials: BridgeCredentials):
