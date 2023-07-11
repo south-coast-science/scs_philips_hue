@@ -160,7 +160,7 @@ if __name__ == '__main__':
 
                     try:
                         response = manager.set_state(light.index, state)
-                        logger.info(response)
+                        logger.info("%s: %s" % (light.bridge_name, response))
 
                     except ConnectionResetError as ex:
                         logger.error(repr(ex))
