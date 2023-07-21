@@ -6,6 +6,8 @@ Created on 4 Nov 2017
 
 import optparse
 
+from scs_philips_hue import version
+
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -19,7 +21,7 @@ class CmdLight(object):
         self.__parser = optparse.OptionParser(usage="%prog { -c | -l BRIDGE_NAME | -s BRIDGE_NAME | "
                                                     "-a BRIDGE_NAME SERIAL_NUMBER | -n BRIDGE_NAME INDEX LIGHT_NAME | "
                                                     "-r BRIDGE_NAME INDEX } [-i INDENT] [-v]",
-                                              version="%prog 1.0")
+                                              version=version())
 
         # functions...
         self.__parser.add_option("--catalogue", "-c", action="store_true", dest="catalogue",

@@ -9,6 +9,8 @@ document example:
 
 import optparse
 
+from scs_philips_hue import version
+
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -20,7 +22,7 @@ class CmdDomainConf(object):
         Constructor
         """
         self.__parser = optparse.OptionParser(usage="%prog [-c CHANNEL { -a TOPIC_PATH DOMAIN_NODE | -r }] "
-                                                    "[-i INDENT] [-v]", version="%prog 1.0")
+                                                    "[-i INDENT] [-v]", version=version())
 
         # configuration...
         self.__parser.add_option("--channel", "-c", type="string", nargs=1, action="store", dest="channel",

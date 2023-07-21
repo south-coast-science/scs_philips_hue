@@ -11,6 +11,8 @@ example document:
 
 import optparse
 
+from scs_philips_hue import version
+
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -22,7 +24,7 @@ class CmdBridgeAddress(object):
         Constructor
         """
         self.__parser = optparse.OptionParser(usage="%prog { -l | -r BRIDGE_NAME } [-i INDENT] [-v]",
-                                              version="%prog 1.0")
+                                              version=version())
 
         # functions...
         self.__parser.add_option("--remove", "-r", type="str", nargs=1, action="store", dest="remove",

@@ -6,6 +6,8 @@ Created on 23 Mar 2017
 
 import optparse
 
+from scs_philips_hue import version
+
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -17,7 +19,7 @@ class CmdMQTTSubscriber(object):
         Constructor
         """
         self.__parser = optparse.OptionParser(usage="%prog { -c | -t TOPIC_PATH } [-s UDS_SUB] [-v]",
-                                              version="%prog 1.0")
+                                              version=version())
 
         # compulsory...
         self.__parser.add_option("--conf", "-c", action="store_true", dest="use_domain_conf", default=False,

@@ -6,6 +6,8 @@ Created on 3 Nov 2017
 
 import optparse
 
+from scs_philips_hue import version
+
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -17,7 +19,7 @@ class CmdUser(object):
         Constructor
         """
         self.__parser = optparse.OptionParser(usage="%prog { -l | -r USER } [-i INDENT] [-v] BRIDGE_NAME",
-                                              version="%prog 1.0")
+                                              version=version())
 
         # functions...
         self.__parser.add_option("--list", "-l", action="store_true", dest="list",

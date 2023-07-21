@@ -7,3 +7,7 @@ https://packaging.python.org/guides/single-sourcing-package-version/
 """
 
 __version__ = '3.0.4'
+
+
+def version():
+    return 'SCS Philips Hue ' + __version__

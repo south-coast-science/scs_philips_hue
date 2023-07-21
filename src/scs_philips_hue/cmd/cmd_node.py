@@ -6,6 +6,8 @@ Created on 25 Apr 2017
 
 import optparse
 
+from scs_philips_hue import version
+
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -17,7 +19,7 @@ class CmdNode(object):
         Constructor
         """
         self.__parser = optparse.OptionParser(usage="%prog { -c | -t NAME TOPIC_PATH DOMAIN_NODE } [-i] [-v]",
-                                              version="%prog 1.0")
+                                              version=version())
 
         # compulsory...
         self.__parser.add_option("--conf", "-c", action="store_true", dest="use_domain_conf", default=False,

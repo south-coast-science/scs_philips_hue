@@ -8,6 +8,7 @@ import optparse
 
 from scs_core.data.datum import Datum
 
+from scs_philips_hue import version
 from scs_philips_hue.data.bridge.bridge_config import BridgeConfig
 
 
@@ -21,7 +22,7 @@ class CmdBridge(object):
         Constructor
         """
         self.__parser = optparse.OptionParser(usage="%prog [-p PORTAL_SERVICES] [-c CHECK_UPDATE] [-u DO_UPDATE] "
-                                                    "[-z CHANNEL] [-i INDENT] [-v] BRIDGE_NAME", version="%prog 1.0")
+                                                    "[-z CHANNEL] [-i INDENT] [-v] BRIDGE_NAME", version=version())
 
         # functions...
         self.__parser.add_option("--portal", "-p", type="int", nargs=1, action="store", dest="portal_services",

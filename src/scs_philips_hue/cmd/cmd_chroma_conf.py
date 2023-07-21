@@ -9,6 +9,7 @@ document example:
 
 import optparse
 
+from scs_philips_hue import version
 from scs_philips_hue.config.chroma_path import ChromaPath
 
 
@@ -26,7 +27,7 @@ class CmdChromaConf(object):
         self.__parser = optparse.OptionParser(usage="%prog [-c CHANNEL { [-p PATH_NAME] [-l DOMAIN_MIN] "
                                                     "[-u DOMAIN_MAX] [-b BRIGHTNESS] [-t TRANSITION] | -r }] "
                                                     "[-i INDENT] [-v]",
-                                              version="%prog 1.0")
+                                              version=version())
 
         # configuration...
         self.__parser.add_option("--channel", "-c", type="string", nargs=1, action="store", dest="channel",
