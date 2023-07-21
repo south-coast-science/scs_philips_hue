@@ -28,7 +28,7 @@ class CmdNode(object):
         self.__parser.add_option("--topic", "-t", type="string", nargs=3, action="store", dest="topic_path",
                                  help="use the given name, topic and node")
 
-        # optional...
+        # output...
         self.__parser.add_option("--verbose", "-v", action="store_true", dest="verbose", default=False,
                                  help="report narrative to stderr")
 

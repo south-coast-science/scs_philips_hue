@@ -25,20 +25,20 @@ class CmdBridge(object):
                                                     "[-z CHANNEL] [-i INDENT] [-v] BRIDGE_NAME", version=version())
 
         # functions...
-        self.__parser.add_option("--portal", "-p", type="int", nargs=1, action="store", dest="portal_services",
+        self.__parser.add_option("--portal", "-p", type="int", action="store", dest="portal_services",
                                  help="enable portal services (1 or 0)")
 
-        self.__parser.add_option("--check", "-c", type="int", nargs=1, action="store", dest="check_update",
+        self.__parser.add_option("--check", "-c", type="int", action="store", dest="check_update",
                                  help="check for software update (1 or 0)")
 
-        self.__parser.add_option("--update", "-u", type="int", nargs=1, action="store", dest="do_update",
+        self.__parser.add_option("--update", "-u", type="int", action="store", dest="do_update",
                                  help="perform software update, if available (1 or 0)")
 
-        self.__parser.add_option("--zigbee", "-z", type="string", nargs=1, action="store", dest="zigbee_channel",
+        self.__parser.add_option("--zigbee", "-z", type="string", action="store", dest="zigbee_channel",
                                  help="set zigbee channel (11, 15, 20 or 25)")
 
         # output...
-        self.__parser.add_option("--indent", "-i", type="int", nargs=1, action="store", dest="indent",
+        self.__parser.add_option("--indent", "-i", type="int", action="store", dest="indent",
                                  help="pretty-print the output with INDENT")
 
         self.__parser.add_option("--verbose", "-v", action="store_true", dest="verbose", default=False,

@@ -30,23 +30,23 @@ class CmdChromaConf(object):
                                               version=version())
 
         # configuration...
-        self.__parser.add_option("--channel", "-c", type="string", nargs=1, action="store", dest="channel",
+        self.__parser.add_option("--channel", "-c", type="string", action="store", dest="channel",
                                  help="the name of the information channel")
 
         # fields...
-        self.__parser.add_option("--path", "-p", type="string", nargs=1, action="store", dest="path_name",
+        self.__parser.add_option("--path", "-p", type="string", action="store", dest="path_name",
                                  help="channel of chroma path { %s }" % path_names)
 
-        self.__parser.add_option("--lower", "-l", type="float", nargs=1, action="store", dest="domain_min",
+        self.__parser.add_option("--lower", "-l", type="float", action="store", dest="domain_min",
                                  help="specify the domain lower bound")
 
-        self.__parser.add_option("--upper", "-u", type="float", nargs=1, action="store", dest="domain_max",
+        self.__parser.add_option("--upper", "-u", type="float", action="store", dest="domain_max",
                                  help="specify the domain upper bound")
 
-        self.__parser.add_option("--bright", "-b", type="int", nargs=1, action="store", dest="brightness",
+        self.__parser.add_option("--bright", "-b", type="int", action="store", dest="brightness",
                                  help="set the lamp brightness (max 254)")
 
-        self.__parser.add_option("--trans", "-t", type="float", nargs=1, action="store", dest="transition_time",
+        self.__parser.add_option("--trans", "-t", type="float", action="store", dest="transition_time",
                                  help="set the lamp transition time (seconds)")
 
         # functions...
@@ -54,7 +54,7 @@ class CmdChromaConf(object):
                                  help="remove the given configuration")
 
         # output...
-        self.__parser.add_option("--indent", "-i", type="int", nargs=1, action="store", dest="indent",
+        self.__parser.add_option("--indent", "-i", type="int", action="store", dest="indent",
                                  help="pretty-print the output with INDENT")
 
         self.__parser.add_option("--verbose", "-v", action="store_true", dest="verbose", default=False,

@@ -27,10 +27,10 @@ class CmdLight(object):
         self.__parser.add_option("--catalogue", "-c", action="store_true", dest="catalogue",
                                  help="catalogue of all light names")
 
-        self.__parser.add_option("--list", "-l", type="string", nargs=1, action="store", dest="list",
+        self.__parser.add_option("--list", "-l", type="string", action="store", dest="list",
                                  help="list lights attached to BRIDGE")
 
-        self.__parser.add_option("--search", "-s", type="string", nargs=1, action="store", dest="search",
+        self.__parser.add_option("--search", "-s", type="string", action="store", dest="search",
                                  help="search for new lights using BRIDGE")
 
         self.__parser.add_option("--add", "-a", type="string", nargs=2, action="store", dest="add",
@@ -43,7 +43,7 @@ class CmdLight(object):
                                  help="delete the light with INDEX from BRIDGE")
 
         # output...
-        self.__parser.add_option("--indent", "-i", type="int", nargs=1, action="store", dest="indent",
+        self.__parser.add_option("--indent", "-i", type="int", action="store", dest="indent",
                                  help="pretty-print the output with INDENT")
 
         self.__parser.add_option("--verbose", "-v", action="store_true", dest="verbose", default=False,
