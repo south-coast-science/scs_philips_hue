@@ -20,7 +20,7 @@ class CmdDesk(object):
         """
         self.__parser = optparse.OptionParser(usage="%prog [-n NAME] [-e] [-v]", version=version())
 
-        # optional...
+        # identity...
         self.__parser.add_option("--name", "-n", type="string", action="store", dest="name",
                                  help="the name of the configuration")
 

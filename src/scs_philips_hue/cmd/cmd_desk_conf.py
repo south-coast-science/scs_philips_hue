@@ -28,7 +28,7 @@ class CmdDeskConf(object):
         self.__parser.add_option("--channel", "-c", type="string", action="store", dest="channel",
                                  help="the name of the information channel")
 
-        # functions...
+        # operations...
         self.__parser.add_option("--add", "-a", type="string", action="store", dest="add_lamp",
                                  help="add the given lamp")
 

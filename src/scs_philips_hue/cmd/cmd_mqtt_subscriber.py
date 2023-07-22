@@ -21,14 +21,14 @@ class CmdMQTTSubscriber(object):
         self.__parser = optparse.OptionParser(usage="%prog { -c | -t TOPIC_PATH } [-s UDS_SUB] [-v]",
                                               version=version())
 
-        # compulsory...
+        # input...
         self.__parser.add_option("--conf", "-c", action="store_true", dest="use_domain_conf", default=False,
                                  help="get topic path from domain conf")
 
         self.__parser.add_option("--topic", "-t", type="string", action="store", dest="topic_path",
                                  help="use the given topic path")
 
-        # optional...
+        # operations...
         self.__parser.add_option("--sub", "-s", type="string", action="store", dest="uds_sub",
                                  help="write subscribed documents to UDS instead of stdout")
 

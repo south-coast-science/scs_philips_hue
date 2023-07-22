@@ -21,7 +21,7 @@ class CmdNode(object):
         self.__parser = optparse.OptionParser(usage="%prog { -c | -t NAME TOPIC_PATH DOMAIN_NODE } [-i] [-v]",
                                               version=version())
 
-        # compulsory...
+        # input...
         self.__parser.add_option("--conf", "-c", action="store_true", dest="use_domain_conf", default=False,
                                  help="get topic.node from the domain conf")
 

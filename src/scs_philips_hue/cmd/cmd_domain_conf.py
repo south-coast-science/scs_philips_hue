@@ -28,7 +28,7 @@ class CmdDomainConf(object):
         self.__parser.add_option("--channel", "-c", type="string", action="store", dest="channel",
                                  help="the name of the information channel")
 
-        # functions...
+        # operations...
         self.__parser.add_option("--add", "-a", type="string", nargs=2, action="store", dest="add",
                                  help="add the domain configuration")
 

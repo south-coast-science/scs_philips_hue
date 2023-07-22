@@ -26,7 +26,7 @@ class CmdBridgeAddress(object):
         self.__parser = optparse.OptionParser(usage="%prog { -l | -r BRIDGE_NAME } [-i INDENT] [-v]",
                                               version=version())
 
-        # functions...
+        # operations...
         self.__parser.add_option("--remove", "-r", type="str", action="store", dest="remove",
                                  help="remove the named bridge")
 

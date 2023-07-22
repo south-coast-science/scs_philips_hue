@@ -21,7 +21,7 @@ class CmdUser(object):
         self.__parser = optparse.OptionParser(usage="%prog { -l | -r USER } [-i INDENT] [-v] BRIDGE_NAME",
                                               version=version())
 
-        # functions...
+        # operations...
         self.__parser.add_option("--list", "-l", action="store_true", dest="list",
                                  help="list all users")
 

@@ -24,7 +24,7 @@ class CmdBridge(object):
         self.__parser = optparse.OptionParser(usage="%prog [-p PORTAL_SERVICES] [-c CHECK_UPDATE] [-u DO_UPDATE] "
                                                     "[-z CHANNEL] [-i INDENT] [-v] BRIDGE_NAME", version=version())
 
-        # functions...
+        # operations...
         self.__parser.add_option("--portal", "-p", type="int", action="store", dest="portal_services",
                                  help="enable portal services (1 or 0)")
 

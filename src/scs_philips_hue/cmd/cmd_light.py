@@ -23,7 +23,7 @@ class CmdLight(object):
                                                     "-r BRIDGE_NAME INDEX } [-i INDENT] [-v]",
                                               version=version())
 
-        # functions...
+        # operations...
         self.__parser.add_option("--catalogue", "-c", action="store_true", dest="catalogue",
                                  help="catalogue of all light names")
 

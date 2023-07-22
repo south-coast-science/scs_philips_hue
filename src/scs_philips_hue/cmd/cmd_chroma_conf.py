@@ -49,7 +49,7 @@ class CmdChromaConf(object):
         self.__parser.add_option("--trans", "-t", type="float", action="store", dest="transition_time",
                                  help="set the lamp transition time (seconds)")
 
-        # functions...
+        # operations...
         self.__parser.add_option("--remove", "-r", action="store_true", dest="remove", default=False,
                                  help="remove the given configuration")
 
