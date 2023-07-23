@@ -6,6 +6,8 @@ Created on 23 Mar 2017
 
 import optparse
 
+from scs_philips_hue import version
+
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -17,19 +19,20 @@ class CmdMQTTSubscriber(object):
         Constructor
         """
         self.__parser = optparse.OptionParser(usage="%prog { -c | -t TOPIC_PATH } [-s UDS_SUB] [-v]",
-                                              version="%prog 1.0")
+                                              version=version())
 
-        # compulsory...
+        # input...
         self.__parser.add_option("--conf", "-c", action="store_true", dest="use_domain_conf", default=False,
                                  help="get topic path from domain conf")
 
-        self.__parser.add_option("--topic", "-t", type="string", nargs=1, action="store", dest="topic_path",
+        self.__parser.add_option("--topic", "-t", type="string", action="store", dest="topic_path",
                                  help="use the given topic path")
 
-        # optional...
-        self.__parser.add_option("--sub", "-s", type="string", nargs=1, action="store", dest="uds_sub",
+        # operations...
+        self.__parser.add_option("--sub", "-s", type="string", action="store", dest="uds_sub",
                                  help="write subscribed documents to UDS instead of stdout")
 
+        # output...
         self.__parser.add_option("--echo", "-e", action="store_true", dest="echo", default=False,
                                  help="also write subscribed documents to stderr")
 

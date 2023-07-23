@@ -6,6 +6,8 @@ Created on 3 Nov 2017
 
 import optparse
 
+from scs_philips_hue import version
+
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -17,17 +19,17 @@ class CmdUser(object):
         Constructor
         """
         self.__parser = optparse.OptionParser(usage="%prog { -l | -r USER } [-i INDENT] [-v] BRIDGE_NAME",
-                                              version="%prog 1.0")
+                                              version=version())
 
-        # functions...
+        # operations...
         self.__parser.add_option("--list", "-l", action="store_true", dest="list",
                                  help="list all users")
 
-        self.__parser.add_option("--remove", "-r", type="string", nargs=1, action="store", dest="remove",
+        self.__parser.add_option("--remove", "-r", type="string", action="store", dest="remove",
                                  help="remove the user from the bridge")
 
         # output...
-        self.__parser.add_option("--indent", "-i", type="int", nargs=1, action="store", dest="indent",
+        self.__parser.add_option("--indent", "-i", type="int", action="store", dest="indent",
                                  help="pretty-print the output with INDENT")
 
         self.__parser.add_option("--verbose", "-v", action="store_true", dest="verbose", default=False,
