@@ -6,6 +6,8 @@ Created on 25 Nov 2017
 
 import optparse
 
+from scs_philips_hue import version
+
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -16,12 +18,13 @@ class CmdDesk(object):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog [-n NAME] [-e] [-v]", version="%prog 1.0")
+        self.__parser = optparse.OptionParser(usage="%prog [-n NAME] [-e] [-v]", version=version())
 
-        # optional...
-        self.__parser.add_option("--name", "-n", type="string", nargs=1, action="store", dest="name",
+        # identity...
+        self.__parser.add_option("--name", "-n", type="string", action="store", dest="name",
                                  help="the name of the configuration")
 
+        # output...
         self.__parser.add_option("--echo", "-e", action="store_true", dest="echo", default=False,
                                  help="echo stdin to stdout")
 

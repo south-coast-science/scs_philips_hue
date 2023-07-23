@@ -6,6 +6,8 @@ Created on 4 Nov 2017
 
 import optparse
 
+from scs_philips_hue import version
+
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -16,10 +18,10 @@ class CmdJoin(object):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog [-i INDENT] [-v] BRIDGE_NAME", version="%prog 1.0")
+        self.__parser = optparse.OptionParser(usage="%prog [-i INDENT] [-v] BRIDGE_NAME", version=version())
 
         # output...
-        self.__parser.add_option("--indent", "-i", type="int", nargs=1, action="store", dest="indent",
+        self.__parser.add_option("--indent", "-i", type="int", action="store", dest="indent",
                                  help="pretty-print the output with INDENT")
 
         self.__parser.add_option("--verbose", "-v", action="store_true", dest="verbose", default=False,

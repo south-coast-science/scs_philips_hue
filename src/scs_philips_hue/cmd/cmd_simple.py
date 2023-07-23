@@ -6,6 +6,8 @@ Created on 4 Nov 2017
 
 import optparse
 
+from scs_philips_hue import version
+
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -16,9 +18,9 @@ class CmdSimple(object):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog [-v]", version="%prog 1.0")
+        self.__parser = optparse.OptionParser(usage="%prog [-v]", version=version())
 
-        # optional...
+        # output...
         self.__parser.add_option("--verbose", "-v", action="store_true", dest="verbose", default=False,
                                  help="report narrative to stderr")
 

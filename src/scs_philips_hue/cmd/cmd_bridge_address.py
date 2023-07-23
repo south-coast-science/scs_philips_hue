@@ -11,6 +11,8 @@ example document:
 
 import optparse
 
+from scs_philips_hue import version
+
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -22,14 +24,14 @@ class CmdBridgeAddress(object):
         Constructor
         """
         self.__parser = optparse.OptionParser(usage="%prog { -l | -r BRIDGE_NAME } [-i INDENT] [-v]",
-                                              version="%prog 1.0")
+                                              version=version())
 
-        # functions...
-        self.__parser.add_option("--remove", "-r", type="str", nargs=1, action="store", dest="remove",
+        # operations...
+        self.__parser.add_option("--remove", "-r", type="str", action="store", dest="remove",
                                  help="remove the named bridge")
 
         # output...
-        self.__parser.add_option("--indent", "-i", type="int", nargs=1, action="store", dest="indent",
+        self.__parser.add_option("--indent", "-i", type="int", action="store", dest="indent",
                                  help="pretty-print the output with INDENT")
 
         self.__parser.add_option("--verbose", "-v", action="store_true", dest="verbose", default=False,
