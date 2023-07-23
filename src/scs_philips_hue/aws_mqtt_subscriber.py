@@ -15,7 +15,7 @@ The aws_mqtt_subscriber passes subscribed data to stdout. Data is wrapped in a J
 path as a field name, thus identifying which topic the data was gained from.
 
 In order to operate, the appropriate AWS certificates must be installed in a ~/SCS/aws/certs directory, and the
-certificate and API auth specified in the aws_api_auth.json and client_credentials.json documents.
+certificate and API auth specified in the client_credentials.json documents.
 
 WARNING: only one MQTT client should run at any one time, per TCP/IP host.
 
