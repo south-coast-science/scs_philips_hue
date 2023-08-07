@@ -153,7 +153,7 @@ if __name__ == '__main__':
                 for light_name in desk_conf_set.conf(channel).lamp_names:
                     if light_name not in light_catalogue:
                         logger.info("encountered unknown light name: %s" % light_name)
-                        exit(1)
+                        continue
 
                     light = light_catalogue.light(light_name)
                     manager = light_managers[light.bridge_name]
