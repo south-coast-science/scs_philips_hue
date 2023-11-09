@@ -1,18 +1,35 @@
 """
-Created on 30 Oct 2017
+Created on 8 Nov 2023
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
+
+from collections import OrderedDict
+
+from scs_core.data.json import JSONable
 
 from scs_philips_hue.client.rest_client import RESTClient
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class Manager(object):
+class Manager(JSONable):
     """
     classdocs
     """
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
+    def construct_from_jdict(cls, jdict):
+        if not jdict:
+            return None
+
+        host = jdict.get('host')
+        username = jdict.get('username')
+
+        return cls(host, username)
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -24,6 +41,17 @@ class Manager(object):
 
         self._host = host
         self._username = username
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def as_json(self):
+        jdict = OrderedDict()
+
+        jdict['host'] = self.host
+        jdict['username'] = self.username
+
+        return jdict
 
 
     # ----------------------------------------------------------------------------------------------------------------

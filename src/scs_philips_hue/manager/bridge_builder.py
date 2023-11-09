@@ -4,13 +4,11 @@ Created on 17 Apr 2023
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-from collections import OrderedDict
-
 from scs_core.sys.logging import Logging
 
 from scs_philips_hue.config.bridge_address import BridgeAddress, BridgeAddressSet
 from scs_philips_hue.discovery.discovery import Discovery
-from scs_philips_hue.manager.bridge_manager import BridgeManager
+from scs_philips_hue.manager.bridge_manager import BridgeManager, BridgeManagerGroup
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -30,18 +28,17 @@ class BridgeBuilder(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def construct_all(self, credentials_set):
-        bridges = OrderedDict()
+        bridge_managers = {}
 
         for bridge_name, credentials in credentials_set.sorted_credentials.items():
             manager = self.construct_manager_for_credentials(credentials)
 
-            if manager is not None:
-                bridges[bridge_name] = manager
+            bridge_managers[bridge_name] = manager                  # includes 'None' managers
 
-        return bridges
+        return BridgeManagerGroup(bridge_managers)
 
 
-    def construct_for_credentials(self, credentials):
+    def construct_dict_for_credentials(self, credentials):
         manager = self.construct_manager_for_credentials(credentials)
 
         return {} if manager is None else {credentials.bridge_name: manager}

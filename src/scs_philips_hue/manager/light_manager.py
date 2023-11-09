@@ -4,8 +4,6 @@ Created on 30 Oct 2017
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-from collections import OrderedDict
-
 from scs_philips_hue.data.bridge.response import Response
 from scs_philips_hue.data.light.light import Light, LightListEntry
 from scs_philips_hue.data.light.light_name import LightName
@@ -21,14 +19,23 @@ class LightManager(Manager):
     classdocs
     """
 
+    __REQUEST_TIMEOUT = 5               # seconds
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     @classmethod
-    def construct_all(cls, bridge_managers):
-        light_managers = OrderedDict()
+    def construct_all_from_jdict(cls, jdict):
+        if not jdict:
+            return None
 
-        for bridge_name, bridge_manager in bridge_managers.items():
-            light_managers[bridge_name] = cls(bridge_manager.host, bridge_manager.username)
+        return {bridge_name: cls.construct_from_jdict(lm_jdict)
+                for bridge_name, lm_jdict in jdict.items()}
 
-        return light_managers
+
+    @classmethod
+    def construct_all(cls, bridge_manager_group):
+        return {bridge_name: cls(bridge_manager.host, bridge_manager.username)
+                for bridge_name, bridge_manager in bridge_manager_group.items() if bridge_manager is not None}
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -145,7 +152,7 @@ class LightManager(Manager):
         payload = LightName(name)
 
         # request...
-        self._rest_client.connect(self._host, self._username)
+        self._rest_client.connect(self._host, self._username, timeout=self.__REQUEST_TIMEOUT)
 
         try:
             jdict = self._rest_client.put(request_path, payload.as_json())
@@ -162,7 +169,7 @@ class LightManager(Manager):
         request_path = '/lights/' + str(index) + '/state'
 
         # request...
-        self._rest_client.connect(self._host, self._username)
+        self._rest_client.connect(self._host, self._username, timeout=self.__REQUEST_TIMEOUT)
 
         try:
             jdict = self._rest_client.put(request_path, state.as_json())
@@ -179,7 +186,7 @@ class LightManager(Manager):
         request_path = '/lights/' + str(index)
 
         # request...
-        self._rest_client.connect(self._host, self._username)
+        self._rest_client.connect(self._host, self._username, timeout=self.__REQUEST_TIMEOUT)
 
         try:
             jdict = self._rest_client.delete(request_path)

@@ -33,9 +33,6 @@ class CmdMQTTSubscriber(object):
                                  help="write subscribed documents to UDS instead of stdout")
 
         # output...
-        self.__parser.add_option("--echo", "-e", action="store_true", dest="echo", default=False,
-                                 help="also write subscribed documents to stderr")
-
         self.__parser.add_option("--verbose", "-v", action="store_true", dest="verbose", default=False,
                                  help="report narrative to stderr")
 
@@ -72,11 +69,6 @@ class CmdMQTTSubscriber(object):
 
 
     @property
-    def echo(self):
-        return self.__opts.echo
-
-
-    @property
     def verbose(self):
         return self.__opts.verbose
 
@@ -88,5 +80,5 @@ class CmdMQTTSubscriber(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdMQTTSubscriber:{use_domain_conf:%s, topic_path:%s, uds_sub:%s, echo:%s, verbose:%s}" % \
-               (self.use_domain_conf, self.topic_path, self.uds_sub, self.echo, self.verbose)
+        return "CmdMQTTSubscriber:{use_domain_conf:%s, topic_path:%s, uds_sub:%s, verbose:%s}" % \
+               (self.use_domain_conf, self.topic_path, self.uds_sub, self.verbose)
