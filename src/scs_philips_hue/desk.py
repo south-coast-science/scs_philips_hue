@@ -66,7 +66,7 @@ def flush_stdin():
     prev = time.time()
     for _ in sys.stdin:
         now = time.time()
-        if now - prev > 0.001:
+        if now - prev > 0.1:
             break
 
         prev = now
