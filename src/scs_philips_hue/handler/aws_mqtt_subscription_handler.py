@@ -5,10 +5,11 @@ Created on 27 Sep 2018
 """
 
 import json
-# import sys
 
 from scs_core.data.json import JSONify
 from scs_core.data.publication import Publication
+
+from scs_core.sys.logging import Logging
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -21,13 +22,12 @@ class AWSMQTTSubscriptionHandler(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, reporter, comms=None, echo=False):
+    def __init__(self, comms=None):
         """
         Constructor
         """
-        self.__reporter = reporter
-        self.__comms = comms
-        self.__echo = echo
+        self.__comms = comms                            # UDSWriter
+        self.__logger = Logging.getLogger()
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -45,22 +45,17 @@ class AWSMQTTSubscriptionHandler(object):
             self.__comms.write(JSONify.dumps(publication), False)
 
         except ConnectionError:
-            self.__reporter.print("handle: ConnectionError: %s" % self.__comms)
+            self.__logger.info("ConnectionError: %s" % self.__comms)
 
         finally:
             self.__comms.close()
 
-        if self.__echo:
-            # print(JSONify.dumps(publication), file=sys.stderr)
-            # sys.stderr.flush()
-
-            self.__reporter.print("received: %s" % JSONify.dumps(publication))
+        self.__logger.info(JSONify.dumps(publication))
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "AWSMQTTSubscriptionHandler:{reporter:%s, comms:%s, echo:%s}" % \
-               (self.__reporter, self.__comms, self.__echo)
+        return "AWSMQTTSubscriptionHandler:{comms:%s}" % self.__comms
 
 
