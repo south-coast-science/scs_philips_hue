@@ -6,6 +6,9 @@ Created on 29 Oct 2017
 
 from scs_core.client.resource_unavailable_exception import ResourceUnavailableException
 
+from scs_core.data.json import JSONable
+from scs_core.data.str import Str
+
 from scs_philips_hue.client.client_exception import ClientException
 from scs_philips_hue.client.rest_client import RESTClient
 
@@ -22,7 +25,7 @@ class BridgeManager(Manager):
     classdocs
     """
 
-    __TIMEOUT = 2           # seconds
+    __TIMEOUT = 5               # seconds
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -108,3 +111,64 @@ class BridgeManager(Manager):
         response = Response.construct_from_jdict(jdict)
 
         return response
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+class BridgeManagerGroup(JSONable):
+    """
+    classdocs
+    """
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
+    def construct_from_jdict(cls, jdict):
+        if not jdict:
+            return None
+
+        bridge_managers = {bridge_name: BridgeManager.construct_from_jdict(manager_jdict)
+                           for bridge_name, manager_jdict in jdict}
+
+        return cls(bridge_managers)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __init__(self, bridge_managers):
+        """
+        Constructor
+        """
+        self.__bridge_managers = bridge_managers            # dict of bridge_name: BridgeManager
+
+
+    def __bool__(self):
+        return len(self.__bridge_managers) > 0
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def is_complete(self):
+        for manager in self.__bridge_managers.values():
+            if manager is None:
+                return False
+
+        return True
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def as_json(self):
+        return self.__bridge_managers
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def items(self):
+        return dict(sorted(self.__bridge_managers.items())).items()
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __str__(self, *args, **kwargs):
+        return "BridgeManagerGroup:{bridge_managers:%s}" % Str.collection(self.__bridge_managers)

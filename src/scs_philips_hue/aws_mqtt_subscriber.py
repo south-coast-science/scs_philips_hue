@@ -40,10 +40,9 @@ not be recovered.
 """
 
 import sys
-import time
 
 from scs_core.aws.client.client_auth import ClientAuth
-from scs_core.aws.client.mqtt_client import MQTTClient, MQTTSubscriber
+from scs_core.aws.client.mqtt_client import MQTTClient, MQTTClientManager, MQTTSubscriber
 
 from scs_core.client.network import NetworkMonitor
 
@@ -62,27 +61,6 @@ from scs_philips_hue.cmd.cmd_mqtt_subscriber import CmdMQTTSubscriber
 from scs_philips_hue.config.domain_conf import DomainConfSet
 
 from scs_philips_hue.handler.aws_mqtt_subscription_handler import AWSMQTTSubscriptionHandler
-from scs_philips_hue.handler.mqtt_reporter import MQTTReporter
-
-
-# --------------------------------------------------------------------------------------------------------------------
-
-def network_not_available_handler():
-    # noinspection PyShadowingNames
-    logger = Logging.getLogger()
-    logger.error("network loss - attempting to reconnect MQTT client")
-
-    client.disconnect()                                                 # remove dead connection
-    connect_client()
-
-
-def connect_client():
-    while True:
-        try:
-            client.connect(auth, debug=Logging.degugging_on())          # connect when possible
-            break
-        except OSError:
-            time.sleep(10)
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -91,8 +69,6 @@ if __name__ == '__main__':
 
     conf = None
     domains = None
-    client = None
-    reporter = None
     publisher = None
     sub_comms = None
 
@@ -105,7 +81,7 @@ if __name__ == '__main__':
         cmd.print_help(sys.stderr)
         exit(2)
 
-    Logging.config('aws_mqtt_subscriber', verbose=cmd.verbose)       # , level=logging.DEBUG  , verbose=cmd.verbose
+    Logging.config('aws_mqtt_subscriber', verbose=cmd.verbose)
     logger = Logging.getLogger()
 
     logger.info(cmd)
@@ -125,9 +101,6 @@ if __name__ == '__main__':
             logger.error("ClientAuth not available.")
             exit(1)
 
-        # reporter...
-        reporter = MQTTReporter(cmd.verbose)
-
         # DomainConf...
         if cmd.use_domain_conf:
             domains = DomainConfSet.load(Host)
@@ -145,7 +118,7 @@ if __name__ == '__main__':
         sub_comms = UDSWriter(DomainSocket, cmd.uds_sub)
 
         # subscriber...
-        handler = AWSMQTTSubscriptionHandler(reporter, sub_comms, cmd.echo)
+        handler = AWSMQTTSubscriptionHandler(comms=sub_comms)
 
         subscribers = []
         if cmd.use_domain_conf:
@@ -155,10 +128,10 @@ if __name__ == '__main__':
             subscribers.append(MQTTSubscriber(cmd.topic_path, handler.handle))
 
         # client...
-        client = MQTTClient(*subscribers)
+        MQTTClientManager.configure(auth, MQTTClient(*subscribers))
 
         # monitor...
-        monitor = NetworkMonitor(10, network_not_available_handler)
+        monitor = NetworkMonitor(10, MQTTClientManager.network_not_available_handler)
         logger.info(monitor)
 
 
@@ -168,8 +141,8 @@ if __name__ == '__main__':
         # signal handler...
         SignalledExit.construct("aws_mqtt_subscriber", cmd.verbose)
 
-        # client...
-        connect_client()
+        # connect...
+        MQTTClientManager.connect()
 
         # monitor...
         monitor.start()
@@ -188,14 +161,10 @@ if __name__ == '__main__':
     finally:
         logger.info("finishing")
 
-        if client:
-            client.disconnect()
+        MQTTClientManager.disconnect()
 
         if sub_comms:
             sub_comms.close()
 
         if conf:
             Filesystem.rm(conf.report_file)
-
-        if reporter:
-            reporter.print("finished")

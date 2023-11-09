@@ -29,6 +29,19 @@ class LightCatalogue(JSONable):
     classdocs
     """
 
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
+    def construct_from_jdict(cls, jdict):
+        if not jdict:
+            return None
+
+        entries = {bulb_name: LightCatalogueEntry.construct_from_jdict(entry_jdict)
+                   for bulb_name, entry_jdict in jdict.items()}
+
+        return cls(entries)
+
+
     @classmethod
     def construct(cls, light_managers):
         logger = Logging.getLogger()
@@ -57,6 +70,7 @@ class LightCatalogue(JSONable):
 
     def __contains__(self, item):
         return item in self.__entries
+
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -90,6 +104,19 @@ class LightCatalogueEntry(JSONable):
     """
     classdocs
     """
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
+    def construct_from_jdict(cls, jdict):
+        if not jdict:
+            return None
+
+        bridge_name = jdict.get('bridge-name')
+        index = jdict.get('index')
+
+        return cls(bridge_name, index)
+
 
     # ----------------------------------------------------------------------------------------------------------------
 

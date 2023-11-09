@@ -39,7 +39,7 @@ scs_philips_hue/desk_conf
 
 import json
 import sys
-import termios
+import time
 
 from scs_core.client.network import Network
 
@@ -56,17 +56,69 @@ from scs_philips_hue.config.desk_conf import DeskConfSet
 from scs_philips_hue.data.light.light_catalogue import LightCatalogue
 from scs_philips_hue.data.light.light_state import LightState
 
-from scs_philips_hue.manager.bridge_builder import BridgeBuilder
+from scs_philips_hue.manager.bridge_monitor import BridgeMonitor
 from scs_philips_hue.manager.light_manager import LightManager
 
 
-# TODO: scs_core.client.resource_unavailable_exception.ResourceUnavailableException - find the bridge again
+# --------------------------------------------------------------------------------------------------------------------
+
+def flush_stdin():
+    prev = time.time()
+    for _ in sys.stdin:
+        now = time.time()
+        if now - prev > 0.001:
+            break
+
+        prev = now
+
+
+def process_channels():
+    for channel in datum.keys():
+        if channel not in desk_conf_set:
+            logger.info("encountered an unsupported channel: %s" % channel)
+            exit(1)
+
+        state = LightState.construct_from_jdict(datum[channel])
+        process_lights(channel, state)
+
+
+def process_lights(channel, state):
+    for light_name in desk_conf_set.conf(channel).lamp_names:
+        try:
+            light = light_catalogue.light(light_name)
+            manager = light_managers[light.bridge_name]
+        except KeyError:
+            logger.error("%s: light unreachable: %s" % (channel, light_name))
+            continue
+
+        try:
+            response = manager.set_state(light.index, state)                    # may raise exception
+            logger.info("%s: %s" % (light.bridge_name, response))
+        except TimeoutError:
+            logger.error("%s: timed out: %s" % (channel, light_name))
+            continue
+
+
+def reset_lights():
+    if light_catalogue is None or light_managers is None:
+        return
+
+    try:
+        for light in light_catalogue.sorted_entries.values():
+            manager = light_managers[light.bridge_name]
+            response = manager.set_state(light.index, LightState.white())
+            logger.info("%s: %s" % (light.bridge_name, response))
+
+    except Exception as ex:
+        logger.error(repr(ex))
+
+
 # --------------------------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
 
-    light_managers = {}
-    light_catalogue = LightCatalogue({})
+    light_catalogue = None
+    light_managers = None
 
     # ----------------------------------------------------------------------------------------------------------------
     # cmd...
@@ -106,12 +158,8 @@ if __name__ == '__main__':
             logger.error("BridgeCredentials not available.")
             exit(1)
 
-        # Managers...
-        bridge_managers = BridgeBuilder(Host).construct_all(credentials_set)
-        light_managers = LightManager.construct_all(bridge_managers)
-
-        # LightCatalogue...
-        light_catalogue = LightCatalogue.construct(light_managers)
+        monitor = BridgeMonitor.construct(Host, credentials_set)
+        logger.info(monitor)
 
 
         # ------------------------------------------------------------------------------------------------------------
@@ -120,51 +168,42 @@ if __name__ == '__main__':
         # signal handler...
         SignalledExit.construct("desk", cmd.verbose)
 
+        monitor.start()
+
 
         # ------------------------------------------------------------------------------------------------------------
         # run...
 
-        # read stdin...
-        for line in sys.stdin:
-            try:
-                termios.tcflush(sys.stdin, termios.TCIOFLUSH)           # flush stdin
-            except termios.error:
-                pass
+        while True:
+            # Phase 1...
+            while True:
+                time.sleep(5)
+                group = monitor.bridge_manager_group
 
-            if line is None:
-                break
+                if group:                         # at least one of the bridge managers has been found
+                    logger.info("bridge_manager_group: %s" % group)
+                    break
 
-            if cmd.echo:
-                print(line.strip())
-                sys.stdout.flush()
+            # Phase 2...
+            flush_stdin()
 
-            try:
-                datum = json.loads(line)
-            except ValueError:
-                continue
+            for line in sys.stdin:
+                if line is None:
+                    break
 
-            for channel in datum.keys():
-                if channel not in desk_conf_set:
-                    logger.info("encountered unsupported channel: %s" % channel)
-                    exit(1)
+                if cmd.echo:
+                    print(line.strip())
+                    sys.stdout.flush()
 
-                state = LightState.construct_from_jdict(datum[channel])
+                try:
+                    datum = json.loads(line)
+                except ValueError:
+                    continue
 
-                for light_name in desk_conf_set.conf(channel).lamp_names:
-                    if light_name not in light_catalogue:
-                        logger.info("encountered unknown light name: %s" % light_name)
-                        continue
+                light_managers = LightManager.construct_all(monitor.bridge_manager_group)
+                light_catalogue = LightCatalogue.construct(light_managers)
 
-                    light = light_catalogue.light(light_name)
-                    manager = light_managers[light.bridge_name]
-
-                    try:
-                        response = manager.set_state(light.index, state)
-                        logger.info("%s: %s" % (light.bridge_name, response))
-
-                    except ConnectionResetError as ex:
-                        logger.error(repr(ex))
-                        exit(1)
+                process_channels()
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -173,16 +212,9 @@ if __name__ == '__main__':
     except KeyboardInterrupt:
         print(file=sys.stderr)
 
-    except TimeoutError:
-        logger.error("Timeout")
-
     except SystemExit:
         pass
 
     finally:
         logger.info("finishing")
-
-        for light in light_catalogue.sorted_entries.values():
-            manager = light_managers[light.bridge_name]
-            response = manager.set_state(light.index, LightState.white())
-            logger.info(response)
+        reset_lights()
