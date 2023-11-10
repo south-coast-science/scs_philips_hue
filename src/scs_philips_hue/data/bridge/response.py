@@ -93,8 +93,7 @@ class Response(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "Response:{errors:%s, successes:%s}" %  \
-               (Str.collection(self.errors), Str.collection(self.successes))
+        return "Response:{err:%s, succ:%s}" %  (Str.collection(self.errors), Str.collection(self.successes))
 
 
 # --------------------------------------------------------------------------------------------------------------------

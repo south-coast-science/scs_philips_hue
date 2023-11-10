@@ -181,7 +181,7 @@ if __name__ == '__main__':
                 group = monitor.bridge_manager_group
 
                 if group:                         # at least one of the bridge managers has been found
-                    logger.info("bridge_manager_group: %s" % group)
+                    logger.info(group)
                     break
 
             # Phase 2...
@@ -200,6 +200,7 @@ if __name__ == '__main__':
                 except ValueError:
                     continue
 
+                # update bridge managers...
                 light_managers = LightManager.construct_all(monitor.bridge_manager_group)
                 light_catalogue = LightCatalogue.construct(light_managers)
 
