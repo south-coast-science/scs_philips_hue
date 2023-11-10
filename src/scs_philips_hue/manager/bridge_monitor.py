@@ -43,15 +43,15 @@ class BridgeMonitor(SynchronisedProcess):
         self.__builder = builder                                        # BridgeBuilder
         self.__credentials_set = credentials_set                        # BridgeCredentialsSet
 
-        self.__logger_name = Logging.name()
-        self.__logger_level = Logging.level()
+        self.__logger = Logging.getLogger()
+        self.__logger_specification = Logging.specification()
 
 
     # ----------------------------------------------------------------------------------------------------------------
     # SynchronisedProcess implementation...
 
     def run(self):
-        Logging.config(self.__logger_name, level=self.__logger_level)
+        Logging.clone(self.__logger_specification)
 
         try:
             while True:
