@@ -200,7 +200,7 @@ if __name__ == '__main__':
                 except ValueError:
                     continue
 
-                # continuously-updated bridge managers...
+                # update bridge managers...
                 light_managers = LightManager.construct_all(monitor.bridge_manager_group)
                 light_catalogue = LightCatalogue.construct(light_managers)
 
