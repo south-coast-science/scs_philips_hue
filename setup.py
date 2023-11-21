@@ -69,6 +69,7 @@ setuptools.setup(
         'src/scs_philips_hue/join.py',
         'src/scs_philips_hue/light.py',
         'src/scs_philips_hue/node.py',
+        'src/scs_philips_hue/run_chroma.sh',
         'src/scs_philips_hue/uds_receiver.py',
         'src/scs_philips_hue/user.py'
     ],
