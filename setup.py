@@ -39,8 +39,7 @@ with open("README.md", "r") as fh:
 with open('requirements.txt') as req_txt:
     required = [line for line in req_txt.read().splitlines() if line]
 
-# find_namespace_packages(...)
-#     packages=setuptools.find_packages('src'),
+# packages = setuptools.find_packages('src'),
 
 setuptools.setup(
     name="scs-hue",
@@ -52,7 +51,7 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/south-coast-science/scs_philips_hue",
     package_dir={'': 'src'},
-    packages=setuptools.find_packages('src'),
+    packages=['scs_philips_hue'],
     package_data={'scs_philips_hue': ['**/*.csv', '**/*.json']},
     include_package_data=True,
     classifiers=[
