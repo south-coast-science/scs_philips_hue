@@ -1,3 +1,2 @@
-include *.txt
+include *.txt *.json
 include README.md
-recursive-include src *.json *.py
