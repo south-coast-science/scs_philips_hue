@@ -6,6 +6,8 @@ Created on 4 Mar 2020
 
 from scs_core.sys.logging import Logging
 
+from scs_philips_hue.discovery.upnp_conf import UPnPConf
+
 from scs_philips_hue.discovery.ip_discovery import IPDiscovery
 from scs_philips_hue.discovery.upnp_discovery import UPnPDiscovery
 
@@ -17,8 +19,6 @@ class Discovery(object):
     classdocs
     """
 
-    __RETRY_DELAY = 10.0                # seconds
-
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, host):
@@ -26,19 +26,22 @@ class Discovery(object):
         Constructor
         """
         self.__host = host                                          # PersistenceManager
+
+        self.__conf = UPnPConf.load(host, skeleton=True)
         self.__logger = Logging.getLogger()
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def find(self, credentials):
-        # UPnP...
-        self.__logger.info("find by UPnP...")
-        upnp = UPnPDiscovery()
-        bridge = upnp.find(credentials.bridge_id)
+        if self.__conf.upnp_enabled:
+            # UPnP...
+            self.__logger.info("find by UPnP...")
+            upnp = UPnPDiscovery()
+            bridge = upnp.find(credentials.bridge_id)
 
-        if bridge:
-            return bridge
+            if bridge:
+                return bridge
 
         # IP scan...
         self.__logger.info("find by IP scan...")
@@ -48,13 +51,14 @@ class Discovery(object):
 
 
     def find_all(self):
-        # UPnP...
-        self.__logger.info("find by UPnP...")
-        upnp = UPnPDiscovery()
-        bridges = upnp.find_all()
+        if self.__conf.upnp_enabled:
+            # UPnP...
+            self.__logger.info("find by UPnP...")
+            upnp = UPnPDiscovery()
+            bridges = upnp.find_all()
 
-        if bridges:
-            return bridges
+            if bridges:
+                return bridges
 
         # IP scan...
         self.__logger.info("find by IP scan...")
@@ -66,4 +70,4 @@ class Discovery(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "Discovery:{host:%s}" % self.__host
+        return "Discovery:{conf:%s}" % self.__conf
