@@ -1,2 +1,2 @@
-include *.txt *.json
+include *.txt **/*.json
 include README.md
