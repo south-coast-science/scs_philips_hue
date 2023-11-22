@@ -48,7 +48,7 @@ setuptools.setup(
     url="https://github.com/south-coast-science/scs_philips_hue",
     package_dir={'': 'src'},
     packages=setuptools.find_packages('src'),
-    package_data={'src': ['scs_philips_hue/config/paths/*.json']},
+    package_data={'src': ['**/*.json']},
     include_package_data=True,
     classifiers=[
         "Programming Language :: Python :: 3",
