@@ -48,7 +48,7 @@ setuptools.setup(
     url="https://github.com/south-coast-science/scs_philips_hue",
     package_dir={'': 'src'},
     packages=setuptools.find_packages('src'),
-    package_data={'src': ['**/*.json']},
+    package_data={'src': ['**/*.csv', '**/*.json']},
     include_package_data=True,
     classifiers=[
         "Programming Language :: Python :: 3",
@@ -73,6 +73,7 @@ setuptools.setup(
         'src/scs_philips_hue/node.py',
         'src/scs_philips_hue/run_chroma.sh',
         'src/scs_philips_hue/uds_receiver.py',
+        'src/scs_philips_hue/upnp_conf.py',
         'src/scs_philips_hue/user.py'
     ],
     install_requires=required,
