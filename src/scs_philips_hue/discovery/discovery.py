@@ -12,7 +12,6 @@ from scs_philips_hue.discovery.ip_discovery import IPDiscovery
 from scs_philips_hue.discovery.upnp_discovery import UPnPDiscovery
 
 
-# TODO: test and / or parameterise "supports UPnP"
 # --------------------------------------------------------------------------------------------------------------------
 
 class Discovery(object):
