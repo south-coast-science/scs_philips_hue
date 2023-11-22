@@ -9,7 +9,7 @@ source repo: scs_philips_hue
 
 DESCRIPTION
 The join utility is used to pair a controller device - the device hosting this software - with a Philips Hue Bridge.
-Before running join, the big button on the top of the Philips Hue Bridge must be pressed!
+Once running join, the big button on the top of the Philips Hue Bridge must be pressed!
 
 The bridge_credentials.json document created by the join utility is used by the bridge, desk, light, and user utilities.
 
@@ -52,6 +52,7 @@ from scs_core.data.json import JSONify
 
 from scs_core.sys.logging import Logging
 
+from scs_host.comms.stdio import StdIO
 from scs_host.sys.host import Host
 
 from scs_philips_hue.cmd.cmd_join import CmdJoin
@@ -133,6 +134,8 @@ if __name__ == '__main__':
 
         # ----------------------------------------------------------------------------------------------------------------
         # find bridge with button pressed...
+
+        StdIO.prompt('Press the button! (Then hit RETURN)')
 
         success = None
 

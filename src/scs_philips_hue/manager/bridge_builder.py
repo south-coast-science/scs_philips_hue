@@ -105,4 +105,4 @@ class BridgeBuilder(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "BridgeBuilder:{host:%s}" % self.__host
+        return "BridgeBuilder:{}"
