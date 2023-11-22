@@ -5,6 +5,9 @@ Created on 9 Nov 2023
 
 https://packaging.python.org/tutorials/packaging-projects/
 https://packaging.python.org/guides/single-sourcing-package-version/
+
+https://stackoverflow.com/questions/65841378/include-json-file-in-python-package-pypi
+https://stackoverflow.com/questions/45147837/including-data-files-with-setup-py
 """
 
 import codecs
@@ -36,6 +39,7 @@ with open("README.md", "r") as fh:
 with open('requirements.txt') as req_txt:
     required = [line for line in req_txt.read().splitlines() if line]
 
+# packages = setuptools.find_packages('src'), scs_philips_hue.config.paths
 
 setuptools.setup(
     name="scs-hue",
@@ -48,7 +52,7 @@ setuptools.setup(
     url="https://github.com/south-coast-science/scs_philips_hue",
     package_dir={'': 'src'},
     packages=setuptools.find_packages('src'),
-    package_data={'src': ['**/*.csv', '**/*.json']},
+    package_data={'scs_philips_hue': ['**/*.csv', '**/*.json', '**/*.me']},
     include_package_data=True,
     classifiers=[
         "Programming Language :: Python :: 3",
