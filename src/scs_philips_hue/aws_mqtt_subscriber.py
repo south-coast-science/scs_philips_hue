@@ -152,8 +152,8 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # end...
 
-    except ConnectionError as ex:
-        logger.error(repr(ex))
+    # except ConnectionError as ex:
+    #     logger.error(repr(ex))
 
     except (KeyboardInterrupt, SystemExit):
         pass
