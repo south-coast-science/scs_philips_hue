@@ -109,8 +109,8 @@ def reset_lights():
             response = manager.set_state(light.index, LightState.white())
             logger.info("%s: %s" % (light.bridge_name, response))
 
-    except Exception as ex:
-        logger.error(repr(ex))
+    except Exception as reset_ex:
+        logger.error(repr(reset_ex))
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -200,11 +200,15 @@ if __name__ == '__main__':
                 except ValueError:
                     continue
 
-                # update bridge managers...
-                light_managers = LightManager.construct_all(monitor.bridge_manager_group)
-                light_catalogue = LightCatalogue.construct(light_managers)
+                try:
+                    # update bridge managers...
+                    light_managers = LightManager.construct_all(monitor.bridge_manager_group)
+                    light_catalogue = LightCatalogue.construct(light_managers)
 
-                process_channels()
+                    process_channels()
+                except RuntimeError as ex:
+                    logger.error(repr(ex))
+                    continue
 
 
     # ----------------------------------------------------------------------------------------------------------------
