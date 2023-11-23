@@ -82,7 +82,7 @@ if __name__ == '__main__':
         # run...
 
         # signal handler...
-        SignalledExit.construct("node", cmd.verbose)
+        SignalledExit.construct()
 
         node = None
 

@@ -63,7 +63,7 @@ if __name__ == '__main__':
         # run...
 
         # signal handler...
-        SignalledExit.construct("uds_receiver", cmd.verbose)
+        SignalledExit.construct()
 
         uds.connect()
 
