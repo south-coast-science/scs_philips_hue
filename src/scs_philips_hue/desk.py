@@ -166,7 +166,7 @@ if __name__ == '__main__':
         # initialise...
 
         # signal handler...
-        SignalledExit.construct("desk", cmd.verbose)
+        SignalledExit.construct()
 
         monitor.start()
 
