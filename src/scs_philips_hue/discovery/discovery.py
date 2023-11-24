@@ -36,7 +36,7 @@ class Discovery(object):
     def find(self, credentials):
         if self.__conf.upnp_enabled:
             # UPnP...
-            self.__logger.info("find by UPnP...")
+            self.__logger.info("find '%s' by UPnP..." % credentials.bridge_id)
             upnp = UPnPDiscovery()
             bridge = upnp.find(credentials.bridge_id)
 
@@ -44,7 +44,7 @@ class Discovery(object):
                 return bridge
 
         # IP scan...
-        self.__logger.info("find by IP scan...")
+        self.__logger.info("find '%s' by IP scan..." % credentials.bridge_id)
         scanner = IPDiscovery(self.__host)
 
         return scanner.find(credentials)
@@ -53,7 +53,7 @@ class Discovery(object):
     def find_all(self):
         if self.__conf.upnp_enabled:
             # UPnP...
-            self.__logger.info("find by UPnP...")
+            self.__logger.info("find all by UPnP...")
             upnp = UPnPDiscovery()
             bridges = upnp.find_all()
 
@@ -61,7 +61,7 @@ class Discovery(object):
                 return bridges
 
         # IP scan...
-        self.__logger.info("find by IP scan...")
+        self.__logger.info("find all by IP scan...")
         scanner = IPDiscovery(self.__host)
 
         return scanner.find_all()

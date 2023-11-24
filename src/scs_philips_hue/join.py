@@ -154,7 +154,7 @@ if __name__ == '__main__':
 
             if response.has_errors():
                 for error in response.errors:
-                    logger.error("error: %s." % error.description)
+                    logger.error(error.description)
                 continue
 
             # get credentials...
