@@ -4,8 +4,9 @@ Created on 30 Oct 2017
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-from scs_philips_hue.client.upnp_client import UPnPClient
+from scs_core.sys.logging import Logging
 
+from scs_philips_hue.client.upnp_client import UPnPClient
 from scs_philips_hue.data.bridge.bridge_summary import BridgeSummary
 
 
@@ -23,6 +24,7 @@ class UPnPDiscovery(object):
         Constructor
         """
         self.__upnp_client = UPnPClient()
+        self.__logger = Logging.getLogger()
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -31,7 +33,9 @@ class UPnPDiscovery(object):
         descriptions = self.find_all()
 
         for description in descriptions:
-            if description.id == id:
+            self.__logger.info("found: %s" % description)
+
+            if description.id.lower() == id.lower():
                 return description
 
         return None
