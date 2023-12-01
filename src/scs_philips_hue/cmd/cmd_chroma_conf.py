@@ -35,7 +35,7 @@ class CmdChromaConf(object):
 
         # fields...
         self.__parser.add_option("--path", "-p", type="string", action="store", dest="path_name",
-                                 help="channel of chroma path { %s }" % path_names)
+                                 help="the chroma path { %s }" % path_names)
 
         self.__parser.add_option("--lower", "-l", type="float", action="store", dest="domain_min",
                                  help="specify the domain lower bound")
