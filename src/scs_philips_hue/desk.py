@@ -174,45 +174,46 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # run...
 
+        # Phase 1...
         while True:
-            # Phase 1...
-            while True:
-                time.sleep(5)
-                group = monitor.bridge_manager_group
+            time.sleep(5)
+            group = monitor.bridge_manager_group
 
-                if group:                         # at least one of the bridge managers has been found
-                    logger.info(group)
-                    break
+            if group:  # at least one of the bridge managers has been found
+                logger.info(group)
+                break
 
-            # Phase 2...
-            flush_stdin()
+        # Phase 2...
+        flush_stdin()
 
-            for line in sys.stdin:
-                if line is None:
-                    break
+        for line in sys.stdin:
+            if line is None:
+                break
 
-                if cmd.echo:
-                    print(line.strip())
-                    sys.stdout.flush()
+            if cmd.echo:
+                print(line.strip())
+                sys.stdout.flush()
 
-                try:
-                    datum = json.loads(line)
-                except ValueError:
-                    continue
+            try:
+                datum = json.loads(line)
+            except ValueError:
+                continue
 
-                try:
-                    # update bridge managers...
-                    light_managers = LightManager.construct_all(monitor.bridge_manager_group)
-                    light_catalogue = LightCatalogue.construct(light_managers)
+            try:
+                # update bridge managers...
+                light_managers = LightManager.construct_all(monitor.bridge_manager_group)
+                light_catalogue = LightCatalogue.construct(light_managers)
 
-                    process_channels()
-                except RuntimeError as ex:
-                    logger.error(repr(ex))
-                    continue
+                process_channels()
+            except RuntimeError as ex:
+                logger.error(repr(ex))
+                continue
 
 
     # ----------------------------------------------------------------------------------------------------------------
     # end...
+
+        monitor.stop()
 
     except KeyboardInterrupt:
         print(file=sys.stderr)
