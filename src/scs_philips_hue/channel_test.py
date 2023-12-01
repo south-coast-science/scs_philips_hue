@@ -28,7 +28,6 @@ scs_philips_hue/desk_conf
 
 RESOURCES
 https://en.wikipedia.org/wiki/Chromaticity
-https://developers.meethue.com/documentation/core-concepts
 """
 
 import sys
