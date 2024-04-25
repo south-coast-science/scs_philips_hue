@@ -52,7 +52,7 @@ class ClientDescription(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
+    def as_json(self, *args, **kwargs):
         return self.app + self.__SEPARATOR + self.user
 
 
