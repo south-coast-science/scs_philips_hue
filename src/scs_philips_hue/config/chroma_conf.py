@@ -115,7 +115,7 @@ class ChromaConf(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
+    def as_json(self, *args, **kwargs):
         jdict = OrderedDict()
 
         jdict['path-name'] = self.path_name

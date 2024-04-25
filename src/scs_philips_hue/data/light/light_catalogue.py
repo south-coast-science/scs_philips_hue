@@ -81,7 +81,7 @@ class LightCatalogue(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
+    def as_json(self, *args, **kwargs):
         return self.sorted_entries
 
 
@@ -130,7 +130,7 @@ class LightCatalogueEntry(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
+    def as_json(self, *args, **kwargs):
         jdict = OrderedDict()
 
         jdict['bridge-name'] = self.bridge_name

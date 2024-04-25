@@ -44,7 +44,7 @@ class DeviceDescription(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
+    def as_json(self, *args, **kwargs):
         jdict = OrderedDict()
 
         jdict['devicetype'] = self.device_type

@@ -58,7 +58,7 @@ class SWUpdate2(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
+    def as_json(self, *args, **kwargs):
         jdict = OrderedDict()
 
         jdict['checkforupdate'] = self.check_for_update
@@ -136,7 +136,7 @@ class Bridge(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
+    def as_json(self, *args, **kwargs):
         jdict = OrderedDict()
 
         jdict['state'] = self.state
@@ -195,7 +195,7 @@ class AutoInstall(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
+    def as_json(self, *args, **kwargs):
         jdict = OrderedDict()
 
         jdict['updatetime'] = self.update_time

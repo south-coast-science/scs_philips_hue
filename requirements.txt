@@ -4,5 +4,5 @@ requests~=2.28.2
 setuptools~=50.3.0
 tzlocal~=2.1
 
-scs-core~=3.6.0
-scs-host-posix~=3.2.1
+scs-core~=3.13.3
+scs-host-posix~=3.3.0
