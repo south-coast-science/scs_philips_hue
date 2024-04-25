@@ -57,7 +57,7 @@ class BridgeCredentials(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
+    def as_json(self, *args, **kwargs):
         jdict = OrderedDict()
 
         jdict['bridge-id'] = self.bridge_id
@@ -158,7 +158,7 @@ class BridgeCredentialsSet(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
+    def as_json(self, *args, **kwargs):
         return self.sorted_credentials
 
 
