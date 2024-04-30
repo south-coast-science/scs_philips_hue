@@ -67,6 +67,7 @@ setuptools.setup(
         'src/scs_philips_hue/aws_mqtt_subscriber.py',
         'src/scs_philips_hue/bridge.py',
         'src/scs_philips_hue/bridge_address.py',
+        'src/scs_philips_hue/channel_test.py',
         'src/scs_philips_hue/chroma.py',
         'src/scs_philips_hue/chroma_conf.py',
         'src/scs_philips_hue/desk.py',
