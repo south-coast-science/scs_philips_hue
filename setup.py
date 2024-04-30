@@ -18,7 +18,7 @@ import setuptools
 # --------------------------------------------------------------------------------------------------------------------
 
 def read(rel_path):
-    here = os.path.abspath(os.path.dirname(__file__))
+    here = str(os.path.abspath(os.path.dirname(__file__)))
     with codecs.open(os.path.join(here, rel_path)) as fp:
         return fp.read()
 
@@ -67,6 +67,7 @@ setuptools.setup(
         'src/scs_philips_hue/aws_mqtt_subscriber.py',
         'src/scs_philips_hue/bridge.py',
         'src/scs_philips_hue/bridge_address.py',
+        'src/scs_philips_hue/channel_test.py',
         'src/scs_philips_hue/chroma.py',
         'src/scs_philips_hue/chroma_conf.py',
         'src/scs_philips_hue/desk.py',
