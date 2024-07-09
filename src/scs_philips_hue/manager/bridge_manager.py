@@ -158,7 +158,7 @@ class BridgeManagerGroup(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self, *args, **kwargs):
+    def as_json(self, **kwargs):
         return self.__bridge_managers
 
 

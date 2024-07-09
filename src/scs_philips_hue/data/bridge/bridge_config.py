@@ -177,7 +177,7 @@ class BridgeConfig(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self, *args, **kwargs):
+    def as_json(self, **kwargs):
         jdict = OrderedDict()
 
         if self.name is not None:
@@ -429,7 +429,7 @@ class ReportedBridgeConfig(BridgeConfig):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self, *args, **kwargs):
+    def as_json(self, **kwargs):
         jdict = OrderedDict()
 
         jdict['name'] = self.name
