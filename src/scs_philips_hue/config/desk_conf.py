@@ -112,7 +112,7 @@ class DeskConf(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self, *args, **kwargs):
+    def as_json(self, **kwargs):
         return self.lamp_names
 
 

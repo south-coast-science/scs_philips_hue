@@ -66,7 +66,7 @@ class Response(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self, *args, **kwargs):
+    def as_json(self, **kwargs):
         jdict = []
 
         for error in self.errors:
@@ -130,7 +130,7 @@ class Success(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self, *args, **kwargs):
+    def as_json(self, **kwargs):
         return {'success': {self.cmd: self.value}}
 
 
@@ -187,7 +187,7 @@ class Error(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self, *args, **kwargs):
+    def as_json(self, **kwargs):
         jdict = OrderedDict()
 
         jdict['type'] = self.code
