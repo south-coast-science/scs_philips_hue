@@ -62,7 +62,7 @@ class BridgeAddress(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self, *args, **kwargs):
+    def as_json(self, **kwargs):
         jdict = OrderedDict()
 
         jdict['ipv4'] = None if self.ipv4 is None else self.ipv4.dot_decimal()
@@ -154,7 +154,7 @@ class BridgeAddressSet(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self, *args, **kwargs):
+    def as_json(self, **kwargs):
         return self.sorted_addresses
 
 
